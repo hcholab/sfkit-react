@@ -98,7 +98,8 @@ const ProcessSteps: React.FC = () => {
         {steps.map((step) => (
           <div
             key={step.id}
-            className={`col-6 col-md-2 my-3 btn d-flex align-items-stretch ${
+            style={{ flex: "0 0 20%", maxWidth: "20%" }}
+            className={`my-3 p-1 btn d-flex align-items-stretch ${
               hoveredStep === step.id ? "border border-secondary" : ""
             }`}
             onMouseEnter={() => {
@@ -107,7 +108,7 @@ const ProcessSteps: React.FC = () => {
             }}
             onMouseLeave={() => setHoveredStep("")}
           >
-            <div className="position-relative p-4 text-center bg-light rounded">
+            <div className="position-relative p-4 text-center bg-light w-100">
               <span
                 className="d-flex justify-content-center align-items-center position-absolute top-0 start-50 translate-middle rounded-circle bg-primary text-white"
                 style={{ width: "32px", height: "32px", fontSize: "0.8rem" }}

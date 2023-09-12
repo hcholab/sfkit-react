@@ -1,4 +1,16 @@
 import React from "react";
+import choose_title from "../../static/images/tutorial/choose_title.png";
+import choose_vm_size from "../../static/images/tutorial/choose_vm_size.png";
+import choose_workflow from "../../static/images/tutorial/choose_workflow.png";
+import give_permissions from "../../static/images/tutorial/give_permissions.png";
+import mpc_parameters from "../../static/images/tutorial/mpc_parameters.png";
+import post_processing from "../../static/images/tutorial/post_processing.png";
+import prepare_project from "../../static/images/tutorial/prepare_project.png";
+import result from "../../static/images/tutorial/result.png";
+import studies_index from "../../static/images/tutorial/studies_index.png";
+import study from "../../static/images/tutorial/study.png";
+import upload_data from "../../static/images/tutorial/upload_data.png";
+import { Link } from "react-router-dom";
 
 const PrimaryTutorial: React.FC = () => {
   return (
@@ -53,16 +65,17 @@ const PrimaryTutorial: React.FC = () => {
       <h4 className="my-4 fw-normal">Creating a study</h4>
       <div className="row">
         <p>
-          The first step is to create a study. To do this, go to the
-          <a className="text-decoration-none" href="{{url_for('studies.index')}}">
+          The first step is to create a study. To do this, go to the{" "}
+          <Link className="text-decoration-none" to="/studies">
             Studies
-          </a>
-          page and click
+          </Link>{" "}
+          page and click{" "}
           <span className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
             Create New Study
           </span>
           <span className="text-muted">
-            (In a real study, you could also choose to join someone else's study instead.)
+            {" "}
+            (In a real study, you could also choose to join someone else's study instead.).
           </span>
         </p>
         <p className="text-muted">
@@ -73,11 +86,7 @@ const PrimaryTutorial: React.FC = () => {
 
       <div className="row my-2">
         <div className="text-center">
-          <img
-            className="img-fluid w-75 border border-secondary"
-            src="static/images/tutorial/studies_index.png"
-            alt="Image failed to load"
-          />
+          <img className="img-fluid w-75 border border-secondary" src={studies_index} alt="Image failed to load" />
         </div>
       </div>
 
@@ -87,40 +96,32 @@ const PrimaryTutorial: React.FC = () => {
 
       <div className="row my-2">
         <div className="text-center">
-          <img
-            className="img-fluid w-75 border border-secondary"
-            src="static/images/tutorial/choose_workflow.png"
-            alt="Image failed to load"
-          />
+          <img className="img-fluid w-75 border border-secondary" src={choose_workflow} alt="Image failed to load" />
         </div>
       </div>
 
       <div className="row">
         <p>
           You are given the option to choose among any of the 3 workflows and 2 configuration options. More details
-          about these choices are available in the
-          <a className="text-decoration-none" target="_blank" href="{{url_for('general.workflows')}}">
+          about these choices are available in the{" "}
+          <Link className="text-decoration-none" target="_blank" to="/workflows">
             workflows
-          </a>
-          and
-          <a className="text-decoration-none" target="_blank" href="{{url_for('general.instructions')}}">
+          </Link>{" "}
+          and{" "}
+          <Link className="text-decoration-none" target="_blank" to="/instructions">
             instructions
-          </a>
-          . pages. For this tutorial, you can leave the defaults and then click
+          </Link>
+          . pages. For this tutorial, you can leave the defaults and then click{" "}
           <span className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
             Confirm
-          </span>
+          </span>{" "}
           to continue.
         </p>
       </div>
 
       <div className="row my-2">
         <div className="text-center">
-          <img
-            className="img-fluid w-75 border border-secondary"
-            src="static/images/tutorial/choose_title.png"
-            alt="Image failed to load"
-          />
+          <img className="img-fluid w-75 border border-secondary" src={choose_title} alt="Image failed to load" />
         </div>
       </div>
 
@@ -128,27 +129,23 @@ const PrimaryTutorial: React.FC = () => {
         <p>
           On the next page, you will be asked to provide a name for your study. Pick any unique study title, and you can
           leave the description and study information blank. Be sure to check the "Demo Study" option. Then proceed by
-          clicking
+          clicking{" "}
           <span className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
             Confirm
-          </span>
+          </span>{" "}
           again. You will now be taken to a page to set the "Shared Study Parameters". For the demo, you can leave all
           of the parameters as they are. In a real study, you would set the parameters according to your data and
-          preferences. Click
+          preferences. Click{" "}
           <span className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
             Submit
-          </span>
+          </span>{" "}
           to proceed.
         </p>
       </div>
 
       <div className="row my-2">
         <div className="text-center">
-          <img
-            className="img-fluid w-75 border border-secondary"
-            src="static/images/tutorial/mpc_parameters.png"
-            alt="Image failed to load"
-          />
+          <img className="img-fluid w-75 border border-secondary" src={mpc_parameters} alt="Image failed to load" />
         </div>
       </div>
 
@@ -157,10 +154,10 @@ const PrimaryTutorial: React.FC = () => {
         <p>
           You should now see a page that looks something like this
           <span className="text-muted">
-            (if you instead see the main study page, click the
+            (if you instead see the main study page, click the{" "}
             <button className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
               Configure Study
-            </button>
+            </button>{" "}
             button to get to this page)
           </span>
           :
@@ -168,11 +165,7 @@ const PrimaryTutorial: React.FC = () => {
       </div>
       <div className="row my-2">
         <div className="text-center">
-          <img
-            className="img-fluid w-75 border border-secondary"
-            src="static/images/tutorial/prepare_project.png"
-            alt="Image failed to load"
-          />
+          <img className="img-fluid w-75 border border-secondary" src={prepare_project} alt="Image failed to load" />
         </div>
       </div>
       <div className="row">
@@ -180,7 +173,7 @@ const PrimaryTutorial: React.FC = () => {
           0. When running a real study, you would need to follow the instructions to set up your GCP account. For the
           sake of this demo, these steps are optional, and the default configuration will run the demo on a GCP machine
           controlled by us. If you would like to run the demo on your own GCP account, you can follow the instructions.
-          When you are done, you can click
+          When you are done, you can click{" "}
           <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
             Next
           </span>
@@ -190,11 +183,7 @@ const PrimaryTutorial: React.FC = () => {
 
       <div className="row my-2">
         <div className="text-center">
-          <img
-            className="img-fluid w-75 border border-secondary"
-            src="static/images/tutorial/upload_data.png"
-            alt="Image failed to load"
-          />
+          <img className="img-fluid w-75 border border-secondary" src={upload_data} alt="Image failed to load" />
         </div>
       </div>
 
@@ -202,11 +191,11 @@ const PrimaryTutorial: React.FC = () => {
         <p>
           1. For the GCP Project ID, either leave it as is to use our machines or enter whatever GCP project you chose
           in step 0. Either way, for the sake of the demo, you can ignore the data paths. In a real study, you would
-          need to upload your data to a bucket in your GCP account and indicate the paths to said data here. Click
+          need to upload your data to a bucket in your GCP account and indicate the paths to said data here. Click{" "}
           <span className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
             Save
-          </span>
-          if you have made any changes. Once you are done with this step, you can click
+          </span>{" "}
+          if you have made any changes. Once you are done with this step, you can click{" "}
           <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
             Next
           </span>
@@ -216,11 +205,7 @@ const PrimaryTutorial: React.FC = () => {
 
       <div className="row my-2">
         <div className="text-center">
-          <img
-            className="img-fluid w-75 border border-secondary"
-            src="static/images/tutorial/give_permissions.png"
-            alt="Image failed to load"
-          />
+          <img className="img-fluid w-75 border border-secondary" src={give_permissions} alt="Image failed to load" />
         </div>
       </div>
 
@@ -228,7 +213,7 @@ const PrimaryTutorial: React.FC = () => {
         <p>
           2. If you are using your own GCP project, please run the given command in your GCP cloud shell. This command
           will give the website permissions to set up the protocol for your study in your GCP project. Otherwise, you
-          don't need to do anything here. Once you are done, you can click
+          don't need to do anything here. Once you are done, you can click{" "}
           <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
             Next
           </span>
@@ -238,11 +223,7 @@ const PrimaryTutorial: React.FC = () => {
 
       <div className="row my-2">
         <div className="text-center">
-          <img
-            className="img-fluid w-75 border border-secondary"
-            src="static/images/tutorial/choose_vm_size.png"
-            alt="Image failed to load"
-          />
+          <img className="img-fluid w-75 border border-secondary" src={choose_vm_size} alt="Image failed to load" />
         </div>
       </div>
 
@@ -252,20 +233,16 @@ const PrimaryTutorial: React.FC = () => {
 
       <div className="row my-2">
         <div className="text-center">
-          <img
-            className="img-fluid w-75 border border-secondary"
-            src="static/images/tutorial/post_processing.png"
-            alt="Image failed to load"
-          />
+          <img className="img-fluid w-75 border border-secondary" src={post_processing} alt="Image failed to load" />
         </div>
       </div>
 
       <div className="row">
         <p>
-          4. For the sake of this demo, you can leave these values as they are. You can click
+          4. For the sake of this demo, you can leave these values as they are. You can click{" "}
           <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
             Done
-          </span>
+          </span>{" "}
           to proceed.
         </p>
       </div>
@@ -277,30 +254,26 @@ const PrimaryTutorial: React.FC = () => {
 
       <div className="row my-2">
         <div className="text-center">
-          <img
-            className="img-fluid w-50 border border-secondary"
-            src="static/images/tutorial/study.png"
-            alt="Image failed to load"
-          />
+          <img className="img-fluid w-50 border border-secondary" src={study} alt="Image failed to load" />
         </div>
       </div>
 
       <div>
         <p>
           This is your main study page. Here you can see the status of your study, and you can download the results when
-          the study is complete. You can also click the
+          the study is complete. You can also click the{" "}
           <button className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
             Configure Study
-          </button>
+          </button>{" "}
           button to go back to the configuration page. This is also where you can view the study participants and add
           more participants to your study. When all participants initiate their study, the joint study will begin. For
           this demo, you are the only real participant.
         </p>
         <p>
-          Click the
+          Click the{" "}
           <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
             Begin MPC-GWAS Workflow
-          </span>
+          </span>{" "}
           button to begin your study. The study should take about 1/2 hour to complete, and status updates will be
           visible on this page. Feel free to leave this page and come back. When the study is complete, a link to
           download the results should appear.
@@ -309,19 +282,14 @@ const PrimaryTutorial: React.FC = () => {
 
       <div className="row my-2">
         <div className="text-center">
-          <img
-            className="img-fluid w-50 border border-secondary"
-            src="static/images/tutorial/result.png"
-            alt="Image failed to load"
-          />
+          <img className="img-fluid w-50 border border-secondary" src={result} alt="Image failed to load" />
         </div>
       </div>
 
       <div className="mt-2">
         <p>
-          When the study is complete, you can click the
-          <a className="text-decoration-none">Download results</a>
-          link to download the results file with the association statistics.
+          When the study is complete, you can click the <a className="text-decoration-none">Download results</a> link to
+          download the results file with the association statistics.
         </p>
       </div>
 

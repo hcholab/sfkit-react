@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PrimaryTutorial from "../components/tutorials/PrimaryTutorial";
+import TwoPersonTutorial from "../components/tutorials/TwoPersonTutorial";
 
 const Tutorials: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("primary-tutorial");
@@ -35,19 +36,16 @@ const Tutorials: React.FC = () => {
             className={`tab-pane fade show ${activeTab === "primary-tutorial" ? "active" : ""}`}
             id="primary-tutorial"
             role="tabpanel"
-            aria-labelledby="primary-tutorial-tab"
           >
             <PrimaryTutorial />
           </div>
 
-          {/* For now, we will leave the second tutorial pane empty. */}
           <div
-            className={`tab-pane fade ${activeTab === "2-person-tutorial" ? "active" : ""}`}
+            className={`tab-pane fade show ${activeTab === "2-person-tutorial" ? "active" : ""}`}
             id="2-person-tutorial"
             role="tabpanel"
-            aria-labelledby="2-person-tutorial-tab"
           >
-            {/* <TwoPersonTutorial /> */}
+            <TwoPersonTutorial />
           </div>
         </div>
       </div>

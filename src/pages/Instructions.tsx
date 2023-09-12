@@ -4,6 +4,7 @@ import TabContent from "../components/instructions/TabContent";
 import ProcessSteps from "../components/instructions/ProcessSteps";
 import MachineRecommendation from "../components/instructions/MachineRecommendation";
 import info_square from "../static/images/info-square.svg";
+import { Link } from "react-router-dom";
 
 const Instructions: React.FC = () => {
   const [activeTab1, setActiveTab1] = useState<string>("data-mpcgwas");
@@ -57,9 +58,9 @@ const Instructions: React.FC = () => {
 
             <span className="text-muted">
               Note: For the{" "}
-              <a href="/tutorials" className="text-decoration-none">
+              <Link to="/tutorials" className="text-decoration-none">
                 Tutorial
-              </a>
+              </Link>
               , you can use our GCP project and example data for testing purposes.
             </span>
           </div>
@@ -79,9 +80,9 @@ const Instructions: React.FC = () => {
           <h4 className="my-4 fw-normal">Getting Started</h4>
           <p>
             When you are ready to run a study, go to{" "}
-            <a href="/studies" className="text-decoration-none">
+            <Link to="/studies" className="text-decoration-none">
               Studies
-            </a>{" "}
+            </Link>{" "}
             to create or join a study.
           </p>
 
@@ -90,9 +91,9 @@ const Instructions: React.FC = () => {
             <ul>
               <li>
                 Choose one of our{" "}
-                <a href="/workflows" className="text-decoration-none">
+                <Link to="/workflows" className="text-decoration-none">
                   Workflows
-                </a>{" "}
+                </Link>{" "}
                 for the study.
               </li>
               <li>
