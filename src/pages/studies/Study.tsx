@@ -1,12 +1,16 @@
+import { doc, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { Button, Col, Container, Row, Tab, Tabs } from "react-bootstrap";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import StudyConfigBadge from "../../components/studies/StudyConfigBadge";
-import useAuthToken from "../../hooks/useAuthToken";
-import { Study } from "../../types/study";
+import { Alert, Col, Container, Row, Tab, Tabs } from "react-bootstrap";
+import { useNavigate, useParams } from "react-router-dom";
 import StudyParticipants from "../../components/studies/StudyParticipants";
-import StudyInfoModal from "../../components/studies/StudyInfoModal";
-import StudyParametersModal from "../../components/studies/StudyParametersModal";
+import useAuthToken from "../../hooks/useAuthToken";
+import { ParameterGroup, Study as StudyType } from "../../types/study";
+
+import ChatStudyTab from "../../components/studies/ChatStudyTab";
+import InstructionArea from "../../components/studies/InstructionArea";
+import StudyActionButtons from "../../components/studies/StudyActionButtons";
+import StudyHeader from "../../components/studies/StudyHeader";
+import { getDb } from "../../hooks/firebase";
 
 const fetchStudy = async (title: string, idToken: string) => {
   try {
@@ -30,11 +34,22 @@ const fetchStudy = async (title: string, idToken: string) => {
 
 const Study: React.FC = () => {
   const navigate = useNavigate();
-  const [study, setStudy] = useState<Study>();
   const { title } = useParams();
-  const { idToken, userId, tokenLoading } = useAuthToken();
-  const [isRestarting, setIsRestarting] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const { idToken, userId, tokenLoading, isDbInitialized } = useAuthToken();
+  const [study, setStudy] = useState<StudyType | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [status, setStatus] = useState<string>("");
+  const [showWaitingDiv, setShowWaitingDiv] = useState<boolean>(false);
+  const [tasks, setTasks] = useState<string[]>([]);
+  const [parameters, setParameters] = useState<ParameterGroup>({} as ParameterGroup);
+
+  const [showDownloadDiv, setShowDownloadDiv] = useState<boolean>(false);
+  const [showManhattanDiv, setShowManhattanDiv] = useState<boolean>(false);
+  const [imageSrc, setImageSrc] = useState<string>("");
+  const [imageLabel, setImageLabel] = useState<string>("");
+  const [showFailStatus, setShowFailStatus] = useState<boolean>(false);
+  const [isRestarting, setIsRestarting] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   const handleRestartStudy = async () => {
     setIsRestarting(true);
@@ -51,7 +66,7 @@ const Study: React.FC = () => {
 
   const handleStartWorkflow = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/start_workflow?title=${title}`, {
+      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/start_protocol?title=${title}`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${idToken}`,
@@ -59,11 +74,13 @@ const Study: React.FC = () => {
       });
 
       if (!response.ok) {
+        const data = await response.json();
+        setErrorMessage(data.error || "Network response was not ok");
+        setShowFailStatus(true);
         throw new Error("Network response was not ok");
       }
 
       const data = await response.json();
-      // handle the response data as needed
       console.log("Workflow started:", data);
     } catch (error) {
       console.error("Failed to start workflow:", error);
@@ -126,6 +143,28 @@ const Study: React.FC = () => {
     }
   };
 
+  // Update the study status and tasks when the study data changes
+  useEffect(() => {
+    if (isDbInitialized) {
+      const unsubscribe = onSnapshot(doc(getDb(), "studies", title ?? ""), (doc) => {
+        const data = doc.data();
+        const newStatus = data?.status[userId || ""] ?? "";
+
+        setShowWaitingDiv(newStatus === "WAITING_FOR_PARTICIPANTS"); // TODO: fix logic and check logic for rest here...
+        setTasks(data?.tasks[userId] || []);
+        setParameters(data?.parameters || {});
+        setShowDownloadDiv(newStatus.includes("Finished protocol"));
+        setShowManhattanDiv(newStatus.includes("Finished protocol"));
+        setImageSrc(data?.manhattan_plot?.src || "");
+        setImageLabel(data?.manhattan_plot?.label || "");
+
+        setStatus(newStatus);
+      });
+
+      return () => unsubscribe();
+    }
+  }, [isDbInitialized, title, userId]);
+
   useEffect(() => {
     if (idToken) {
       const fetchAndSetStudy = async () => {
@@ -142,149 +181,64 @@ const Study: React.FC = () => {
   return (
     <Container className="py-5">
       <Row>
+        {errorMessage && (
+          <Alert variant="danger" className="mt-3">
+            {errorMessage}
+          </Alert>
+        )}
         <Col lg={7} className="mx-auto">
           <div className="p-4 bg-light rounded text-center">
-            {/* Navigation Tabs */}
-            <div className="d-flex justify-content-between">
-              <Tabs defaultActiveKey="main_study">
-                <Tab eventKey="main_study" title="Main">
-                  {/* Main Tab Content */}
-                </Tab>
-                <Tab eventKey="chat_study" title="Chat">
-                  {/* Chat Tab Content */}
-                </Tab>
-              </Tabs>
-
+            <div className="action-buttons">
               {study.owner === userId && (
-                <div className="d-inline-flex">
-                  <Button
-                    variant="dark"
-                    size="sm"
-                    className="me-2"
-                    onClick={handleRestartStudy}
-                    disabled={isRestarting}
-                  >
-                    {isRestarting ? (
-                      <>
-                        <span className="spinner-grow spinner-grow-sm" role="status"></span> Deleting resources (may
-                        take a minute)...
-                      </>
-                    ) : (
-                      "Restart Study"
-                    )}
-                  </Button>
-
-                  <Button variant="danger" size="sm" onClick={handleDeleteStudy} disabled={isDeleting}>
-                    {isDeleting ? (
-                      <>
-                        <span className="spinner-grow spinner-grow-sm" role="status"></span> Deleting...
-                      </>
-                    ) : (
-                      "Delete Study"
-                    )}
-                  </Button>
-                </div>
+                <StudyActionButtons
+                  isRestarting={isRestarting}
+                  handleRestartStudy={handleRestartStudy}
+                  isDeleting={isDeleting}
+                  handleDeleteStudy={handleDeleteStudy}
+                />
               )}
             </div>
 
-            {/* Main Content */}
-            <div className="row">
-              <Container>
-                <div className="mt-0 mb-3">
-                  <div className="mt-2">
-                    <small className="text-muted">
-                      Created by {study.owner_name} on {study.created}
-                    </small>
-                  </div>
-                  <h3 className="h3 mb-0">{study.raw_title}</h3>
-                  <StudyConfigBadge setupConfiguration={study.setup_configuration} studyType={study.study_type} />
-                  <p className="mb-1">{study.description}</p>
-                  <StudyInfoModal study={study} userId={userId} idToken={idToken} />
-                  <StudyParametersModal study={study} userId={userId} idToken={idToken} />
-                </div>
-
-                {/* Participants List */}
-                <StudyParticipants study={study} userId={userId} idToken={idToken} />
-              </Container>
-
-              <Container>
-                {/* Instructions */}
-                <div className="mt-3" id="instructions">
-                  {study.status[userId] === "" ? (
-                    <>
-                      {study.setup_configuration === "website" ? (
-                        <>
-                          {/* Configure Study Modal Trigger Button */}
-                          <Button variant="primary" data-bs-toggle="modal" data-bs-target="#configure_study_modal">
-                            Configure Study
-                          </Button>
-
-                          {/* Configure Study Modal */}
-                          <div className="modal fade" id="configure_study_modal" tabIndex={-1}>
-                            <div className="modal-dialog modal-xl">
-                              <div className="modal-content">
-                                <div className="modal-header">
-                                  <h5 className="modal-title" id="configure_study_modal_label">
-                                    Configure your {study.study_type} Study
-                                  </h5>
-                                  <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div className="modal-body">
-                                  {/* Include your Configure Study JSX or Component here */}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Begin Workflow Button */}
-                          <div className="mt-2">
-                            {/* Assuming you'd handle the workflow start with a function */}
-                            <Button variant="success" onClick={handleStartWorkflow}>
-                              Begin {study.study_type} Workflow
-                            </Button>
-                          </div>
-                        </>
-                      ) : (
-                        <div className="text-start">
-                          <p>
-                            Once all participants have joined the study, and you have set the 'Study Parameters', you
-                            can proceed with the
-                            <a
-                              className="text-decoration-none"
-                              href="https://sfkit.readthedocs.io/en/latest/tutorial.html#cli"
-                            >
-                              sfkit Command-Line Interface (CLI)
-                            </a>
-                            on your machine.
-                          </p>
-                          <p>
-                            If you would like guidance on what size machine to use, see the
-                            <Link className="text-decoration-none" to="/instructions">
-                              Machine Recommendations
-                            </Link>
-                            section in the instructions page.
-                          </p>
-
-                          <p>
-                            Click below to download
-                            <code>auth_key.txt</code>
-                            which you will need on your machine to authenticate with the sfkit command-line interface.
-                            <div className="text-center">
-                              {/* Assuming you'd handle the download with a function */}
-                              <Button variant="primary" size="sm" onClick={handleDownloadAuthKey}>
-                                Download Auth Key
-                              </Button>
-                            </div>
-                          </p>
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <div>{/* This part would need more information about the conditions and what to show */}</div>
-                  )}
-                </div>
-              </Container>
-            </div>
+            <Tabs defaultActiveKey="main_study" className="mt-0 pt-0 mb-3">
+              <Tab eventKey="main_study" title="Main">
+                <Container>
+                  <StudyHeader
+                    ownerName={study.owner_name}
+                    created={study.created}
+                    rawTitle={study.raw_title}
+                    setupConfiguration={study.setup_configuration}
+                    studyType={study.study_type}
+                    description={study.description}
+                    study={study}
+                    userId={userId}
+                    idToken={idToken}
+                  />
+                  <StudyParticipants study={study} userId={userId} idToken={idToken} />
+                  <InstructionArea
+                    studyType={study.study_type}
+                    demo={study.demo}
+                    idToken={idToken}
+                    title={study.title}
+                    personalParameters={study.personal_parameters[userId]}
+                    status={status}
+                    setupConfiguration={study.setup_configuration}
+                    showWaitingDiv={showWaitingDiv}
+                    tasks={tasks}
+                    parameters={parameters}
+                    showDownloadDiv={showDownloadDiv}
+                    showManhattanDiv={showManhattanDiv}
+                    imageSrc={imageSrc}
+                    imageLabel={imageLabel}
+                    showFailStatus={showFailStatus}
+                    handleStartWorkflow={handleStartWorkflow}
+                    handleDownloadAuthKey={handleDownloadAuthKey}
+                  />
+                </Container>
+              </Tab>
+              <Tab eventKey="chat_study" title="Chat">
+                <ChatStudyTab study={study} userId={userId} idToken={idToken} />
+              </Tab>
+            </Tabs>
           </div>
         </Col>
       </Row>

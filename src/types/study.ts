@@ -1,14 +1,22 @@
+export interface Message {
+  sender: string;
+  time: string;
+  body: string;
+}
+
 type Parameter = {
   name: string;
   description: string;
-  value: number;
+  value: string | number;
 };
 
-type ParameterGroup = {
+type ParameterIndex = {
   index: string[];
-} & {
-  [key: string]: Parameter;
 };
+
+export type ParameterGroup = {
+  [key: string]: Parameter;
+} & ParameterIndex;
 
 export type Study = {
     created: string;
@@ -16,7 +24,7 @@ export type Study = {
     owner: string;
     participants: string[];
     raw_title: string;
-    requested_participants: string[];
+    requested_participants: Record<string, string>;
     study_information: string;
     title: string;
     private: boolean;
@@ -30,5 +38,6 @@ export type Study = {
     parameters: ParameterGroup;
     advanced_parameters: ParameterGroup;
     display_names: Record<string, string>;
+    messages: Message[];
   };
   

@@ -1,0 +1,238 @@
+import React from "react";
+import { Button } from "react-bootstrap";
+import ConfigureStudyModal from "./ConfigureStudyModal";
+import TaskElement from "./TaskElement";
+import SubTaskContainer from "./SubTaskContainer";
+import { ParameterGroup } from "../../types/study";
+
+interface Props {
+  personalParameters: ParameterGroup;
+  title: string;
+  idToken: string;
+  demo: boolean;
+  studyType: string;
+  status: string;
+  setupConfiguration: string;
+  showWaitingDiv: boolean;
+  tasks: string[];
+  parameters: ParameterGroup;
+  showDownloadDiv: boolean;
+  showManhattanDiv: boolean;
+  imageSrc: string;
+  imageLabel: string;
+  showFailStatus: boolean;
+  handleStartWorkflow: () => void;
+  handleDownloadAuthKey: () => void;
+}
+
+const InstructionArea: React.FC<Props> = ({
+  personalParameters,
+  title,
+  idToken,
+  demo,
+  studyType,
+  status,
+  setupConfiguration,
+  showWaitingDiv,
+  tasks,
+  showDownloadDiv,
+  showManhattanDiv,
+  showFailStatus,
+  handleStartWorkflow,
+  handleDownloadAuthKey,
+}) => {
+  const [showModal, setShowModal] = React.useState(false);
+  const handleShow = () => setShowModal(true);
+  const handleClose = () => setShowModal(false);
+  const [isDownloading, setIsDownloading] = React.useState(false);
+  const [plotSrc, setPlotSrc] = React.useState("");
+  const [isFetchingPlot, setIsFetchingPlot] = React.useState(false);
+  const plotSrcRef = React.useRef("");
+
+  const fetchPlotFile = React.useCallback(async () => {
+    try {
+      setIsFetchingPlot(true);
+
+      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/fetch_plot_file`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ study_title: title }),
+      });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      setPlotSrc(url);
+      plotSrcRef.current = url;
+    } catch (error) {
+      console.error("Failed to fetch plot file:", error);
+    } finally {
+      setIsFetchingPlot(false);
+    }
+  }, [idToken, title]);
+
+  React.useEffect(() => {
+    if (idToken && showManhattanDiv && !plotSrcRef.current) {
+      fetchPlotFile();
+    }
+  }, [showManhattanDiv, fetchPlotFile, idToken]);
+
+  const handleDownloadResults = async () => {
+    try {
+      setIsDownloading(true);
+      const response = await fetch(
+        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/download_results_file?study_title=${encodeURIComponent(
+          title
+        )}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = url;
+      a.download = `${title}_results.zip`;
+
+      document.body.appendChild(a);
+      a.click();
+
+      URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error("Failed to download results:", error);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const renderTasks = () => {
+    if (!Array.isArray(tasks)) {
+      console.error("Tasks is not an array", tasks);
+      return null;
+    }
+
+    const finishedProtocol = status.includes("Finished protocol");
+    let subTaskElements: React.ReactNode[] = [];
+    let isSubTask = false;
+
+    return tasks.map((task, index) => {
+      const showCheck = finishedProtocol || index < tasks.length - 1;
+      if (task.startsWith("sub-task: ")) {
+        const taskDescription = task.replace("sub-task: ", "");
+        if (!isSubTask) {
+          isSubTask = true;
+        }
+        subTaskElements.push(<TaskElement key={index} task={taskDescription} showCheck={showCheck} isSubTask={true} />);
+      } else {
+        isSubTask = false;
+        if (subTaskElements.length > 0) {
+          const subTasks = subTaskElements;
+          subTaskElements = [];
+          return (
+            <React.Fragment key={index}>
+              <TaskElement task={task} showCheck={showCheck} />
+              <SubTaskContainer taskDescription={task}>{subTasks}</SubTaskContainer>
+            </React.Fragment>
+          );
+        } else {
+          return <TaskElement key={index} task={task} showCheck={showCheck} />;
+        }
+      }
+    });
+  };
+
+  return (
+    <div className="mt-3" id="instructions">
+      {status === "" && setupConfiguration === "website" ? (
+        <>
+          <ConfigureStudyModal
+            showModal={showModal}
+            handleShow={handleShow}
+            handleClose={handleClose}
+            studyType={studyType}
+            demo={demo}
+            idToken={idToken}
+            title={title}
+            personalParameters={personalParameters}
+          />
+          <div className="mt-2">
+            <Button variant="success" onClick={handleStartWorkflow}>
+              Begin {studyType} Workflow
+            </Button>
+          </div>
+        </>
+      ) : null}
+      {status === "" && setupConfiguration !== "website" ? (
+        <div className="text-start">
+          <p>
+            Once all participants have joined the study, and you have set the 'Study Parameters', you can proceed with
+            the
+            <a className="text-decoration-none" href="https://sfkit.readthedocs.io/en/latest/tutorial.html#cli">
+              sfkit Command-Line Interface (CLI)
+            </a>
+            on your machine.
+          </p>
+          {/* ... (other paragraphs) */}
+          <p>
+            Click below to download
+            <code>auth_key.txt</code>
+            which you will need on your machine to authenticate with the sfkit command-line interface.
+            <div className="text-center">
+              <button className="btn btn-primary btn-sm" onClick={handleDownloadAuthKey}>
+                Download Auth Key
+              </button>
+            </div>
+          </p>
+        </div>
+      ) : null}
+      {status !== "" ? (
+        <div>
+          {showWaitingDiv && (
+            <div className="text-start alert alert-primary">Waiting for other participants to be ready...</div>
+          )}
+          <div className="task text-start">{renderTasks()}</div>
+          {String(personalParameters["SEND_RESULTS"]?.value) === "Yes" && (
+            <>
+              {showDownloadDiv && (
+                <a href="#" onClick={handleDownloadResults} className="text-decoration-none">
+                  Download results
+                  {isDownloading && (
+                    <span className="ms-2 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  )}
+                </a>
+              )}
+              {showManhattanDiv && (
+                <div className="mt-2">
+                  {isFetchingPlot ? (
+                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  ) : (
+                    <img src={plotSrc} alt="Plot" className="w-100 h-100" />
+                  )}
+                </div>
+              )}
+            </>
+          )}
+          {showFailStatus && <div className="text-start alert alert-danger">Study execution has failed.</div>}{" "}
+          {/* TODO: dynamic message? */}
+        </div>
+      ) : null}
+    </div>
+  );
+};
+
+export default InstructionArea;

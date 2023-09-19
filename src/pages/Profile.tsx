@@ -61,14 +61,17 @@ const Profile = () => {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/profile`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
-        body: JSON.stringify(profileData),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/profile/${decodedUserIdFromParams}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify(profileData),
+        }
+      );
 
       if (response.ok) {
         console.log("Profile updated successfully");

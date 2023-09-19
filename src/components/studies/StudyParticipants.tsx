@@ -42,22 +42,20 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
 
   const handleRemoveParticipant = async (participantId: string) => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/remove_participant?title=${
-          study.title
-        }&userId=${participantId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${idToken}`,
-          },
-        }
-      );
+      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/remove_participant`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ title: study.title, userId: participantId }),
+      });
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
+
+      window.location.reload();
     } catch (error) {
       console.error("Failed to remove participant:", error);
     }
@@ -82,9 +80,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
         throw new Error("Network response was not ok");
       }
 
-      // Optionally, refresh the data after approving the request to update the UI
-      // For example:
-      // fetchAndSetStudyData();
+      window.location.reload();
     } catch (error) {
       console.error("Failed to approve request:", error);
     }
@@ -128,13 +124,12 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
                 Example Collaborator <span className="text-muted">(for demo)</span>
               </ListGroup.Item>
             )}
-
-            {study.requested_participants && study.requested_participants.length > 0 && (
+            {study.requested_participants && Object.keys(study.requested_participants).length > 0 && (
               <>
                 <ListGroup.Item className="bg-light">
                   <h6 className="mb-0 fw-normal">Requested Participants</h6>
                 </ListGroup.Item>
-                {study.requested_participants.map((participant: string) => (
+                {Object.keys(study.requested_participants).map((participant: string) => (
                   <ListGroup.Item key={participant}>
                     <div className="d-flex justify-content-between">
                       <span>
@@ -148,18 +143,16 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
                         </Button>
                       </span>
                     </div>
-                    {participant && (
+                    {study.requested_participants[participant] && (
                       <div className="text-start">
                         <span className="text-muted">Message:</span>
-                        <span>{participant}</span>
+                        <span>{study.requested_participants[participant]}</span>
                       </div>
                     )}
                   </ListGroup.Item>
                 ))}
               </>
             )}
-
-            {/* Invited Participants Section */}
             {study.invited_participants && study.invited_participants.length > 0 && (
               <>
                 <ListGroup.Item className="bg-light">

@@ -53,16 +53,14 @@ const useAuthToken = (): AuthTokenHook => {
             });
         })
         .catch((error) => {
-          console.error("Failed to acquire token silently:", error);
-
           if (error instanceof InteractionRequiredAuthError) {
             // Handle interaction required error silently
             console.log("User interaction required, but proceeding silently.");
-            setLoading(false);
             setIdToken(""); // Reset the ID token to indicate no user is logged in
             return;
+          } else {
+            console.error("Failed to acquire token silently:", error);
           }
-
           setLoading(false);
         });
     } else {
