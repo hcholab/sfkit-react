@@ -1,35 +1,33 @@
 .toggle-sub-task {
-    transition: transform 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out;
 }
 
 .toggle-sub-task.rotate {
-    transform: rotate(-90deg);
+  transform: rotate(-90deg);
 }
 
 .bg-auto-cfg {
-    background-color: #3a6351 !important;
-    /* Dark muted green */
+  background-color: #3a6351 !important;
+  /* Dark muted green */
 }
 
 .bg-user-cfg {
-    background-color: #8b6d51 !important;
-    /* Muted, desaturated orange */
+  background-color: #8b6d51 !important;
+  /* Muted, desaturated orange */
 }
 
 .card {
-    border-radius: 15px;
-    /* Adjust as needed */
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    /* Optional: adds a subtle shadow effect */
+  border-radius: 15px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  /* Subtle shadow effect */
 }
 
 .dropdown-toggle::after {
-    display: none !important;
+  display: none !important;
 }
 
-
 .action-buttons {
-    text-align: right;
-    margin-bottom: 0;
-    padding-bottom: 0;
+  text-align: right;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }

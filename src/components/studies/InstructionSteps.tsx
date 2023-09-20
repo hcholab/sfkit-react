@@ -1,5 +1,5 @@
 import { Accordion, Card, Button } from "react-bootstrap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import { ParameterGroup } from "../../types/study";
 import GivePermissions from "./GivePermissions";
@@ -13,7 +13,10 @@ interface InstructionStepsProps {
 }
 
 const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, title, idToken, parameters }) => {
-  const [activeKey, setActiveKey] = useState("0");
+  const [activeKey, setActiveKey] = useState(localStorage.getItem("activeKey") || "0");
+  useEffect(() => {
+    localStorage.setItem("activeKey", activeKey);
+  }, [activeKey]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
