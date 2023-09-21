@@ -5,16 +5,17 @@ import { Study } from "../../types/study";
 interface SharedStudyParametersProps {
   study: Study;
   isOwner: boolean;
+  userId: string;
 }
 
-const SharedStudyParameters: React.FC<SharedStudyParametersProps> = ({ study, isOwner }) => {
+const SharedStudyParameters: React.FC<SharedStudyParametersProps> = ({ study, isOwner, userId }) => {
   return (
     <Row className="p-3 text-start">
       {study.participants.map((participant) =>
         participant !== "Broad" ? (
           <React.Fragment key={participant}>
             <Form.Label column htmlFor={`NUM_INDS${participant}`} className="col-form-label">
-              Number of Individuals for {participant}
+              Number of Individuals for {study["display_names"][participant]}
             </Form.Label>
             <Col sm="3">
               <Form.Control
@@ -22,10 +23,12 @@ const SharedStudyParameters: React.FC<SharedStudyParametersProps> = ({ study, is
                 id={`NUM_INDS${participant}`}
                 name={`NUM_INDS${participant}`}
                 defaultValue={study.personal_parameters[participant]?.NUM_INDS?.value}
-                disabled={!isOwner}
+                disabled={userId !== participant}
               />
             </Col>
-            <p className="mt-1 text-start text-muted">Number of Individuals/Rows in {participant}'s Data</p>
+            <p className="mt-1 text-start text-muted">
+              Number of Individuals/Rows in {study["display_names"][participant]}'s Data
+            </p>
           </React.Fragment>
         ) : null
       )}

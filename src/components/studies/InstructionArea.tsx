@@ -130,7 +130,7 @@ const InstructionArea: React.FC<Props> = ({
     let subTaskElements: React.ReactNode[] = [];
     let isSubTask = false;
 
-    return tasks.map((task, index) => {
+    const taskElements = tasks.map((task, index) => {
       const showCheck = finishedProtocol || index < tasks.length - 1;
       if (task.startsWith("sub-task: ")) {
         const taskDescription = task.replace("sub-task: ", "");
@@ -154,6 +154,15 @@ const InstructionArea: React.FC<Props> = ({
         }
       }
     });
+
+    return (
+      <>
+        {taskElements}
+        {isSubTask && subTaskElements.length > 0 && (
+          <SubTaskContainer taskDescription={tasks[tasks.length - 2]}>{subTaskElements}</SubTaskContainer>
+        )}
+      </>
+    );
   };
 
   return (

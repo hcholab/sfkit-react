@@ -134,7 +134,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
                     <div className="d-flex justify-content-between">
                       <span>
                         <Link className="text-decoration-none" to={`/profile/${encodeURIComponent(participant)}`}>
-                          {participant}
+                          {study["display_names"][participant] || participant}
                         </Link>
                       </span>
                       <span>

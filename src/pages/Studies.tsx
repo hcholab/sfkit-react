@@ -7,7 +7,9 @@ import LoginButton from "../components/LoginButton";
 
 const Studies: React.FC = () => {
   const { idToken, userId, tokenLoading } = useAuthToken();
-  const [activeTab, setActiveTab] = useState("mine");
+  const [activeTab, setActiveTab] = useState(() => {
+    return localStorage.getItem("activeTab") || "mine";
+  });
   const [myStudies, setMyStudies] = useState<Study[] | null>(null);
   const [otherStudies, setOtherStudies] = useState<Study[] | null>(null);
 
@@ -17,6 +19,10 @@ const Studies: React.FC = () => {
       fetchPublicStudies(idToken);
     }
   }, [idToken]);
+
+  useEffect(() => {
+    localStorage.setItem("activeTab", activeTab);
+  }, [activeTab]);
 
   const fetchMyStudies = async (idToken: string) => {
     try {
@@ -107,7 +113,9 @@ const Studies: React.FC = () => {
                     <p className="text-muted">You are not currently participating in any studies.</p>
                   </div>
                 ) : (
-                  myStudies.map((study) => <DisplayStudy key={study.title} study={study} userId={userId} />)
+                  myStudies.map((study) => (
+                    <DisplayStudy key={study.title} study={study} userId={userId} idToken={idToken} />
+                  ))
                 )}
               </div>
             </div>
@@ -120,7 +128,9 @@ const Studies: React.FC = () => {
                     <p className="text-muted">There are no public studies available.</p>
                   </div>
                 ) : (
-                  otherStudies.map((study) => <DisplayStudy key={study.title} study={study} userId={userId} />)
+                  otherStudies.map((study) => (
+                    <DisplayStudy key={study.title} study={study} userId={userId} idToken={idToken} />
+                  ))
                 )}
               </div>
             </div>

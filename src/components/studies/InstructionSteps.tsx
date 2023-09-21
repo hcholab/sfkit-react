@@ -18,8 +18,16 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, title, idToke
     localStorage.setItem("activeKey", activeKey);
   }, [activeKey]);
 
+  const [submitFeedback, setSubmitFeedback] = useState<string | null>(null);
+
+  useEffect(() => {
+    setSubmitFeedback(null);
+  }, [activeKey]);
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    setSubmitFeedback("Processing...");
 
     const formData = new FormData(event.currentTarget);
 
@@ -35,8 +43,11 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, title, idToke
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
+
+      setSubmitFeedback("Success!");
     } catch (error) {
       console.error("Failed to save study parameters:", error);
+      setSubmitFeedback("Failed!");
     }
   };
 
@@ -133,6 +144,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, title, idToke
                       <p className="mt-3 text-start text-muted">{parameters[key].description}</p>
                     </React.Fragment>
                   ))}
+                  <div className="text-center">{submitFeedback}</div>
                   <div className="d-flex flex-wrap justify-content-center">
                     <input type="submit" name="save" value="Save" className="btn btn-primary me-2 mb-2 mb-sm-0" />
                   </div>
@@ -223,7 +235,8 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, title, idToke
                 </div>
 
                 <div className="text-center">
-                  <button className="mt-2 btn btn-primary" type="submit">
+                  <div>{submitFeedback}</div>
+                  <button className="btn btn-primary" type="submit">
                     Confirm Virtual Machine Configuration
                   </button>
                 </div>
@@ -289,7 +302,8 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, title, idToke
               </div>
 
               <div className="text-center">
-                <button className="mt-2 btn btn-primary" type="submit">
+                <div>{submitFeedback}</div>
+                <button className="btn btn-primary" type="submit">
                   Confirm Post-Processing Configuration
                 </button>
               </div>

@@ -55,7 +55,7 @@ const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId, i
         </Modal.Header>
         <Form onSubmit={handleSaveChanges}>
           <Modal.Body>
-            <SharedStudyParameters study={study} isOwner={owner} />
+            <SharedStudyParameters study={study} isOwner={owner} userId={userId} />
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>

@@ -6,9 +6,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 interface NotificationListProps {
   userId: string;
+  idToken: string;
 }
 
-const NotificationList: React.FC<NotificationListProps> = ({ userId }) => {
+const NotificationList: React.FC<NotificationListProps> = ({ userId, idToken }) => {
   const [notifications, setNotifications] = useState<string[]>([]);
   const [displayName, setDisplayName] = useState("");
 
@@ -38,9 +39,27 @@ const NotificationList: React.FC<NotificationListProps> = ({ userId }) => {
     }
   }, [userId]);
 
-  const removeNotification = (index: number) => {
-    setNotifications((prev) => prev.filter((_, i) => i !== index));
-    // TODO: request backend to remove notification
+  const removeNotification = async (index: number) => {
+    try {
+      setNotifications((prev) => prev.filter((_, i) => i !== index));
+
+      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/update_notifications`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ notification: notifications[index] }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      console.log("Notification removed successfully");
+    } catch (error) {
+      console.error("Failed to remove notification:", error);
+    }
   };
 
   return (

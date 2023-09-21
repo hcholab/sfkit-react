@@ -2,10 +2,6 @@
   transition: transform 0.2s ease-in-out;
 }
 
-.toggle-sub-task.rotate {
-  transform: rotate(-90deg);
-}
-
 .bg-auto-cfg {
   background-color: #3a6351 !important;
   /* Dark muted green */
@@ -30,4 +26,24 @@
   text-align: right;
   margin-bottom: 0;
   padding-bottom: 0;
+}
+
+.toggle-sub-task-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+
+.toggle-sub-task-btn .fas {
+  font-size: 1.5em; 
+  color: #333; 
+}
+
+.sub-task-content {
+  margin-left: 1.5em; 
+  transition: max-height 0.3s ease, opacity 0.3s ease; 
+  opacity: 1;
+  max-height: 1000px; 
 }

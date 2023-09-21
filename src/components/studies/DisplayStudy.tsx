@@ -6,11 +6,41 @@ import StudyConfigBadge from "./StudyConfigBadge";
 interface StudyProps {
   study: Study;
   userId: string;
+  idToken: string;
 }
 
-const DisplayStudy: React.FC<StudyProps> = ({ study, userId }) => {
+const DisplayStudy: React.FC<StudyProps> = ({ study, userId, idToken }) => {
   const [infoModalShow, setInfoModalShow] = useState(false);
   const [joinModalShow, setJoinModalShow] = useState(false);
+
+  const handleJoinRequest = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/request_join_study?title=${study.title}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify({ message: (e.target as HTMLFormElement).message.value }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setJoinModalShow(false);
+        window.location.reload();
+      } else {
+        console.error("Failed to request to join study:", data.message);
+      }
+    } catch (error) {
+      console.error("Failed to request to join study:", error);
+    }
+  };
 
   return (
     <div className="col-lg-4 p-3">
@@ -67,54 +97,54 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId }) => {
             </Form>
           )}
 
-          {Array.isArray(study.requested_participants) && study.requested_participants.includes(userId) && (
+          {study.requested_participants && userId in study.requested_participants ? (
             <Button variant="secondary" size="sm" disabled>
               Pending Approval from Study Owner
             </Button>
-          )}
+          ) : (
+            !study.participants.includes(userId) && (
+              <>
+                {study.study_type === "MPC-GWAS" && study.participants.length === 3 ? (
+                  <p>(This study is full)</p>
+                ) : (
+                  <div>
+                    <Button variant="outline-primary" size="sm" onClick={() => setJoinModalShow(true)}>
+                      Request to Join Study
+                    </Button>
 
-          {!study.participants.includes(userId) && (
-            <>
-              {study.study_type === "MPC-GWAS" && study.participants.length === 3 ? (
-                <p>(This study is full)</p>
-              ) : (
-                <div>
-                  <Button variant="outline-primary" size="sm" onClick={() => setJoinModalShow(true)}>
-                    Request to Join Study
-                  </Button>
-
-                  <Modal show={joinModalShow} onHide={() => setJoinModalShow(false)} centered>
-                    <Modal.Header closeButton>
-                      <Modal.Title>
-                        Request to Join <i>{study.raw_title}</i> Study
-                      </Modal.Title>
-                    </Modal.Header>
-                    <Form action={`/studies/${study.title}/join`} method="post">
-                      <Modal.Body>
-                        <p className="text-muted">The creator of the study will be notified of your request.</p>
-                        <Form.Group className="mb-3">
-                          <Form.Label>(optional) Message</Form.Label>
-                          <Form.Control
-                            as="textarea"
-                            name="message"
-                            placeholder="Leave a message for the study owner"
-                            style={{ height: "100px" }}
-                          />
-                        </Form.Group>
-                      </Modal.Body>
-                      <Modal.Footer>
-                        <Button variant="secondary" onClick={() => setJoinModalShow(false)}>
-                          Close
-                        </Button>
-                        <Button variant="primary" type="submit">
-                          Submit
-                        </Button>
-                      </Modal.Footer>
-                    </Form>
-                  </Modal>
-                </div>
-              )}
-            </>
+                    <Modal show={joinModalShow} onHide={() => setJoinModalShow(false)} centered>
+                      <Modal.Header closeButton>
+                        <Modal.Title>
+                          Request to Join <i>{study.raw_title}</i> Study
+                        </Modal.Title>
+                      </Modal.Header>
+                      <Form onSubmit={handleJoinRequest}>
+                        <Modal.Body>
+                          <p className="text-muted">The creator of the study will be notified of your request.</p>
+                          <Form.Group className="mb-3">
+                            <Form.Label>(optional) Message</Form.Label>
+                            <Form.Control
+                              as="textarea"
+                              name="message"
+                              placeholder="Leave a message for the study owner"
+                              style={{ height: "100px" }}
+                            />
+                          </Form.Group>
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <Button variant="secondary" onClick={() => setJoinModalShow(false)}>
+                            Close
+                          </Button>
+                          <Button variant="primary" type="submit">
+                            Submit
+                          </Button>
+                        </Modal.Footer>
+                      </Form>
+                    </Modal>
+                  </div>
+                )}
+              </>
+            )
           )}
         </Card.Body>
       </Card>

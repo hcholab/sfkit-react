@@ -6,14 +6,14 @@ interface Props {
 }
 
 const SubTaskContainer: React.FC<Props> = ({ children }) => {
-  const [isToggled, setIsToggled] = useState(false);
+  const [isToggled, setIsToggled] = useState(true);
 
   return (
-    <div>
-      <button className={`toggle-sub-task ${isToggled ? "rotate" : ""}`} onClick={() => setIsToggled((prev) => !prev)}>
-        &#9660;
+    <div className="sub-task-container">
+      <button className="toggle-sub-task-btn" onClick={() => setIsToggled((prev) => !prev)}>
+        {isToggled ? <i className="fas fa-angle-down"></i> : <i className="fas fa-angle-up"></i>}
       </button>
-      {isToggled && <div className="sub-task-container">{children}</div>}
+      {isToggled && <div className="sub-task-content">{children}</div>}
     </div>
   );
 };

@@ -143,14 +143,13 @@ const Study: React.FC = () => {
     }
   };
 
-  // Update the study status and tasks when the study data changes
   useEffect(() => {
     if (isDbInitialized) {
       const unsubscribe = onSnapshot(doc(getDb(), "studies", title ?? ""), (doc) => {
         const data = doc.data();
         const newStatus = data?.status[userId || ""] ?? "";
 
-        setShowWaitingDiv(newStatus === "WAITING_FOR_PARTICIPANTS"); // TODO: fix logic and check logic for rest here...
+        setShowWaitingDiv(newStatus.includes("ready to begin sfkit"));
         setTasks(data?.tasks[userId] || []);
         setParameters(data?.parameters || {});
         setShowDownloadDiv(newStatus.includes("Finished protocol"));
