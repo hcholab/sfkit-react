@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import useAuthToken from "../../hooks/useAuthToken";
 
 const CreateStudy: React.FC = () => {
-  const { idToken, userId } = useAuthToken();
+  const { idToken } = useAuthToken();
   const location = useLocation();
   const { studyType, setupConfig } = location.state as { studyType: string; setupConfig: string };
   const navigate = useNavigate();
@@ -35,7 +35,6 @@ const CreateStudy: React.FC = () => {
       ...formData,
       study_type: studyType,
       setup_configuration: setupConfig,
-      user_id: userId,
     };
 
     try {
@@ -54,8 +53,8 @@ const CreateStudy: React.FC = () => {
 
       const data = await response.json();
 
-      if (data.study_title) {
-        navigate(`/studies/${data.study_title}`);
+      if (data.study_id) {
+        navigate(`/studies/${data.study_id}`);
       } else {
         throw new Error("Unexpected error: Study title not returned from server");
       }

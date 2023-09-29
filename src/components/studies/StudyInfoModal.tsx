@@ -21,7 +21,7 @@ const StudyInfoModal: React.FC<StudyInfoProps> = ({ study, userId, idToken }) =>
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/study_information?title=${study.title}`,
+        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/study_information?study_id=${study.study_id}`,
         {
           method: "POST",
           headers: {

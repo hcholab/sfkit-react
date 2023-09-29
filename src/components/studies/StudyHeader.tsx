@@ -7,7 +7,7 @@ import { Study } from "../../types/study";
 interface StudyHeaderProps {
   ownerName: string;
   created: string;
-  rawTitle: string;
+  title: string;
   setupConfiguration: string;
   studyType: string;
   description: string;
@@ -19,7 +19,7 @@ interface StudyHeaderProps {
 const StudyHeader: React.FC<StudyHeaderProps> = ({
   ownerName,
   created,
-  rawTitle,
+  title,
   setupConfiguration,
   studyType,
   description,
@@ -34,7 +34,7 @@ const StudyHeader: React.FC<StudyHeaderProps> = ({
           Created by {ownerName} on {created}
         </small>
       </div>
-      <h3 className="h3 mb-0">{rawTitle}</h3>
+      <h3 className="h3 mb-0">{title}</h3>
       <StudyConfigBadge setupConfiguration={setupConfiguration} studyType={studyType} />
       <div className="my-3">{description}</div>
       <StudyInfoModal study={study} userId={userId} idToken={idToken} />

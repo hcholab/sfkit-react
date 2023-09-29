@@ -27,7 +27,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
           "Content-Type": "application/json",
           Authorization: `Bearer ${idToken}`,
         },
-        body: JSON.stringify({ study_title: study.title, inviter_id: userId, invitee_email: email, message }),
+        body: JSON.stringify({ study_id: study.study_id, inviter_id: userId, invitee_email: email, message }),
       });
 
       if (!response.ok) {
@@ -48,7 +48,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
           "Content-Type": "application/json",
           Authorization: `Bearer ${idToken}`,
         },
-        body: JSON.stringify({ title: study.title, userId: participantId }),
+        body: JSON.stringify({ study_id: study.study_id, userId: participantId }),
       });
 
       if (!response.ok) {
@@ -64,8 +64,8 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
   const handleApproveRequest = async (participantId: string) => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/approve_join_study?title=${
-          study.title
+        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/approve_join_study?study_id=${
+          study.study_id
         }&userId=${participantId}`,
         {
           method: "POST",
@@ -103,7 +103,11 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
                         {study["display_names"][participant] || participant}
                       </Link>
 
-                      {participant === study.owner && <span className="badge rounded-pill bg-secondary">Creator</span>}
+                      {participant === study.owner && (
+                        <span className="badge rounded-pill bg-secondary" style={{ lineHeight: "normal" }}>
+                          Creator
+                        </span>
+                      )}
                       {userId === study.owner && userId !== participant && (
                         <span>
                           <Button

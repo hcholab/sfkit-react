@@ -18,7 +18,7 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, idToken }) => {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/request_join_study?title=${study.title}`,
+        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/request_join_study?study_id=${study.study_id}`,
         {
           method: "POST",
           headers: {
@@ -53,11 +53,11 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, idToken }) => {
 
           <h4 className="h4 mb-0 d-inline-block">
             {study.participants.includes(userId) || userId === "developer" ? (
-              <Card.Link href={`/studies/${study.title}`} className="text-decoration-none">
-                {study.raw_title}
+              <Card.Link href={`/studies/${study.study_id}`} className="text-decoration-none">
+                {study.title}
               </Card.Link>
             ) : (
-              study.raw_title
+              study.title
             )}
           </h4>
 
@@ -74,7 +74,7 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, idToken }) => {
 
               <Modal show={infoModalShow} onHide={() => setInfoModalShow(false)} centered>
                 <Modal.Header closeButton>
-                  <Modal.Title>{study.raw_title} - Study Information</Modal.Title>
+                  <Modal.Title>{study.title} - Study Information</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>{study.study_information}</Modal.Body>
                 <Modal.Footer>
@@ -90,7 +90,7 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, idToken }) => {
           <Card.Text className="my-2">{study.description}</Card.Text>
 
           {study.invited_participants?.includes(userId) && (
-            <Form action={`/studies/${study.title}/accept`} method="post">
+            <Form action={`/studies/${study.study_id}/accept`} method="post">
               <Button variant="success" size="sm" type="submit">
                 Accept Invitation
               </Button>
@@ -115,7 +115,7 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, idToken }) => {
                     <Modal show={joinModalShow} onHide={() => setJoinModalShow(false)} centered>
                       <Modal.Header closeButton>
                         <Modal.Title>
-                          Request to Join <i>{study.raw_title}</i> Study
+                          Request to Join <i>{study.title}</i> Study
                         </Modal.Title>
                       </Modal.Header>
                       <Form onSubmit={handleJoinRequest}>

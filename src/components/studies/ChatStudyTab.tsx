@@ -16,7 +16,7 @@ const ChatStudyTab: React.FC<Props> = ({ study, userId, idToken }) => {
 
   useEffect(() => {
     const db = getDb();
-    const unsubscribe = onSnapshot(doc(db, "studies", study.title), (doc) => {
+    const unsubscribe = onSnapshot(doc(db, "studies", study.study_id), (doc) => {
       const chatArray = doc.data()?.messages || [];
       setMessages(chatArray);
     });
@@ -31,7 +31,7 @@ const ChatStudyTab: React.FC<Props> = ({ study, userId, idToken }) => {
       unsubscribe();
       displayNameUnsub();
     };
-  }, [study.title]);
+  }, [study.study_id]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -47,14 +47,12 @@ const ChatStudyTab: React.FC<Props> = ({ study, userId, idToken }) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${idToken}`,
           },
-          body: JSON.stringify({ message, sender: userId, study_title: study.title }),
+          body: JSON.stringify({ message, sender: userId, study_id: study.study_id }),
         });
 
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-
-        // TODO: After a successful post, fetch the latest messages to update the chat or use WebSocket for real-time update
       } catch (error) {
         console.error("Failed to send message:", error);
       }

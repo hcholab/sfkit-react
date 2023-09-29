@@ -12,9 +12,9 @@ import StudyActionButtons from "../../components/studies/StudyActionButtons";
 import StudyHeader from "../../components/studies/StudyHeader";
 import { getDb } from "../../hooks/firebase";
 
-const fetchStudy = async (title: string, idToken: string) => {
+const fetchStudy = async (study_id: string, idToken: string) => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/study?title=${title}`, {
+    const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/study?study_id=${study_id}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${idToken}`,
@@ -34,7 +34,7 @@ const fetchStudy = async (title: string, idToken: string) => {
 
 const Study: React.FC = () => {
   const navigate = useNavigate();
-  const { title } = useParams();
+  const { study_id } = useParams();
   const { idToken, userId, tokenLoading, isDbInitialized } = useAuthToken();
   const [study, setStudy] = useState<StudyType | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -54,7 +54,7 @@ const Study: React.FC = () => {
   const handleRestartStudy = async () => {
     setIsRestarting(true);
 
-    await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/restart_study?title=${title}`, {
+    await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/restart_study?study_id=${study_id}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${idToken}`,
@@ -66,12 +66,15 @@ const Study: React.FC = () => {
 
   const handleStartWorkflow = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/start_protocol?title=${title}`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/start_protocol?study_id=${study_id}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         const data = await response.json();
@@ -90,7 +93,7 @@ const Study: React.FC = () => {
   const handleDownloadAuthKey = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/download_auth_key?title=${title}`,
+        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/download_auth_key?study_id=${study_id}`,
         {
           method: "GET",
           headers: {
@@ -122,12 +125,15 @@ const Study: React.FC = () => {
     if (isConfirmed) {
       setIsDeleting(true);
       try {
-        const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/delete_study?title=${title}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/delete_study?study_id=${study_id}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -145,12 +151,12 @@ const Study: React.FC = () => {
 
   useEffect(() => {
     if (isDbInitialized) {
-      const unsubscribe = onSnapshot(doc(getDb(), "studies", title ?? ""), (doc) => {
+      const unsubscribe = onSnapshot(doc(getDb(), "studies", study_id ?? ""), (doc) => {
         const data = doc.data();
         const newStatus = data?.status[userId || ""] ?? "";
 
         setShowWaitingDiv(newStatus.includes("ready to begin sfkit"));
-        setTasks(data?.tasks[userId] || []);
+        setTasks(data?.tasks?.[userId] || []);
         setParameters(data?.parameters || {});
         setShowDownloadDiv(newStatus.includes("Finished protocol"));
         setShowManhattanDiv(newStatus.includes("Finished protocol"));
@@ -162,18 +168,18 @@ const Study: React.FC = () => {
 
       return () => unsubscribe();
     }
-  }, [isDbInitialized, title, userId]);
+  }, [isDbInitialized, study_id, userId]);
 
   useEffect(() => {
     if (idToken) {
       const fetchAndSetStudy = async () => {
-        const fetchedStudy = await fetchStudy(title?.toString() || "", idToken);
+        const fetchedStudy = await fetchStudy(study_id?.toString() || "", idToken);
         setStudy(fetchedStudy);
       };
 
       fetchAndSetStudy();
     }
-  }, [idToken, title]);
+  }, [idToken, study_id]);
 
   if (tokenLoading || !study) return <div>Loading...</div>;
 
@@ -204,7 +210,7 @@ const Study: React.FC = () => {
                   <StudyHeader
                     ownerName={study.owner_name}
                     created={study.created}
-                    rawTitle={study.raw_title}
+                    title={study.title}
                     setupConfiguration={study.setup_configuration}
                     studyType={study.study_type}
                     description={study.description}
@@ -217,6 +223,7 @@ const Study: React.FC = () => {
                     studyType={study.study_type}
                     demo={study.demo}
                     idToken={idToken}
+                    study_id={study.study_id}
                     title={study.title}
                     personalParameters={study.personal_parameters[userId]}
                     status={status}

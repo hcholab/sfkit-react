@@ -24,7 +24,7 @@ const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId, i
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/parameters?title=${study.title}`,
+        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/parameters?study_id=${study.study_id}`,
         {
           method: "POST",
           headers: {
@@ -51,7 +51,7 @@ const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId, i
 
       <Modal show={show} onHide={handleClose} size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>Study Parameters: {study.raw_title}</Modal.Title>
+          <Modal.Title>Study Parameters: {study.title}</Modal.Title>
         </Modal.Header>
         <Form onSubmit={handleSaveChanges}>
           <Modal.Body>

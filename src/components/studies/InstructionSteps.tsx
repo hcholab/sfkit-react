@@ -7,12 +7,12 @@ import info_square from "../../static/images/info-square.svg";
 
 interface InstructionStepsProps {
   demo: boolean;
-  title: string;
+  study_id: string;
   idToken: string;
   parameters: ParameterGroup;
 }
 
-const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, title, idToken, parameters }) => {
+const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, idToken, parameters }) => {
   const [activeKey, setActiveKey] = useState(localStorage.getItem("activeKey") || "0");
   useEffect(() => {
     localStorage.setItem("activeKey", activeKey);
@@ -32,14 +32,17 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, title, idToke
     const formData = new FormData(event.currentTarget);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/parameters?title=${title}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
-        body: JSON.stringify(Object.fromEntries(formData)),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/parameters?study_id=${study_id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify(Object.fromEntries(formData)),
+        }
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }

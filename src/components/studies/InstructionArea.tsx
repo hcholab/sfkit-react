@@ -8,6 +8,7 @@ import { ParameterGroup } from "../../types/study";
 interface Props {
   personalParameters: ParameterGroup;
   title: string;
+  study_id: string;
   idToken: string;
   demo: boolean;
   studyType: string;
@@ -28,6 +29,7 @@ interface Props {
 const InstructionArea: React.FC<Props> = ({
   personalParameters,
   title,
+  study_id,
   idToken,
   demo,
   studyType,
@@ -59,7 +61,7 @@ const InstructionArea: React.FC<Props> = ({
           "Content-Type": "application/json",
           Authorization: `Bearer ${idToken}`,
         },
-        body: JSON.stringify({ study_title: title }),
+        body: JSON.stringify({ study_id: study_id }),
       });
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -74,7 +76,7 @@ const InstructionArea: React.FC<Props> = ({
     } finally {
       setIsFetchingPlot(false);
     }
-  }, [idToken, title]);
+  }, [idToken, study_id]);
 
   React.useEffect(() => {
     if (idToken && showManhattanDiv && !plotSrcRef.current) {
@@ -86,8 +88,8 @@ const InstructionArea: React.FC<Props> = ({
     try {
       setIsDownloading(true);
       const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/download_results_file?study_title=${encodeURIComponent(
-          title
+        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/download_results_file?study_id=${encodeURIComponent(
+          study_id
         )}`,
         {
           method: "GET",
@@ -192,21 +194,20 @@ const InstructionArea: React.FC<Props> = ({
             Once all participants have joined the study, and you have set the 'Study Parameters', you can proceed with
             the
             <a className="text-decoration-none" href="https://sfkit.readthedocs.io/en/latest/tutorial.html#cli">
-              sfkit Command-Line Interface (CLI)
+              {" "}
+              sfkit Command-Line Interface (CLI){" "}
             </a>
             on your machine.
           </p>
-          {/* ... (other paragraphs) */}
-          <p>
-            Click below to download
-            <code>auth_key.txt</code>
-            which you will need on your machine to authenticate with the sfkit command-line interface.
-            <div className="text-center">
+          <div>
+            Click below to download <code>auth_key.txt</code> which you will need on your machine to authenticate with
+            the sfkit command-line interface.
+            <div className="text-center mt-2">
               <button className="btn btn-primary btn-sm" onClick={handleDownloadAuthKey}>
                 Download Auth Key
               </button>
             </div>
-          </p>
+          </div>
         </div>
       ) : null}
       {status !== "" ? (
@@ -237,7 +238,6 @@ const InstructionArea: React.FC<Props> = ({
             </>
           )}
           {showFailStatus && <div className="text-start alert alert-danger">Study execution has failed.</div>}{" "}
-          {/* TODO: dynamic message? */}
         </div>
       ) : null}
     </div>

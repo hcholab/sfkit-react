@@ -23,7 +23,7 @@ export type Study = {
     description: string;
     owner: string;
     participants: string[];
-    raw_title: string;
+    study_id: string;
     requested_participants: Record<string, string>;
     study_information: string;
     title: string;
