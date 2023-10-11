@@ -15,7 +15,7 @@ const LoginButton: React.FC = () => {
 
   return (
     <button className="btn btn-outline-primary" onClick={handleLogin}>
-      Login with Microsoft
+      Sign-in / Log-in with Microsoft
     </button>
   );
 };

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { Study } from "../../types/study";
 import SharedStudyParameters from "./SharedStudyParameters";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface StudyParametersProps {
   study: Study;
@@ -10,7 +11,16 @@ interface StudyParametersProps {
 }
 
 const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId, idToken }) => {
-  const [show, setShow] = useState(false);
+  // show modal if study is new
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isNewStudy = location.state?.isNewStudy;
+  const [show, setShow] = useState(isNewStudy);
+  useEffect(() => {
+    if (isNewStudy) {
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [isNewStudy, navigate, location.pathname]);
 
   const owner = userId === study.owner;
 

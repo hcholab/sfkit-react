@@ -4,6 +4,8 @@ import DisplayStudy from "../components/studies/DisplayStudy";
 import { Study } from "../types/study";
 import useAuthToken from "../hooks/useAuthToken";
 import LoginButton from "../components/LoginButton";
+// import { loginRequest } from "../msalConfig";
+// import { useMsal } from "@azure/msal-react";
 
 const Studies: React.FC = () => {
   const { idToken, userId, tokenLoading } = useAuthToken();
@@ -12,6 +14,22 @@ const Studies: React.FC = () => {
   });
   const [myStudies, setMyStudies] = useState<Study[] | null>(null);
   const [otherStudies, setOtherStudies] = useState<Study[] | null>(null);
+
+  // const { instance } = useMsal();
+  // const handleAnonymousLogin = async () => {
+  //   const username = "a"; // generateRandomUsername(); // Implement this function
+  //   const password = "b"; // generateRandomPassword(); // Implement this function
+
+  //   try {
+  //     await instance.loginPopup({
+  //       ...loginRequest,
+  //       username: username,
+  //       password: password,
+  //     });
+  //   } catch (error) {
+  //     console.error("Login failed:", error);
+  //   }
+  // };
 
   useEffect(() => {
     if (idToken) {
@@ -58,12 +76,13 @@ const Studies: React.FC = () => {
   if (!idToken) {
     return (
       <div
-        className="d-flex flex-column align-items-center justify-content-center vh-100"
-        style={{ transform: "translateY(-15%)" }}
+        className="d-flex flex-column align-items-center justify-content-center"
+        style={{ transform: "translateY(+200%)" }}
       >
         <h2 className="mb-4">Welcome to the Studies Section</h2>
         <p className="mb-4">Please log in to view or create studies.</p>
         <LoginButton />
+        {/* <button onClick={handleAnonymousLogin}>Proceed Anonymously</button> */}
       </div>
     );
   }

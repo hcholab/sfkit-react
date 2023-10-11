@@ -54,7 +54,7 @@ const CreateStudy: React.FC = () => {
       const data = await response.json();
 
       if (data.study_id) {
-        navigate(`/studies/${data.study_id}`);
+        navigate(`/studies/${data.study_id}`, { state: { isNewStudy: true } });
       } else {
         throw new Error("Unexpected error: Study title not returned from server");
       }

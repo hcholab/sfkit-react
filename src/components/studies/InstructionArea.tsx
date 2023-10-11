@@ -178,7 +178,7 @@ const InstructionArea: React.FC<Props> = ({
             studyType={studyType}
             demo={demo}
             idToken={idToken}
-            title={title}
+            studyId={study_id}
             personalParameters={personalParameters}
           />
           <div className="mt-2">
