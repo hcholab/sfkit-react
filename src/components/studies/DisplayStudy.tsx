@@ -2,6 +2,7 @@ import { Card, Button, Modal, Form } from "react-bootstrap";
 import React, { useState } from "react";
 import { Study } from "../../types/study";
 import StudyConfigBadge from "./StudyConfigBadge";
+import { Link } from "react-router-dom";
 
 interface StudyProps {
   study: Study;
@@ -53,9 +54,9 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, idToken }) => {
 
           <h4 className="h4 mb-0 d-inline-block">
             {study.participants.includes(userId) || userId === "developer" ? (
-              <Card.Link href={`/studies/${study.study_id}`} className="text-decoration-none">
+              <Link to={`/studies/${study.study_id}`} className="text-decoration-none card-link">
                 {study.title}
-              </Card.Link>
+              </Link>
             ) : (
               study.title
             )}

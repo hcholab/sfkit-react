@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import useAuthToken from "../../hooks/useAuthToken";
 
 const CreateStudy: React.FC = () => {
@@ -128,9 +128,9 @@ const CreateStudy: React.FC = () => {
                   onChange={handleCheckboxChange}
                 />
                 <div>
-                  <Button variant="outline-secondary" className="me-2 mt-3" href="/studies">
+                  <Link to="/studies" className="btn btn-outline-secondary me-2 mt-3">
                     Cancel
-                  </Button>
+                  </Link>
                   <Button variant="primary" type="submit" className="mt-3">
                     Confirm
                   </Button>

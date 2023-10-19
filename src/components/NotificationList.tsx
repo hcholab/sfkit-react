@@ -3,6 +3,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { getDb } from "../hooks/firebase";
 import { Dropdown } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Link } from "react-router-dom";
 
 interface NotificationListProps {
   userId: string;
@@ -96,9 +97,9 @@ const NotificationList: React.FC<NotificationListProps> = ({ userId, idToken }) 
           <Dropdown.ItemText className="text-center text-muted">No new notifications</Dropdown.ItemText>
         )}
         <Dropdown.Divider />
-        <Dropdown.Item href={`/profile/${userId}`} className="text-center text-primary">
+        <Link to={`/profile/${userId}`} className="dropdown-item text-center text-primary">
           Profile
-        </Dropdown.Item>
+        </Link>
       </Dropdown.Menu>
     </Dropdown>
   );

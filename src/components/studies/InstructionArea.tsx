@@ -219,12 +219,12 @@ const InstructionArea: React.FC<Props> = ({
           {String(personalParameters["SEND_RESULTS"]?.value) === "Yes" && (
             <>
               {showDownloadDiv && (
-                <a href="#" onClick={handleDownloadResults} className="text-decoration-none">
+                <button onClick={handleDownloadResults} className="btn btn-link text-decoration-none">
                   Download results
                   {isDownloading && (
                     <span className="ms-2 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   )}
-                </a>
+                </button>
               )}
               {showManhattanDiv && (
                 <div className="mt-2">

@@ -181,7 +181,7 @@ const Study: React.FC = () => {
     }
   }, [idToken, study_id]);
 
-  if (tokenLoading || !study) return <div>Loading...</div>;
+  if (tokenLoading || !study || !isDbInitialized) return <div>Loading...</div>;
 
   return (
     <Container className="py-5">
