@@ -105,7 +105,6 @@ jobs:
           password: "${{ steps.gcp-auth.outputs.access_token }}"
 
       - name: Build Docker image
-        id: build
         uses: docker/build-push-action@v5
         with:
           load: true
@@ -116,9 +115,6 @@ jobs:
 
       - name: Run Trivy vulnerability scanner
         uses: broadinstitute/dsp-appsec-trivy-action@v1
-        with:
-          # TODO: remove this after switching to blessed image
-          image: ${{ steps.build.outputs.imageid }}
 
       - name: Push Docker image
         run: |
