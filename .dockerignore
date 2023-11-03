@@ -1,0 +1,9 @@
+*
+
+!*.cjs
+!*.html
+!*.json
+!*.ts
+!src/
+!public/
+
