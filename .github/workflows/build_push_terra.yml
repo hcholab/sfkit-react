@@ -117,6 +117,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: broadinstitute/dsp-appsec-trivy-action@v1
         with:
+          # TODO: remove this after switching to blessed image
           image: ${{ steps.build.outputs.imageid }}
 
       - name: Push Docker image
