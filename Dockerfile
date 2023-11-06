@@ -11,8 +11,7 @@ RUN npm run lint
 RUN npm run build
 
 
-# FROM us.gcr.io/broad-dsp-gcr-public/base/nginx:distroless
-FROM cgr.dev/chainguard/nginx
+FROM us.gcr.io/broad-dsp-gcr-public/base/nginx:distroless
 
 COPY --from=build /app/dist /usr/share/nginx/html/
 
