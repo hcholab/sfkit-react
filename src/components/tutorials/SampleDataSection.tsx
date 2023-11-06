@@ -29,6 +29,7 @@ const SampleDataSection: React.FC<SectionProps> = ({ activeTab, setActiveTab }) 
             href={`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/general.instructions#data_preparation`}
             className="text-decoration-none"
             target="_blank"
+            rel="noopener noreferrer"
           >
             Data Preparation
           </a>{" "}
