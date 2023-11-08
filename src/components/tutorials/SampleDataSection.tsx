@@ -15,7 +15,12 @@ const SampleDataSection: React.FC<SectionProps> = ({ activeTab, setActiveTab }) 
       <div className="row">
         <p>
           For this tutorial, we will use simulated data based on the{" "}
-          <a href="https://www.internationalgenome.org/data/" className="text-decoration-none" target="_blank">
+          <a
+            href="https://www.internationalgenome.org/data/"
+            className="text-decoration-none"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             1000 Genomes Dataset
           </a>
           . The genotypes are from real data, while the covariates and phenotypes are simulated for an illustrative GWAS

@@ -108,7 +108,12 @@ const TabContent: React.FC<TabContentProps> = ({ activeTab, tabType }) => {
               <p>
                 The sfkit portal will set up the machine and run the study for you. This option is currently supported
                 using the
-                <a className="text-decoration-none" href="https://cloud.google.com/" target="_blank">
+                <a
+                  className="text-decoration-none"
+                  href="https://cloud.google.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {" "}
                   Google Cloud Platform (GCP)
                 </a>
@@ -132,6 +137,7 @@ const TabContent: React.FC<TabContentProps> = ({ activeTab, tabType }) => {
                   className="text-decoration-none"
                   href="https://sfkit.readthedocs.io/en/latest/tutorial.html"
                   target="_blank"
+                  rel="noopener noreferrer"
                 >
                   sfkit Command-Line Interface
                 </a>{" "}

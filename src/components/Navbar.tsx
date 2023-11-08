@@ -42,7 +42,7 @@ const Navbar: React.FC = () => {
               </Link>
             </li>
             <li className="nav-item me-4">
-              <Link className="nav-link" to="https://sfkit.readthedocs.io/" target="_blank" rel="noreferrer">
+              <Link className="nav-link" to="https://sfkit.readthedocs.io/" target="_blank" rel="noopener noreferrer">
                 CLI Documentation
               </Link>
             </li>

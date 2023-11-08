@@ -50,7 +50,12 @@ const steps: Step[] = [
         <b>{`3. Key Exchange`}</b>: Cryptographically secure private and public keys will be created (locally) for you.
         The public key will be shared with your collaborators via the sfkit portal. The private key will remain on your
         machine and will be used during the study protocol to establish secure connections between machines. See{" "}
-        <a href="https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange" className="text-decoration-none">
+        <a
+          href="https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange"
+          className="text-decoration-none"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Diffie-Hellman Key Exchange
         </a>{" "}
         for more information.

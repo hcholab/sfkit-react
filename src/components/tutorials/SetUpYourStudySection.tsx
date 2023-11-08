@@ -119,7 +119,12 @@ const SetUpYourStudySection: React.FC<SectionProps> = ({ activeTab, setActiveTab
             </button>
             . Note that this will require the users to use their own GCP projects, in contrast to the first tutorial.
             (If you choose to use GCP's free trial, you can{" "}
-            <a href="https://cloud.google.com/" target="_blank" className="text-decoration-none">
+            <a
+              href="https://cloud.google.com/"
+              target="_blank"
+              className="text-decoration-none"
+              rel="noopener noreferrer"
+            >
               create a new project for free
             </a>
             . That said, this free GCP project has limited resource quotas, so you may need to use a different GCP

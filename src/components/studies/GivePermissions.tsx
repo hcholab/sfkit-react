@@ -136,6 +136,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                   href="https://cloud.google.com/iam/docs/understanding-roles"
                   target="_blank"
                   className="text-decoration-none"
+                  rel="noopener noreferrer"
                 >
                   role
                 </a>{" "}
@@ -158,6 +159,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/sdk/gcloud/reference/compute/disks/create"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.disks.create
                     </a>{" "}
@@ -169,6 +171,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/compute/docs/reference/rest/v1/firewalls/insert"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.firewalls.create
                     </a>
@@ -177,6 +180,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/compute/docs/reference/rest/v1/firewalls/list"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.firewalls.list
                     </a>
@@ -185,6 +189,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/sdk/gcloud/reference/compute/firewall-policies/rules/create"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.firewallPolicies.create
                     </a>
@@ -193,11 +198,17 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/compute/docs/reference/rest/v1/firewallPolicies/get"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.firewallPolicies.get
                     </a>
                     are needed to set up the
-                    <a href="https://cloud.google.com/firewalls" target="_blank" className="text-decoration-none">
+                    <a
+                      href="https://cloud.google.com/firewalls"
+                      target="_blank"
+                      className="text-decoration-none"
+                      rel="noopener noreferrer"
+                    >
                       firewall
                     </a>
                     rules for the VM so that it can interact with the other study participants' VMs during the protocol.
@@ -207,6 +218,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/sdk/gcloud/reference/compute/instances/create"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.instances.create
                     </a>
@@ -215,6 +227,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/sdk/gcloud/reference/compute/instances/delete"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.instances.delete
                     </a>
@@ -223,6 +236,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/compute/docs/reference/rest/v1/instances/get"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.instances.get
                     </a>
@@ -231,6 +245,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/sdk/gcloud/reference/compute/instances/list"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.instances.list
                     </a>
@@ -239,6 +254,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/compute/docs/reference/rest/v1/instances/setMetadata"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.instances.setMetadata
                     </a>
@@ -247,6 +263,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/compute/docs/reference/rest/v1/instances/setServiceAccount"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.instances.setServiceAccount
                     </a>
@@ -255,6 +272,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/compute/docs/reference/rest/v1/instances/setTags"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.instances.setTags
                     </a>
@@ -263,11 +281,17 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/sdk/gcloud/reference/compute/instances/stop"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.instances.stop
                     </a>
                     are needed to set up the
-                    <a href="https://cloud.google.com/compute" target="_blank" className="text-decoration-none">
+                    <a
+                      href="https://cloud.google.com/compute"
+                      target="_blank"
+                      className="text-decoration-none"
+                      rel="noopener noreferrer"
+                    >
                       virtual machine
                     </a>
                     . This includes creating it, setting the metadata associated with it, and so on.
@@ -278,6 +302,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/compute/docs/reference/rest/v1/networks/addPeering"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.networks.addPeering
                     </a>
@@ -286,6 +311,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/sdk/gcloud/reference/compute/networks/create"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.networks.create
                     </a>
@@ -294,6 +320,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/compute/docs/reference/rest/v1/networks/get"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.networks.get
                     </a>
@@ -302,6 +329,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/sdk/gcloud/reference/compute/networks/list"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.networks.list
                     </a>
@@ -310,11 +338,17 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/compute/docs/reference/rest/v1/networks/removePeering"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.networks.removePeering
                     </a>
                     , and compute.networks.updatePolicy are needed to set up the
-                    <a href="https://cloud.google.com/vpc/docs/vpc" target="_blank" className="text-decoration-none">
+                    <a
+                      href="https://cloud.google.com/vpc/docs/vpc"
+                      target="_blank"
+                      className="text-decoration-none"
+                      rel="noopener noreferrer"
+                    >
                       VPC (Virtual Private Cloud) network
                     </a>
                     that the VM will be in. This includes
@@ -322,6 +356,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/vpc/docs/vpc-peering"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       VPC Network Peering
                     </a>
@@ -333,6 +368,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/compute/docs/reference/rest/v1/subnetworks/delete"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.subnetworks.delete
                     </a>
@@ -341,6 +377,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/compute/docs/reference/rest/v1/subnetworks/list"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       compute.subnetworks.list
                     </a>
@@ -349,6 +386,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/vpc/docs/vpc#vpc_networks_and_subnets"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       subnet
                     </a>
@@ -359,6 +397,7 @@ const GivePermissions: React.FC<GivePermissionsProps> = ({ demo }) => {
                       href="https://cloud.google.com/iam/docs/service-accounts-actas"
                       target="_blank"
                       className="text-decoration-none"
+                      rel="noopener noreferrer"
                     >
                       iam.serviceAccounts.actAs
                     </a>

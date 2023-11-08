@@ -64,7 +64,12 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, idT
               <p>
                 1. You should create a GCP (Google Cloud Platform) project that is dedicated to this study. If you are
                 new to GCP, go to{" "}
-                <a href="https://cloud.google.com/" className="text-decoration-none" target="_blank">
+                <a
+                  href="https://cloud.google.com/"
+                  className="text-decoration-none"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   https://cloud.google.com/
                 </a>{" "}
                 to set up a project.

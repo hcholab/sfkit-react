@@ -16,6 +16,7 @@ const TwoPersonTutorial: React.FC = () => {
             className="text-decoration-none"
             href="https://sfkit.readthedocs.io/en/latest/tutorial_2.html"
             target="_blank"
+            rel="noopener noreferrer"
           >
             sfkit CLI documentation
           </a>
