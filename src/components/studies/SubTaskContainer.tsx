@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import angle_down from "../../static/images/angle-down-solid.svg";
+import angle_up from "../../static/images/angle-up-solid.svg";
 
 interface Props {
   taskDescription: string;
@@ -11,7 +13,11 @@ const SubTaskContainer: React.FC<Props> = ({ children }) => {
   return (
     <div className="sub-task-container">
       <button className="toggle-sub-task-btn" onClick={() => setIsToggled((prev) => !prev)}>
-        {isToggled ? <i className="fas fa-angle-down"></i> : <i className="fas fa-angle-up"></i>}
+        {isToggled ? (
+          <img src={angle_down} className="me-1 mb-1" width="20" height="20" alt="angle_down" />
+        ) : (
+          <img src={angle_up} className="me-1 mb-1" width="20" height="20" alt="angle_up" />
+        )}
       </button>
       {isToggled && <div className="sub-task-content">{children}</div>}
     </div>
