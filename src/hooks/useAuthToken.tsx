@@ -39,8 +39,8 @@ const useAuthToken = (): AuthTokenHook => {
           })
             .then((response) => response.json())
             .then((data) => {
-              if (data.customToken && data.firebaseApiKey) {
-                getFirestoreDatabase(data.customToken, data.firebaseApiKey);
+              if (data.customToken && data.firebaseApiKey && data.firebaseProjectId) {
+                getFirestoreDatabase(data.customToken, data.firebaseApiKey, data.firebaseProjectId);
                 setDbInitialized(true);
                 setLoading(false);
               } else {
