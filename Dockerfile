@@ -13,7 +13,7 @@ RUN npm run build
 ARG APP_VERSION=latest
 ARG BUILD_VERSION=latest
 
-RUN echo '{"appVersion": "${APP_VERSION}", "buildVersion": "${BUILD_VERSION}"}' > public/version
+RUN echo "{\"appVersion\": \"$APP_VERSION\", \"buildVersion\": \"$BUILD_VERSION\"}" > dist/version
 
 
 FROM us.gcr.io/broad-dsp-gcr-public/base/nginx:distroless
