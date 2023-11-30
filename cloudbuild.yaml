@@ -1,6 +1,6 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/sfkit-react:$COMMIT_SHA', '.']
+    args: ['build', '--build-arg', 'APP_VERSION=$_APP_VERSION', '--build-arg', 'BUILD_VERSION=$_BUILD_VERSION', '-t', 'gcr.io/$PROJECT_ID/sfkit-react:$COMMIT_SHA', '.']
     id: Build
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/sfkit-react:$COMMIT_SHA']
@@ -37,6 +37,8 @@ options:
   substitutionOption: ALLOW_LOOSE
 substitutions:
   _DEPLOY_REGION: us-central1
+  _APP_VERSION: latest
+  _BUILD_VERSION: latest
 tags:
   - gcp-cloud-build-deploy-cloud-run
   - gcp-cloud-build-deploy-cloud-run-managed
