@@ -1,6 +1,6 @@
 import { MsalProvider } from "@azure/msal-react";
 import * as React from "react";
-import { Route, HashRouter as Router, Routes } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import { msalInstance } from "./msalConfig";
