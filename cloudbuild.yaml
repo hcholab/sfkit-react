@@ -1,16 +1,32 @@
 steps:
-  - name: 'gcr.io/cloud-builders/npm'
-    args: ['install']
-  
-  - name: 'gcr.io/cloud-builders/npm'
-    env:
-      - 'VITE_REACT_APP_CLIENT_ID=a605ffae-592a-4096-b029-78ba66b6d614'
-      - 'VITE_REACT_APP_TENANT_NAME=sfkitdevb2c'
-      - 'VITE_REACT_APP_SIGNUPSIGNIN_USER_FLOW=B2C_1_signupsignin1'
-      - 'VITE_REACT_APP_EDITPROFILE_USER_FLOW=B2C_1_profile_editing'
-      - 'VITE_REACT_APP_RESETPASSWORD_USER_FLOW=B2C_1_reset_password'
-      - 'VITE_REACT_APP_API_BASE_URL=https://sfkit-website-dev-bhj5a4wkqa-uc.a.run.app'
-    args: ['run', 'build']
-  
-  - name: 'gcr.io/cloud-builders/gsutil'
-    args: ['-m', 'cp', '-r', './dist/*', 'gs://dev.sfkit.org']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/sfkit-react:$COMMIT_SHA', '.']
+    id: Build
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/sfkit-react:$COMMIT_SHA']
+    id: Push
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    args:
+      - run
+      - services
+      - update
+      - sfkit-react
+      - '--platform=managed'
+      - '--image=gcr.io/$PROJECT_ID/sfkit-react:$COMMIT_SHA'
+      - '--region=us-central1'
+      - '--min-instances=1'
+      - '--quiet'
+      - '--set-env-vars=VITE_REACT_APP_CLIENT_ID=a605ffae-592a-4096-b029-78ba66b6d614,VITE_REACT_APP_TENANT_NAME=sfkitdevb2c,VITE_REACT_APP_SIGNUPSIGNIN_USER_FLOW=B2C_1_signupsignin1,VITE_REACT_APP_EDITPROFILE_USER_FLOW=B2C_1_profile_editing,VITE_REACT_APP_RESETPASSWORD_USER_FLOW=B2C_1_reset_password,VITE_REACT_APP_API_BASE_URL=https://sfkit-website-dev-bhj5a4wkqa-uc.a.run.app' # TODO: Update this section.
+    id: Deploy
+    entrypoint: gcloud
+images:
+  - 'gcr.io/$PROJECT_ID/sfkit-react:$COMMIT_SHA'
+options:
+  logging: CLOUD_LOGGING_ONLY
+  substitutionOption: ALLOW_LOOSE
+substitutions:
+  _DEPLOY_REGION: us-central1
+tags:
+  - gcp-cloud-build-deploy-cloud-run
+  - gcp-cloud-build-deploy-cloud-run-managed
+  - sfkit-react
