@@ -19,6 +19,17 @@ steps:
       - '--set-env-vars=VITE_REACT_APP_CLIENT_ID=a605ffae-592a-4096-b029-78ba66b6d614,VITE_REACT_APP_TENANT_NAME=sfkitdevb2c,VITE_REACT_APP_SIGNUPSIGNIN_USER_FLOW=B2C_1_signupsignin1,VITE_REACT_APP_EDITPROFILE_USER_FLOW=B2C_1_profile_editing,VITE_REACT_APP_RESETPASSWORD_USER_FLOW=B2C_1_reset_password,VITE_REACT_APP_API_BASE_URL=https://sfkit-website-dev-bhj5a4wkqa-uc.a.run.app' # TODO: Update this section.
     id: Deploy
     entrypoint: gcloud
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    entrypoint: gcloud
+    args:
+      - run
+      - services
+      - add-iam-policy-binding
+      - sfkit-react
+      - '--region=us-central1'
+      - '--member=allUsers'
+      - '--role=roles/run.invoker'
+    id: SetIAM
 images:
   - 'gcr.io/$PROJECT_ID/sfkit-react:$COMMIT_SHA'
 options:
