@@ -4,8 +4,8 @@ import { getAuth, signInWithCustomToken } from "firebase/auth";
 
 let db: Firestore;
 
-export const getFirestoreDatabase = (customToken: string, firebaseApiKey: string) => {
-  const app = initializeApp({ apiKey: firebaseApiKey, projectId: "broad-cho-priv1" });
+export const getFirestoreDatabase = (customToken: string, apiKey: string, projectId: string) => {
+  const app = initializeApp({ apiKey, projectId });
   const auth = getAuth(app);
   signInWithCustomToken(auth, customToken);
   db = getFirestore(app);
