@@ -6,4 +6,5 @@
 !*.ts
 !src/
 !public/
+!nginx.conf
 
