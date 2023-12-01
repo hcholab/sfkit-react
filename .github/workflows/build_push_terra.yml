@@ -140,8 +140,22 @@ jobs:
     uses: broadinstitute/sherlock/.github/workflows/client-report-app-version.yaml@main
     needs: [build-and-publish, generate-tag]
     with:
-      chart-name: "sfkitwebsite"
+      chart-name: "sfkitui"
       new-version: ${{ needs.generate-tag.outputs.tag }}
     permissions:
       contents: "read"
+      id-token: "write"
+  
+  set-version-in-terra-dev:
+    # Put new version in Broad dev environment
+    uses: broadinstitute/sherlock/.github/workflows/client-set-environment-app-version.yaml@main
+    needs: [build-and-publish, report-to-sherlock, generate-tag]
+    if: ${{ github.ref_name == 'dev' }}
+    with:
+      new-version: ${{ needs.generate-tag.outputs.tag }}
+      chart-name: "sfkitui"
+      environment-name: "dev"
+    secrets:
+      sync-git-token: ${{ secrets.BROADBOT_TOKEN }}
+    permissions:
       id-token: "write"
