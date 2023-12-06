@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { useMsal } from "@azure/msal-react";
+import { useContext, useEffect, useState } from "react";
+import { useAuth } from "react-oidc-context";
+import { AppContext } from "../App";
 import { getFirestoreDatabase } from "./firebase";
-import { InteractionRequiredAuthError } from "@azure/msal-browser";
 
 type AuthTokenHook = {
   idToken: string;
@@ -11,62 +11,41 @@ type AuthTokenHook = {
 };
 
 const useAuthToken = (): AuthTokenHook => {
-  const { instance, inProgress, accounts } = useMsal();
-  const [idToken, setIdToken] = useState<string>("");
-  const userId: string = accounts[0]?.idTokenClaims?.sub?.toString() || "";
+  const { apiBaseUrl } = useContext(AppContext);
+  const auth = useAuth();
+  const idToken = auth.user?.id_token || "";
+  const userId = auth.user?.profile.sub || "";
   const [tokenLoading, setLoading] = useState(true);
   const [isDbInitialized, setDbInitialized] = useState(false);
 
   useEffect(() => {
-    if (inProgress === "none" && accounts.length > 0) {
-      const request = {
-        scopes: ["openid"],
-        account: accounts[0],
-      };
-
-      instance
-        .acquireTokenSilent(request)
-        .then((response) => {
-          setIdToken(response.idToken);
-
-          // Fetch Firebase custom token from your Flask backend
-          fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/createCustomToken`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${response.idToken}`,
-            },
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.customToken && data.firebaseApiKey && data.firebaseProjectId) {
-                getFirestoreDatabase(data.customToken, data.firebaseApiKey, data.firebaseProjectId);
-                setDbInitialized(true);
-                setLoading(false);
-              } else {
-                throw new Error("Failed to get custom token or Firebase API key");
-              }
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-              setLoading(false);
-            });
+    if (auth.isAuthenticated) {
+      // Fetch Firebase custom token from your Flask backend
+      fetch(`${apiBaseUrl}/api/createCustomToken`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.customToken && data.firebaseApiKey && data.firebaseProjectId) {
+            getFirestoreDatabase(data.customToken, data.firebaseApiKey, data.firebaseProjectId);
+            setDbInitialized(true);
+            setLoading(false);
+          } else {
+            throw new Error("Failed to get custom token or Firebase API key");
+          }
         })
         .catch((error) => {
-          if (error instanceof InteractionRequiredAuthError) {
-            // Handle interaction required error silently
-            console.log("User interaction required, but proceeding silently.");
-            setIdToken(""); // Reset the ID token to indicate no user is logged in
-            return;
-          } else {
-            console.error("Failed to acquire token silently:", error);
-          }
+          console.error("Error:", error);
           setLoading(false);
         });
     } else {
       setLoading(false);
     }
-  }, [inProgress, accounts, instance]);
+  }, [apiBaseUrl, auth.isAuthenticated, auth.user, idToken]);
 
   return {
     idToken,

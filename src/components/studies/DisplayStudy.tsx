@@ -1,8 +1,9 @@
-import { Card, Button, Modal, Form } from "react-bootstrap";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { Button, Card, Form, Modal } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { AppContext } from "../../App";
 import { Study } from "../../types/study";
 import StudyConfigBadge from "./StudyConfigBadge";
-import { Link } from "react-router-dom";
 
 interface StudyProps {
   study: Study;
@@ -11,6 +12,7 @@ interface StudyProps {
 }
 
 const DisplayStudy: React.FC<StudyProps> = ({ study, userId, idToken }) => {
+  const { apiBaseUrl } = useContext(AppContext);
   const [infoModalShow, setInfoModalShow] = useState(false);
   const [joinModalShow, setJoinModalShow] = useState(false);
 
@@ -19,7 +21,7 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, idToken }) => {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/request_join_study?study_id=${study.study_id}`,
+        `${apiBaseUrl}/api/request_join_study?study_id=${study.study_id}`,
         {
           method: "POST",
           headers: {

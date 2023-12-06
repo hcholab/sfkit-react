@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { AppContext } from "../App";
+import LoginButton from "../components/LoginButton";
 import ChooseWorkflow from "../components/studies/ChooseWorkflow";
 import DisplayStudy from "../components/studies/DisplayStudy";
-import { Study } from "../types/study";
 import useAuthToken from "../hooks/useAuthToken";
-import LoginButton from "../components/LoginButton";
-// import { loginRequest } from "../msalConfig";
-// import { useMsal } from "@azure/msal-react";
+import { Study } from "../types/study";
 
 const Studies: React.FC = () => {
+  const { apiBaseUrl } = useContext(AppContext);
   const { idToken, userId, tokenLoading } = useAuthToken();
   const [activeTab, setActiveTab] = useState(() => {
     return localStorage.getItem("activeTab") || "mine";
@@ -15,7 +15,6 @@ const Studies: React.FC = () => {
   const [myStudies, setMyStudies] = useState<Study[] | null>(null);
   const [otherStudies, setOtherStudies] = useState<Study[] | null>(null);
 
-  // const { instance } = useMsal();
   // const handleAnonymousLogin = async () => {
   //   const username = "a"; // generateRandomUsername(); // Implement this function
   //   const password = "b"; // generateRandomPassword(); // Implement this function
@@ -33,42 +32,41 @@ const Studies: React.FC = () => {
 
   useEffect(() => {
     if (idToken) {
+      const fetchMyStudies = async (idToken: string) => {
+        try {
+          const response = await fetch(`${apiBaseUrl}/api/my_studies`, {
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+            },
+          });
+          const data = await response.json();
+          setMyStudies(data.studies);
+        } catch (error) {
+          console.error("Error fetching my studies:", error);
+        }
+      };
       fetchMyStudies(idToken);
+
+      const fetchPublicStudies = async (idToken: string) => {
+        try {
+          const response = await fetch(`${apiBaseUrl}/api/public_studies`, {
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+            },
+          });
+          const data = await response.json();
+          setOtherStudies(data.studies);
+        } catch (error) {
+          console.error("Error fetching public studies:", error);
+        }
+      };
       fetchPublicStudies(idToken);
     }
-  }, [idToken]);
+  }, [apiBaseUrl, idToken]);
 
   useEffect(() => {
     localStorage.setItem("activeTab", activeTab);
   }, [activeTab]);
-
-  const fetchMyStudies = async (idToken: string) => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/my_studies`, {
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
-      });
-      const data = await response.json();
-      setMyStudies(data.studies);
-    } catch (error) {
-      console.error("Error fetching my studies:", error);
-    }
-  };
-
-  const fetchPublicStudies = async (idToken: string) => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/public_studies`, {
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
-      });
-      const data = await response.json();
-      setOtherStudies(data.studies);
-    } catch (error) {
-      console.error("Error fetching public studies:", error);
-    }
-  };
 
   if (tokenLoading) {
     return <div>Loading...</div>;

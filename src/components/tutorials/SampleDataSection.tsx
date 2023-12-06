@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { AppContext } from "../../App";
 import TabNavigation from "../instructions/TabNavigation";
 
 interface SectionProps {
@@ -7,6 +8,7 @@ interface SectionProps {
 }
 
 const SampleDataSection: React.FC<SectionProps> = ({ activeTab, setActiveTab }) => {
+  const { apiBaseUrl } = useContext(AppContext);
   const BASE_URL = "https://storage.googleapis.com/sfkit_1000_genomes";
 
   return (
@@ -31,7 +33,7 @@ const SampleDataSection: React.FC<SectionProps> = ({ activeTab, setActiveTab }) 
           workflow, and ensure each participant downloads one set of data. Explanation of the data format can be found
           in the{" "}
           <a
-            href={`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/general.instructions#data_preparation`}
+            href={`${apiBaseUrl}/general.instructions#data_preparation`}
             className="text-decoration-none"
             target="_blank"
             rel="noopener noreferrer"

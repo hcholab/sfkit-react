@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Study } from "../../types/study";
 import { doc, onSnapshot } from "firebase/firestore";
+import React, { useContext, useEffect, useState } from "react";
+import { AppContext } from "../../App";
 import { getDb } from "../../hooks/firebase";
-import { Message } from "../../types/study";
+import { Message, Study } from "../../types/study";
 
 interface Props {
   study: Study;
@@ -11,6 +11,7 @@ interface Props {
 }
 
 const ChatStudyTab: React.FC<Props> = ({ study, userId, idToken }) => {
+  const { apiBaseUrl } = useContext(AppContext);
   const [messages, setMessages] = useState<Message[]>([]);
   const [displayNames, setDisplayNames] = useState<{ [key: string]: string }>({});
 
@@ -41,7 +42,7 @@ const ChatStudyTab: React.FC<Props> = ({ study, userId, idToken }) => {
 
     if (message) {
       try {
-        const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/send_message`, {
+        const response = await fetch(`${apiBaseUrl}/api/send_message`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

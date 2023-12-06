@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
-import useAuthToken from "../hooks/useAuthToken";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { AppContext } from "../App";
+import useAuthToken from "../hooks/useAuthToken";
 
 const Profile = () => {
+  const { apiBaseUrl } = useContext(AppContext);
   const { userId: userIdFromParams } = useParams();
   const decodedUserIdFromParams = decodeURIComponent(userIdFromParams || "");
   const [isEditMode, setIsEditMode] = useState(false);
@@ -21,7 +23,7 @@ const Profile = () => {
     const fetchProfileData = async () => {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/profile/${decodedUserIdFromParams}`,
+          `${apiBaseUrl}/api/profile/${decodedUserIdFromParams}`,
           {
             headers: {
               Authorization: `Bearer ${idToken}`,
@@ -44,7 +46,7 @@ const Profile = () => {
     };
 
     fetchProfileData();
-  }, [idToken, decodedUserIdFromParams]);
+  }, [apiBaseUrl, idToken, decodedUserIdFromParams]);
 
   const handleEditToggle = () => {
     setIsEditMode((prevMode) => !prevMode);
@@ -62,7 +64,7 @@ const Profile = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/profile/${decodedUserIdFromParams}`,
+        `${apiBaseUrl}/api/profile/${decodedUserIdFromParams}`,
         {
           method: "POST",
           headers: {

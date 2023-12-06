@@ -1,13 +1,12 @@
 import * as React from "react";
-import { useMsal } from "@azure/msal-react";
-import { loginRequest } from "../msalConfig";
+import { useAuth } from "react-oidc-context";
 
 const LoginButton: React.FC = () => {
-  const { instance } = useMsal();
+  const auth = useAuth();
 
   const handleLogin = async () => {
     try {
-      instance.loginPopup(loginRequest);
+      auth.signinPopup();
     } catch (error) {
       console.error("Login failed:", error);
     }
@@ -15,7 +14,7 @@ const LoginButton: React.FC = () => {
 
   return (
     <button className="btn btn-outline-primary" onClick={handleLogin}>
-      Sign-in / Log-in with Microsoft
+      Sign-in
     </button>
   );
 };

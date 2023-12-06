@@ -1,6 +1,7 @@
+import React, { useContext } from "react";
+import { Button, Form, ListGroup, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import React from "react";
-import { Button, ListGroup, Modal, Form } from "react-bootstrap";
+import { AppContext } from "../../App";
 import { Study } from "../../types/study";
 
 interface StudyProps {
@@ -10,6 +11,7 @@ interface StudyProps {
 }
 
 const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => {
+  const { apiBaseUrl } = useContext(AppContext);
   const [showInviteModal, setShowInviteModal] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [message, setMessage] = React.useState("");
@@ -21,7 +23,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
     event.preventDefault();
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/invite_participant`, {
+      const response = await fetch(`${apiBaseUrl}/api/invite_participant`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,7 +44,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
 
   const handleRemoveParticipant = async (participantId: string) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/remove_participant`, {
+      const response = await fetch(`${apiBaseUrl}/api/remove_participant`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,7 +66,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
   const handleApproveRequest = async (participantId: string) => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/approve_join_study?study_id=${
+        `${apiBaseUrl}/api/approve_join_study?study_id=${
           study.study_id
         }&userId=${participantId}`,
         {
