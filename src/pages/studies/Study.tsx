@@ -34,7 +34,7 @@ const fetchStudy = async (apiBaseUrl: string, study_id: string, idToken: string)
 };
 
 const Study: React.FC = () => {
-  const { api } = useContext(AppContext);
+  const { apiBaseUrl } = useContext(AppContext);
   const navigate = useNavigate();
   const { study_id } = useParams();
   const { idToken, userId, tokenLoading, isDbInitialized } = useAuthToken();
@@ -56,7 +56,7 @@ const Study: React.FC = () => {
   const handleRestartStudy = async () => {
     setIsRestarting(true);
 
-    await fetch(`${api.sfkit}/api/restart_study?study_id=${study_id}`, {
+    await fetch(`${apiBaseUrl}/api/restart_study?study_id=${study_id}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${idToken}`,
@@ -69,7 +69,7 @@ const Study: React.FC = () => {
   const handleStartWorkflow = async () => {
     try {
       const response = await fetch(
-        `${api.sfkit}/api/start_protocol?study_id=${study_id}`,
+        `${apiBaseUrl}/api/start_protocol?study_id=${study_id}`,
         {
           method: "POST",
           headers: {
@@ -95,7 +95,7 @@ const Study: React.FC = () => {
   const handleDownloadAuthKey = async () => {
     try {
       const response = await fetch(
-        `${api.sfkit}/api/download_auth_key?study_id=${study_id}`,
+        `${apiBaseUrl}/api/download_auth_key?study_id=${study_id}`,
         {
           method: "GET",
           headers: {
@@ -128,7 +128,7 @@ const Study: React.FC = () => {
       setIsDeleting(true);
       try {
         const response = await fetch(
-          `${api.sfkit}/api/delete_study?study_id=${study_id}`,
+          `${apiBaseUrl}/api/delete_study?study_id=${study_id}`,
           {
             method: "DELETE",
             headers: {
@@ -175,13 +175,13 @@ const Study: React.FC = () => {
   useEffect(() => {
     if (idToken) {
       const fetchAndSetStudy = async () => {
-        const fetchedStudy = await fetchStudy(api.sfkit, study_id?.toString() || "", idToken);
+        const fetchedStudy = await fetchStudy(apiBaseUrl, study_id?.toString() || "", idToken);
         setStudy(fetchedStudy);
       };
 
       fetchAndSetStudy();
     }
-  }, [api.sfkit, idToken, study_id]);
+  }, [apiBaseUrl, idToken, study_id]);
 
   if (tokenLoading || !study || !isDbInitialized) return <div>Loading...</div>;
 

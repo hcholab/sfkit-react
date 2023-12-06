@@ -11,7 +11,7 @@ type AuthTokenHook = {
 };
 
 const useAuthToken = (): AuthTokenHook => {
-  const { api } = useContext(AppContext);
+  const { apiBaseUrl } = useContext(AppContext);
   const auth = useAuth();
   const idToken = auth.user?.id_token || "";
   const userId = auth.user?.profile.sub || "";
@@ -21,7 +21,7 @@ const useAuthToken = (): AuthTokenHook => {
   useEffect(() => {
     if (auth.isAuthenticated) {
       // Fetch Firebase custom token from your Flask backend
-      fetch(`${api.sfkit}/api/createCustomToken`, {
+      fetch(`${apiBaseUrl}/api/createCustomToken`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,7 +45,7 @@ const useAuthToken = (): AuthTokenHook => {
     } else {
       setLoading(false);
     }
-  }, [api.sfkit, auth.isAuthenticated, auth.user, idToken]);
+  }, [apiBaseUrl, auth.isAuthenticated, auth.user, idToken]);
 
   return {
     idToken,
