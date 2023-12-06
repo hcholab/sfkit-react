@@ -11,7 +11,7 @@ interface Props {
 }
 
 const ChatStudyTab: React.FC<Props> = ({ study, userId, idToken }) => {
-  const { apiBaseUrl } = useContext(AppContext);
+  const { api } = useContext(AppContext);
   const [messages, setMessages] = useState<Message[]>([]);
   const [displayNames, setDisplayNames] = useState<{ [key: string]: string }>({});
 
@@ -42,7 +42,7 @@ const ChatStudyTab: React.FC<Props> = ({ study, userId, idToken }) => {
 
     if (message) {
       try {
-        const response = await fetch(`${apiBaseUrl}/api/send_message`, {
+        const response = await fetch(`${api.sfkit}/api/send_message`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

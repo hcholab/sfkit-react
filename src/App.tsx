@@ -16,7 +16,11 @@ import Study from "./pages/studies/Study";
 import "./static/css/study.css";
 
 export const AppContext = createContext({
-  apiBaseUrl: "",
+  api: {
+    rawls: "",
+    sam: "",
+    sfkit: "",
+  },
 });
 
 const App: React.FC = () => {

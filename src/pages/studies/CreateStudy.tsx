@@ -5,7 +5,7 @@ import { AppContext } from "../../App";
 import useAuthToken from "../../hooks/useAuthToken";
 
 const CreateStudy: React.FC = () => {
-  const { apiBaseUrl } = useContext(AppContext);
+  const { api } = useContext(AppContext);
   const { idToken } = useAuthToken();
   const location = useLocation();
   const { studyType, setupConfig } = location.state as { studyType: string; setupConfig: string };
@@ -40,7 +40,7 @@ const CreateStudy: React.FC = () => {
     };
 
     try {
-      const response = await fetch(`${apiBaseUrl}/api/create_study`, {
+      const response = await fetch(`${api.sfkit}/api/create_study`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
