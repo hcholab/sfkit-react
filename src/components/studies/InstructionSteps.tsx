@@ -1,9 +1,9 @@
-import { Accordion, Card, Button } from "react-bootstrap";
-import { useEffect, useState } from "react";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { Accordion, Button, Card } from "react-bootstrap";
+import { AppContext } from "../../App";
+import info_square from "../../static/images/info-square.svg";
 import { ParameterGroup } from "../../types/study";
 import GivePermissions from "./GivePermissions";
-import info_square from "../../static/images/info-square.svg";
 
 interface InstructionStepsProps {
   demo: boolean;
@@ -13,6 +13,7 @@ interface InstructionStepsProps {
 }
 
 const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, idToken, parameters }) => {
+  const { apiBaseUrl } = useContext(AppContext);
   const [activeKey, setActiveKey] = useState(localStorage.getItem("activeKey") || "0");
   useEffect(() => {
     localStorage.setItem("activeKey", activeKey);
@@ -33,7 +34,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, idT
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/parameters?study_id=${study_id}`,
+        `${apiBaseUrl}/api/parameters?study_id=${study_id}`,
         {
           method: "POST",
           headers: {

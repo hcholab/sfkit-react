@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
-import { getDb } from "../hooks/firebase";
-import { Dropdown } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { doc, onSnapshot } from "firebase/firestore";
+import React, { useContext, useEffect, useState } from "react";
+import { Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { AppContext } from "../App";
+import { getDb } from "../hooks/firebase";
 
 interface NotificationListProps {
   userId: string;
@@ -11,6 +12,7 @@ interface NotificationListProps {
 }
 
 const NotificationList: React.FC<NotificationListProps> = ({ userId, idToken }) => {
+  const { apiBaseUrl } = useContext(AppContext);
   const [notifications, setNotifications] = useState<string[]>([]);
   const [displayName, setDisplayName] = useState("");
 
@@ -44,7 +46,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ userId, idToken }) 
     try {
       setNotifications((prev) => prev.filter((_, i) => i !== index));
 
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/update_notifications`, {
+      const response = await fetch(`${apiBaseUrl}/api/update_notifications`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

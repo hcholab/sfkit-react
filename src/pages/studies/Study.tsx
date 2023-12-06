@@ -1,20 +1,21 @@
 import { doc, onSnapshot } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Alert, Col, Container, Row, Tab, Tabs } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import StudyParticipants from "../../components/studies/StudyParticipants";
 import useAuthToken from "../../hooks/useAuthToken";
 import { ParameterGroup, Study as StudyType } from "../../types/study";
 
+import { AppContext } from "../../App";
 import ChatStudyTab from "../../components/studies/ChatStudyTab";
 import InstructionArea from "../../components/studies/InstructionArea";
 import StudyActionButtons from "../../components/studies/StudyActionButtons";
 import StudyHeader from "../../components/studies/StudyHeader";
 import { getDb } from "../../hooks/firebase";
 
-const fetchStudy = async (study_id: string, idToken: string) => {
+const fetchStudy = async (apiBaseUrl: string, study_id: string, idToken: string) => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/study?study_id=${study_id}`, {
+    const response = await fetch(`${apiBaseUrl}/api/study?study_id=${study_id}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${idToken}`,
@@ -33,6 +34,7 @@ const fetchStudy = async (study_id: string, idToken: string) => {
 };
 
 const Study: React.FC = () => {
+  const { apiBaseUrl } = useContext(AppContext);
   const navigate = useNavigate();
   const { study_id } = useParams();
   const { idToken, userId, tokenLoading, isDbInitialized } = useAuthToken();
@@ -54,7 +56,7 @@ const Study: React.FC = () => {
   const handleRestartStudy = async () => {
     setIsRestarting(true);
 
-    await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/restart_study?study_id=${study_id}`, {
+    await fetch(`${apiBaseUrl}/api/restart_study?study_id=${study_id}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${idToken}`,
@@ -67,7 +69,7 @@ const Study: React.FC = () => {
   const handleStartWorkflow = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/start_protocol?study_id=${study_id}`,
+        `${apiBaseUrl}/api/start_protocol?study_id=${study_id}`,
         {
           method: "POST",
           headers: {
@@ -93,7 +95,7 @@ const Study: React.FC = () => {
   const handleDownloadAuthKey = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/download_auth_key?study_id=${study_id}`,
+        `${apiBaseUrl}/api/download_auth_key?study_id=${study_id}`,
         {
           method: "GET",
           headers: {
@@ -126,7 +128,7 @@ const Study: React.FC = () => {
       setIsDeleting(true);
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/delete_study?study_id=${study_id}`,
+          `${apiBaseUrl}/api/delete_study?study_id=${study_id}`,
           {
             method: "DELETE",
             headers: {
@@ -173,13 +175,13 @@ const Study: React.FC = () => {
   useEffect(() => {
     if (idToken) {
       const fetchAndSetStudy = async () => {
-        const fetchedStudy = await fetchStudy(study_id?.toString() || "", idToken);
+        const fetchedStudy = await fetchStudy(apiBaseUrl, study_id?.toString() || "", idToken);
         setStudy(fetchedStudy);
       };
 
       fetchAndSetStudy();
     }
-  }, [idToken, study_id]);
+  }, [apiBaseUrl, idToken, study_id]);
 
   if (tokenLoading || !study || !isDbInitialized) return <div>Loading...</div>;
 

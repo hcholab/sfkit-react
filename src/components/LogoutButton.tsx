@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { useMsal } from '@azure/msal-react';
+import { useAuth } from 'react-oidc-context';
 
 const LogoutButton: React.FC = () => {
-    const { instance } = useMsal();
+    const auth = useAuth();
 
     const handleLogout = () => {
-        instance.logout();
+        auth.removeUser();
     };
 
     return (

@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Alert, Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { AppContext } from "../../App";
 import useAuthToken from "../../hooks/useAuthToken";
 
 const CreateStudy: React.FC = () => {
+  const { apiBaseUrl } = useContext(AppContext);
   const { idToken } = useAuthToken();
   const location = useLocation();
   const { studyType, setupConfig } = location.state as { studyType: string; setupConfig: string };
@@ -38,7 +40,7 @@ const CreateStudy: React.FC = () => {
     };
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/create_study`, {
+      const response = await fetch(`${apiBaseUrl}/api/create_study`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

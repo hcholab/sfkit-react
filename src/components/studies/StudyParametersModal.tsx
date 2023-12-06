@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import React, { useContext, useEffect, useState } from "react";
+import { Button, Form, Modal } from "react-bootstrap";
+import { useLocation, useNavigate } from "react-router-dom";
+import { AppContext } from "../../App";
 import { Study } from "../../types/study";
 import SharedStudyParameters from "./SharedStudyParameters";
-import { useLocation, useNavigate } from "react-router-dom";
 
 interface StudyParametersProps {
   study: Study;
@@ -11,6 +12,7 @@ interface StudyParametersProps {
 }
 
 const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId, idToken }) => {
+  const { apiBaseUrl } = useContext(AppContext);
   // show modal if study is new
   const location = useLocation();
   const navigate = useNavigate();
@@ -34,7 +36,7 @@ const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId, i
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/parameters?study_id=${study.study_id}`,
+        `${apiBaseUrl}/api/parameters?study_id=${study.study_id}`,
         {
           method: "POST",
           headers: {

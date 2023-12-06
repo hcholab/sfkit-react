@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Button } from "react-bootstrap";
-import ConfigureStudyModal from "./ConfigureStudyModal";
-import TaskElement from "./TaskElement";
-import SubTaskContainer from "./SubTaskContainer";
+import { AppContext } from "../../App";
 import { ParameterGroup } from "../../types/study";
+import ConfigureStudyModal from "./ConfigureStudyModal";
+import SubTaskContainer from "./SubTaskContainer";
+import TaskElement from "./TaskElement";
 
 interface Props {
   personalParameters: ParameterGroup;
@@ -43,6 +44,7 @@ const InstructionArea: React.FC<Props> = ({
   handleStartWorkflow,
   handleDownloadAuthKey,
 }) => {
+  const { apiBaseUrl } = useContext(AppContext);
   const [showModal, setShowModal] = React.useState(false);
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
@@ -55,7 +57,7 @@ const InstructionArea: React.FC<Props> = ({
     try {
       setIsFetchingPlot(true);
 
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/fetch_plot_file`, {
+      const response = await fetch(`${apiBaseUrl}/api/fetch_plot_file`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -76,7 +78,7 @@ const InstructionArea: React.FC<Props> = ({
     } finally {
       setIsFetchingPlot(false);
     }
-  }, [idToken, study_id]);
+  }, [apiBaseUrl, idToken, study_id]);
 
   React.useEffect(() => {
     if (idToken && showManhattanDiv && !plotSrcRef.current) {
@@ -88,7 +90,7 @@ const InstructionArea: React.FC<Props> = ({
     try {
       setIsDownloading(true);
       const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api/download_results_file?study_id=${encodeURIComponent(
+        `${apiBaseUrl}/api/download_results_file?study_id=${encodeURIComponent(
           study_id
         )}`,
         {
