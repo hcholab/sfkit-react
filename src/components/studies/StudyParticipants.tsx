@@ -11,7 +11,7 @@ interface StudyProps {
 }
 
 const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => {
-  const { api } = useContext(AppContext);
+  const { apiBaseUrl } = useContext(AppContext);
   const [showInviteModal, setShowInviteModal] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [message, setMessage] = React.useState("");
@@ -23,7 +23,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
     event.preventDefault();
 
     try {
-      const response = await fetch(`${api.sfkit}/api/invite_participant`, {
+      const response = await fetch(`${apiBaseUrl}/api/invite_participant`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,7 +44,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
 
   const handleRemoveParticipant = async (participantId: string) => {
     try {
-      const response = await fetch(`${api.sfkit}/api/remove_participant`, {
+      const response = await fetch(`${apiBaseUrl}/api/remove_participant`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,7 +66,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
   const handleApproveRequest = async (participantId: string) => {
     try {
       const response = await fetch(
-        `${api.sfkit}/api/approve_join_study?study_id=${
+        `${apiBaseUrl}/api/approve_join_study?study_id=${
           study.study_id
         }&userId=${participantId}`,
         {

@@ -12,7 +12,7 @@ interface StudyParametersProps {
 }
 
 const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId, idToken }) => {
-  const { api } = useContext(AppContext);
+  const { apiBaseUrl } = useContext(AppContext);
   // show modal if study is new
   const location = useLocation();
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId, i
 
     try {
       const response = await fetch(
-        `${api.sfkit}/api/parameters?study_id=${study.study_id}`,
+        `${apiBaseUrl}/api/parameters?study_id=${study.study_id}`,
         {
           method: "POST",
           headers: {

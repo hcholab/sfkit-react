@@ -44,7 +44,7 @@ const InstructionArea: React.FC<Props> = ({
   handleStartWorkflow,
   handleDownloadAuthKey,
 }) => {
-  const { api } = useContext(AppContext);
+  const { apiBaseUrl } = useContext(AppContext);
   const [showModal, setShowModal] = React.useState(false);
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
@@ -57,7 +57,7 @@ const InstructionArea: React.FC<Props> = ({
     try {
       setIsFetchingPlot(true);
 
-      const response = await fetch(`${api.sfkit}/api/fetch_plot_file`, {
+      const response = await fetch(`${apiBaseUrl}/api/fetch_plot_file`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,7 +78,7 @@ const InstructionArea: React.FC<Props> = ({
     } finally {
       setIsFetchingPlot(false);
     }
-  }, [api.sfkit, idToken, study_id]);
+  }, [apiBaseUrl, idToken, study_id]);
 
   React.useEffect(() => {
     if (idToken && showManhattanDiv && !plotSrcRef.current) {
@@ -90,7 +90,7 @@ const InstructionArea: React.FC<Props> = ({
     try {
       setIsDownloading(true);
       const response = await fetch(
-        `${api.sfkit}/api/download_results_file?study_id=${encodeURIComponent(
+        `${apiBaseUrl}/api/download_results_file?study_id=${encodeURIComponent(
           study_id
         )}`,
         {
