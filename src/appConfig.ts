@@ -11,7 +11,6 @@ export const getAppConfig = async (): Promise<AppConfig> => {
     return {
         apiBaseUrl,
         auth: {
-            ...auth,
             popup_redirect_uri: window.origin, // consider implementing `${window.origin}/redirect-from-oauth`, as in Terra
             silent_redirect_uri: window.origin, // consider implementing `${window.origin}/redirect-from-oauth-silent`, as in Terra
             prompt: 'consent login',
@@ -22,7 +21,7 @@ export const getAppConfig = async (): Promise<AppConfig> => {
             accessTokenExpiringNotificationTimeInSeconds: 330,
             includeIdTokenInSilentRenew: true,
             extraQueryParams: { access_type: 'offline' },
-            redirect_uri: '', // this field is not being used currently, but is expected from UserManager
+            ...auth,
         }
     };
 };
