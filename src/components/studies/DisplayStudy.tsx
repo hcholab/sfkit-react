@@ -12,7 +12,7 @@ interface StudyProps {
 }
 
 const DisplayStudy: React.FC<StudyProps> = ({ study, userId, idToken }) => {
-  const { apiBaseUrl } = useContext(AppContext);
+  const { api } = useContext(AppContext);
   const [infoModalShow, setInfoModalShow] = useState(false);
   const [joinModalShow, setJoinModalShow] = useState(false);
 
@@ -21,7 +21,7 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, idToken }) => {
 
     try {
       const response = await fetch(
-        `${apiBaseUrl}/api/request_join_study?study_id=${study.study_id}`,
+        `${api.sfkit}/api/request_join_study?study_id=${study.study_id}`,
         {
           method: "POST",
           headers: {

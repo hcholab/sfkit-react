@@ -12,7 +12,7 @@ interface NotificationListProps {
 }
 
 const NotificationList: React.FC<NotificationListProps> = ({ userId, idToken }) => {
-  const { apiBaseUrl } = useContext(AppContext);
+  const { api } = useContext(AppContext);
   const [notifications, setNotifications] = useState<string[]>([]);
   const [displayName, setDisplayName] = useState("");
 
@@ -46,7 +46,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ userId, idToken }) 
     try {
       setNotifications((prev) => prev.filter((_, i) => i !== index));
 
-      const response = await fetch(`${apiBaseUrl}/api/update_notifications`, {
+      const response = await fetch(`${api.sfkit}/api/update_notifications`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

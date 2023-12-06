@@ -7,7 +7,7 @@ import useAuthToken from "../hooks/useAuthToken";
 import { Study } from "../types/study";
 
 const Studies: React.FC = () => {
-  const { apiBaseUrl } = useContext(AppContext);
+  const { api } = useContext(AppContext);
   const { idToken, userId, tokenLoading } = useAuthToken();
   const [activeTab, setActiveTab] = useState(() => {
     return localStorage.getItem("activeTab") || "mine";
@@ -34,7 +34,7 @@ const Studies: React.FC = () => {
     if (idToken) {
       const fetchMyStudies = async (idToken: string) => {
         try {
-          const response = await fetch(`${apiBaseUrl}/api/my_studies`, {
+          const response = await fetch(`${api.sfkit}/api/my_studies`, {
             headers: {
               Authorization: `Bearer ${idToken}`,
             },
@@ -49,7 +49,7 @@ const Studies: React.FC = () => {
 
       const fetchPublicStudies = async (idToken: string) => {
         try {
-          const response = await fetch(`${apiBaseUrl}/api/public_studies`, {
+          const response = await fetch(`${api.sfkit}/api/public_studies`, {
             headers: {
               Authorization: `Bearer ${idToken}`,
             },
@@ -62,7 +62,7 @@ const Studies: React.FC = () => {
       };
       fetchPublicStudies(idToken);
     }
-  }, [apiBaseUrl, idToken]);
+  }, [api.sfkit, idToken]);
 
   useEffect(() => {
     localStorage.setItem("activeTab", activeTab);

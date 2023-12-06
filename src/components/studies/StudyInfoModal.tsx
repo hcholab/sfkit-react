@@ -10,7 +10,7 @@ interface StudyInfoProps {
 }
 
 const StudyInfoModal: React.FC<StudyInfoProps> = ({ study, userId, idToken }) => {
-  const { apiBaseUrl } = useContext(AppContext);
+  const { api } = useContext(AppContext);
   const [show, setShow] = useState(false);
   const [description, setDescription] = useState(study.description || "");
   const [information, setInformation] = useState(study.study_information || "");
@@ -23,7 +23,7 @@ const StudyInfoModal: React.FC<StudyInfoProps> = ({ study, userId, idToken }) =>
 
     try {
       const response = await fetch(
-        `${apiBaseUrl}/api/study_information?study_id=${study.study_id}`,
+        `${api.sfkit}/api/study_information?study_id=${study.study_id}`,
         {
           method: "POST",
           headers: {

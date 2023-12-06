@@ -4,7 +4,7 @@ import { AppContext } from "../App";
 import useAuthToken from "../hooks/useAuthToken";
 
 const Profile = () => {
-  const { apiBaseUrl } = useContext(AppContext);
+  const { api } = useContext(AppContext);
   const { userId: userIdFromParams } = useParams();
   const decodedUserIdFromParams = decodeURIComponent(userIdFromParams || "");
   const [isEditMode, setIsEditMode] = useState(false);
@@ -23,7 +23,7 @@ const Profile = () => {
     const fetchProfileData = async () => {
       try {
         const response = await fetch(
-          `${apiBaseUrl}/api/profile/${decodedUserIdFromParams}`,
+          `${api.sfkit}/api/profile/${decodedUserIdFromParams}`,
           {
             headers: {
               Authorization: `Bearer ${idToken}`,
@@ -46,7 +46,7 @@ const Profile = () => {
     };
 
     fetchProfileData();
-  }, [apiBaseUrl, idToken, decodedUserIdFromParams]);
+  }, [api.sfkit, idToken, decodedUserIdFromParams]);
 
   const handleEditToggle = () => {
     setIsEditMode((prevMode) => !prevMode);
@@ -64,7 +64,7 @@ const Profile = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        `${apiBaseUrl}/api/profile/${decodedUserIdFromParams}`,
+        `${api.sfkit}/api/profile/${decodedUserIdFromParams}`,
         {
           method: "POST",
           headers: {

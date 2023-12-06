@@ -13,7 +13,7 @@ interface InstructionStepsProps {
 }
 
 const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, idToken, parameters }) => {
-  const { apiBaseUrl } = useContext(AppContext);
+  const { api } = useContext(AppContext);
   const [activeKey, setActiveKey] = useState(localStorage.getItem("activeKey") || "0");
   useEffect(() => {
     localStorage.setItem("activeKey", activeKey);
@@ -34,7 +34,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, idT
 
     try {
       const response = await fetch(
-        `${apiBaseUrl}/api/parameters?study_id=${study_id}`,
+        `${api.sfkit}/api/parameters?study_id=${study_id}`,
         {
           method: "POST",
           headers: {
