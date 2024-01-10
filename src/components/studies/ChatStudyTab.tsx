@@ -20,13 +20,13 @@ const ChatStudyTab: React.FC<Props> = ({ study, userId, idToken }) => {
     const unsubscribe = onSnapshot(doc(db, "studies", study.study_id), (doc) => {
       const chatArray = doc.data()?.messages || [];
       setMessages(chatArray);
-    });
+    }, console.error);
 
     const displayNameUnsub = onSnapshot(doc(db, "users", "display_names"), (doc) => {
       if (doc.exists()) {
         setDisplayNames(doc.data() || {});
       }
-    });
+    }, console.error);
 
     return () => {
       unsubscribe();
