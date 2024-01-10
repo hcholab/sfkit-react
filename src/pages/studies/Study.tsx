@@ -166,7 +166,7 @@ const Study: React.FC = () => {
         setImageLabel(data?.manhattan_plot?.label || "");
 
         setStatus(newStatus);
-      });
+      }, console.error);
 
       return () => unsubscribe();
     }
