@@ -18,6 +18,10 @@ const useAuthToken = (): AuthTokenHook => {
   const [tokenLoading, setLoading] = useState(true);
   const [isDbInitialized, setDbInitialized] = useState(false);
 
+  if (auth.user) {
+    console.log("Terra/B2C user:", auth.user);
+  }
+
   useEffect(() => {
     if (auth.isAuthenticated) {
       // Fetch Firebase custom token from your Flask backend
