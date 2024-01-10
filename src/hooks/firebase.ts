@@ -1,15 +1,15 @@
 import { initializeApp } from "firebase/app";
-import { Firestore, getFirestore } from "firebase/firestore";
 import { getAuth, signInWithCustomToken } from "firebase/auth";
+import { Firestore, getFirestore } from "firebase/firestore";
 
 let db: Firestore;
 
-export const getFirestoreDatabase = (customToken: string, apiKey: string, projectId: string, databaseId: string) => {
+export const getFirestoreDatabase = async (customToken: string, apiKey: string, projectId: string, databaseId: string) => {
   const app = initializeApp({ apiKey, projectId });
   const auth = getAuth(app);
-  signInWithCustomToken(auth, customToken)
-    .then(user => console.log("Firebase user:", user.user));
+  const { user: { uid } } = await signInWithCustomToken(auth, customToken);
   db = getFirestore(app, databaseId);
+  return uid;
 };
 
 export const getDb = () => {

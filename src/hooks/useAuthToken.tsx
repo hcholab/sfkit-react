@@ -14,13 +14,9 @@ const useAuthToken = (): AuthTokenHook => {
   const { apiBaseUrl } = useContext(AppContext);
   const auth = useAuth();
   const idToken = auth.user?.id_token || "";
-  const userId = auth.user?.profile.sub || "";
   const [tokenLoading, setLoading] = useState(true);
   const [isDbInitialized, setDbInitialized] = useState(false);
-
-  if (auth.user) {
-    console.log("Terra/B2C user:", auth.user);
-  }
+  const [userId, setUserId] = useState("");
 
   useEffect(() => {
     if (auth.isAuthenticated) {
@@ -35,9 +31,12 @@ const useAuthToken = (): AuthTokenHook => {
         .then((response) => response.json())
         .then((data) => {
           if (data.customToken && data.firebaseApiKey && data.firebaseProjectId && data.firestoreDatabaseId) {
-            getFirestoreDatabase(data.customToken, data.firebaseApiKey, data.firebaseProjectId, data.firestoreDatabaseId);
-            setDbInitialized(true);
-            setLoading(false);
+            return getFirestoreDatabase(data.customToken, data.firebaseApiKey, data.firebaseProjectId, data.firestoreDatabaseId)
+              .then(uid => {
+                setUserId(uid);
+                setDbInitialized(true);
+                setLoading(false);
+              });
           } else {
             throw new Error("Failed to get custom token or Firebase API key");
           }
