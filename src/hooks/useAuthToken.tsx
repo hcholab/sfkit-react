@@ -19,35 +19,31 @@ const useAuthToken = (): AuthTokenHook => {
   const [userId, setUserId] = useState("");
 
   useEffect(() => {
-    if (auth.isAuthenticated) {
-      // Fetch Firebase custom token from your Flask backend
-      fetch(`${apiBaseUrl}/api/createCustomToken`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.customToken && data.firebaseApiKey && data.firebaseProjectId && data.firestoreDatabaseId) {
-            return getFirestoreDatabase(data.customToken, data.firebaseApiKey, data.firebaseProjectId, data.firestoreDatabaseId)
-              .then(uid => {
-                setUserId(uid);
-                setDbInitialized(true);
-                setLoading(false);
-              });
-          } else {
-            throw new Error("Failed to get custom token or Firebase API key");
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          setLoading(false);
-        });
-    } else {
+    if (!auth.isAuthenticated) {
       setLoading(false);
+      return;
     }
+    fetch(`${apiBaseUrl}/api/createCustomToken`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+    }).then(async res => {
+        const data = await res.json();
+        if (data.customToken && data.firebaseApiKey && data.firebaseProjectId && data.firestoreDatabaseId) {
+          const uid = await getFirestoreDatabase(data.customToken, data.firebaseApiKey, data.firebaseProjectId, data.firestoreDatabaseId);
+          setUserId(uid);
+          setDbInitialized(true);
+          setLoading(false);
+        } else {
+          throw new Error("Failed to get custom token or Firebase API key");
+        }
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        setLoading(false);
+      });
   }, [apiBaseUrl, auth.isAuthenticated, auth.user, idToken]);
 
   return {
