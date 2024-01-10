@@ -24,7 +24,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ userId, idToken }) 
           newNotifications = doc.data()!.notifications;
         }
         setNotifications(newNotifications);
-      }, console.error);
+      }, err => console.error(`read users/${userId} ${err}`));
 
       return () => unsubscribe();
     }
@@ -36,7 +36,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ userId, idToken }) 
         if (doc.exists() && doc.data()) {
           setDisplayName(doc.data()[userId]);
         }
-      }, console.error);
+      }, err => console.error(`read users/display_names ${err}`));
 
       return () => unsubscribe();
     }
