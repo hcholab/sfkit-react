@@ -7,7 +7,8 @@ let db: Firestore;
 export const getFirestoreDatabase = (customToken: string, apiKey: string, projectId: string, databaseId: string) => {
   const app = initializeApp({ apiKey, projectId });
   const auth = getAuth(app);
-  signInWithCustomToken(auth, customToken);
+  signInWithCustomToken(auth, customToken)
+    .then(user => console.log("Firebase user:", user.user));
   db = getFirestore(app, databaseId);
 };
 

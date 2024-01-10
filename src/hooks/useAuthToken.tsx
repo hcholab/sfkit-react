@@ -1,4 +1,3 @@
-import { getAuth } from "firebase/auth";
 import { useContext, useEffect, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import { AppContext } from "../App";
@@ -20,7 +19,6 @@ const useAuthToken = (): AuthTokenHook => {
   const [isDbInitialized, setDbInitialized] = useState(false);
 
   console.log("Terra/B2C user:", auth.user);
-  console.log("Firebase user:", getAuth().currentUser);
 
   useEffect(() => {
     if (auth.isAuthenticated) {
