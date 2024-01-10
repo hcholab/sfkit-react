@@ -18,7 +18,9 @@ const useAuthToken = (): AuthTokenHook => {
   const [tokenLoading, setLoading] = useState(true);
   const [isDbInitialized, setDbInitialized] = useState(false);
 
-  console.log("Terra/B2C user:", auth.user);
+  if (auth.user) {
+    console.log("Terra/B2C user:", auth.user);
+  }
 
   useEffect(() => {
     if (auth.isAuthenticated) {
