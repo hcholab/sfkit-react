@@ -152,8 +152,8 @@ const Study: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isDbInitialized) {
-      const unsubscribe = onSnapshot(doc(getDb(), "studies", study_id ?? ""), (doc) => {
+    if (isDbInitialized && study_id) {
+      const unsubscribe = onSnapshot(doc(getDb(), "studies", study_id), (doc) => {
         const data = doc.data();
         const newStatus = data?.status[userId || ""] ?? "";
 
@@ -166,7 +166,7 @@ const Study: React.FC = () => {
         setImageLabel(data?.manhattan_plot?.label || "");
 
         setStatus(newStatus);
-      }, console.error);
+      }, err => console.error(`read studies/${study_id} ${err}`));
 
       return () => unsubscribe();
     }
