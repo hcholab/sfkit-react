@@ -6,7 +6,7 @@ export type AppConfig = {
 };
 
 export const getAppConfig = async (): Promise<AppConfig> => {
-    const res = await fetch('./appConfig.json');
+    const res = await fetch('/appConfig.json');
     const { apiBaseUrl, auth }: AppConfig = await res.json();
     return {
         apiBaseUrl,
