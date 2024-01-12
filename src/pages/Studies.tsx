@@ -5,6 +5,8 @@ import ChooseWorkflow from "../components/studies/ChooseWorkflow";
 import DisplayStudy from "../components/studies/DisplayStudy";
 import useAuthToken from "../hooks/useAuthToken";
 import { Study } from "../types/study";
+import { DocumentData, doc, onSnapshot } from "firebase/firestore";
+import { getDb } from "../hooks/firebase";
 
 const Studies: React.FC = () => {
   const { apiBaseUrl } = useContext(AppContext);
@@ -14,21 +16,19 @@ const Studies: React.FC = () => {
   });
   const [myStudies, setMyStudies] = useState<Study[] | null>(null);
   const [otherStudies, setOtherStudies] = useState<Study[] | null>(null);
+  const [user, setUser] = useState<DocumentData | null>(null);
 
-  // const handleAnonymousLogin = async () => {
-  //   const username = "a"; // generateRandomUsername(); // Implement this function
-  //   const password = "b"; // generateRandomPassword(); // Implement this function
-
-  //   try {
-  //     await instance.loginPopup({
-  //       ...loginRequest,
-  //       username: username,
-  //       password: password,
-  //     });
-  //   } catch (error) {
-  //     console.error("Login failed:", error);
-  //   }
-  // };
+  useEffect(() => {
+    if (userId) {
+      const unsubscribe = onSnapshot(doc(getDb(), "users", userId), (doc) => {
+        const data = doc.data();
+        if (data) {
+          setUser(data);
+        }
+      });
+      return () => unsubscribe();
+    }
+  }, [userId]);
 
   useEffect(() => {
     if (idToken) {
@@ -80,7 +80,6 @@ const Studies: React.FC = () => {
         <h2 className="mb-4">Welcome to the Studies Section</h2>
         <p className="mb-4">Please log in to view or create studies.</p>
         <LoginButton />
-        {/* <button onClick={handleAnonymousLogin}>Proceed Anonymously</button> */}
       </div>
     );
   }
@@ -131,7 +130,7 @@ const Studies: React.FC = () => {
                   </div>
                 ) : (
                   myStudies.map((study) => (
-                    <DisplayStudy key={study.title} study={study} userId={userId} idToken={idToken} />
+                    <DisplayStudy key={study.title} study={study} userId={userId} idToken={idToken} user={user} />
                   ))
                 )}
               </div>
@@ -146,7 +145,7 @@ const Studies: React.FC = () => {
                   </div>
                 ) : (
                   otherStudies.map((study) => (
-                    <DisplayStudy key={study.title} study={study} userId={userId} idToken={idToken} />
+                    <DisplayStudy key={study.title} study={study} userId={userId} idToken={idToken} user={user} />
                   ))
                 )}
               </div>
