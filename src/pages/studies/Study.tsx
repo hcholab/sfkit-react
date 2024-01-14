@@ -23,13 +23,15 @@ const fetchStudy = async (apiBaseUrl: string, study_id: string, idToken: string)
     });
 
     if (!response.ok) {
-      throw new Error("Network response was not ok");
+      const data = await response.json();
+      throw new Error(data.error || "Network response was not ok");
     }
 
     const data = await response.json();
     return data.study;
   } catch (error) {
     console.error("Failed to fetch study:", error);
+    throw error;
   }
 };
 
@@ -68,15 +70,12 @@ const Study: React.FC = () => {
 
   const handleStartWorkflow = async () => {
     try {
-      const response = await fetch(
-        `${apiBaseUrl}/api/start_protocol?study_id=${study_id}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
-        }
-      );
+      const response = await fetch(`${apiBaseUrl}/api/start_protocol?study_id=${study_id}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
 
       if (!response.ok) {
         const data = await response.json();
@@ -94,15 +93,12 @@ const Study: React.FC = () => {
 
   const handleDownloadAuthKey = async () => {
     try {
-      const response = await fetch(
-        `${apiBaseUrl}/api/download_auth_key?study_id=${study_id}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
-        }
-      );
+      const response = await fetch(`${apiBaseUrl}/api/download_auth_key?study_id=${study_id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -127,15 +123,12 @@ const Study: React.FC = () => {
     if (isConfirmed) {
       setIsDeleting(true);
       try {
-        const response = await fetch(
-          `${apiBaseUrl}/api/delete_study?study_id=${study_id}`,
-          {
-            method: "DELETE",
-            headers: {
-              Authorization: `Bearer ${idToken}`,
-            },
-          }
-        );
+        const response = await fetch(`${apiBaseUrl}/api/delete_study?study_id=${study_id}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        });
 
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -153,20 +146,24 @@ const Study: React.FC = () => {
 
   useEffect(() => {
     if (isDbInitialized && study_id) {
-      const unsubscribe = onSnapshot(doc(getDb(), "studies", study_id), (doc) => {
-        const data = doc.data();
-        const newStatus = data?.status[userId || ""] ?? "";
+      const unsubscribe = onSnapshot(
+        doc(getDb(), "studies", study_id),
+        (doc) => {
+          const data = doc.data();
+          const newStatus = data?.status[userId || ""] ?? "";
 
-        setShowWaitingDiv(newStatus.includes("ready to begin sfkit"));
-        setTasks(data?.tasks?.[userId] || []);
-        setParameters(data?.parameters || {});
-        setShowDownloadDiv(newStatus.includes("Finished protocol"));
-        setShowManhattanDiv(newStatus.includes("Finished protocol"));
-        setImageSrc(data?.manhattan_plot?.src || "");
-        setImageLabel(data?.manhattan_plot?.label || "");
+          setShowWaitingDiv(newStatus.includes("ready to begin sfkit"));
+          setTasks(data?.tasks?.[userId] || []);
+          setParameters(data?.parameters || {});
+          setShowDownloadDiv(newStatus.includes("Finished protocol"));
+          setShowManhattanDiv(newStatus.includes("Finished protocol"));
+          setImageSrc(data?.manhattan_plot?.src || "");
+          setImageLabel(data?.manhattan_plot?.label || "");
 
-        setStatus(newStatus);
-      }, err => console.error(`read studies/${study_id} ${err}`));
+          setStatus(newStatus);
+        },
+        (err) => console.error(`read studies/${study_id} ${err}`)
+      );
 
       return () => unsubscribe();
     }
@@ -175,15 +172,26 @@ const Study: React.FC = () => {
   useEffect(() => {
     if (idToken) {
       const fetchAndSetStudy = async () => {
-        const fetchedStudy = await fetchStudy(apiBaseUrl, study_id?.toString() || "", idToken);
-        setStudy(fetchedStudy);
+        try {
+          const fetchedStudy = await fetchStudy(apiBaseUrl, study_id?.toString() || "", idToken);
+          setStudy(fetchedStudy);
+        } catch (error) {
+          if (error instanceof Error) {
+            setErrorMessage(error.message);
+          } else {
+            setErrorMessage("An unknown error occurred.");
+          }
+        }
       };
 
       fetchAndSetStudy();
     }
   }, [apiBaseUrl, idToken, study_id]);
 
-  if (tokenLoading || !study || !isDbInitialized) return <div>Loading...</div>;
+  if (errorMessage) return <div>{errorMessage}</div>;
+  if (tokenLoading || !isDbInitialized) return <div>Loading...</div>;
+  if (!study) return <div>Study not found</div>;
+  if (!study.participants.includes(userId)) return <div>Not authorized</div>;
 
   return (
     <Container className="py-5">
