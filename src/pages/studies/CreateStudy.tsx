@@ -50,7 +50,7 @@ const CreateStudy: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error((await response.json()).error || "Unexpected error");
       }
 
       const data = await response.json();

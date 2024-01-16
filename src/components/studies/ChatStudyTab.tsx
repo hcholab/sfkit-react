@@ -17,16 +17,24 @@ const ChatStudyTab: React.FC<Props> = ({ study, userId, idToken }) => {
 
   useEffect(() => {
     const db = getDb();
-    const unsubscribe = onSnapshot(doc(db, "studies", study.study_id), (doc) => {
-      const chatArray = doc.data()?.messages || [];
-      setMessages(chatArray);
-    }, err => console.error(`read studies/${study.study_id} ${err}`));
+    const unsubscribe = onSnapshot(
+      doc(db, "studies", study.study_id),
+      (doc) => {
+        const chatArray = doc.data()?.messages || [];
+        setMessages(chatArray);
+      },
+      (err) => console.error(`read studies/${study.study_id} ${err}`)
+    );
 
-    const displayNameUnsub = onSnapshot(doc(db, "users", "display_names"), (doc) => {
-      if (doc.exists()) {
-        setDisplayNames(doc.data() || {});
-      }
-    }, err => console.error(`read users/display_names ${err}`));
+    const displayNameUnsub = onSnapshot(
+      doc(db, "users", "display_names"),
+      (doc) => {
+        if (doc.exists()) {
+          setDisplayNames(doc.data() || {});
+        }
+      },
+      (err) => console.error(`read users/display_names ${err}`)
+    );
 
     return () => {
       unsubscribe();
@@ -52,7 +60,7 @@ const ChatStudyTab: React.FC<Props> = ({ study, userId, idToken }) => {
         });
 
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error((await response.json()).error || "Unexpected error");
         }
       } catch (error) {
         console.error("Failed to send message:", error);

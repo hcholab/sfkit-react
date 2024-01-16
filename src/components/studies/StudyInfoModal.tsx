@@ -22,20 +22,17 @@ const StudyInfoModal: React.FC<StudyInfoProps> = ({ study, userId, idToken }) =>
     e.preventDefault();
 
     try {
-      const response = await fetch(
-        `${apiBaseUrl}/api/study_information?study_id=${study.study_id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${idToken}`,
-          },
-          body: JSON.stringify({ description, information }),
-        }
-      );
+      const response = await fetch(`${apiBaseUrl}/api/study_information?study_id=${study.study_id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ description, information }),
+      });
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error((await response.json()).error || "Unexpected error");
       }
       window.location.reload();
     } catch (error) {

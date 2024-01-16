@@ -33,19 +33,16 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, idT
     const formData = new FormData(event.currentTarget);
 
     try {
-      const response = await fetch(
-        `${apiBaseUrl}/api/parameters?study_id=${study_id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${idToken}`,
-          },
-          body: JSON.stringify(Object.fromEntries(formData)),
-        }
-      );
+      const response = await fetch(`${apiBaseUrl}/api/parameters?study_id=${study_id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify(Object.fromEntries(formData)),
+      });
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error((await response.json()).error || "Unexpected error");
       }
 
       setSubmitFeedback("Success!");

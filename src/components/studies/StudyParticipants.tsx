@@ -33,7 +33,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
       });
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error((await response.json()).error || "Unexpected error");
       }
 
       window.location.reload();
@@ -54,7 +54,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
       });
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error((await response.json()).error || "Unexpected error");
       }
 
       window.location.reload();
@@ -66,9 +66,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
   const handleApproveRequest = async (participantId: string) => {
     try {
       const response = await fetch(
-        `${apiBaseUrl}/api/approve_join_study?study_id=${
-          study.study_id
-        }&userId=${participantId}`,
+        `${apiBaseUrl}/api/approve_join_study?study_id=${study.study_id}&userId=${participantId}`,
         {
           method: "POST",
           headers: {
@@ -79,7 +77,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
       );
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error((await response.json()).error || "Unexpected error");
       }
 
       window.location.reload();
