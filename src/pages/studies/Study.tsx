@@ -23,8 +23,7 @@ const fetchStudy = async (apiBaseUrl: string, study_id: string, idToken: string)
     });
 
     if (!response.ok) {
-      const data = await response.json();
-      throw new Error(data.error || "Network response was not ok");
+      throw new Error((await response.json()).error || "Unexpected error");
     }
 
     const data = await response.json();
@@ -101,7 +100,7 @@ const Study: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error((await response.json()).error || "Unexpected error");
       }
 
       const data = await response.blob();
@@ -131,7 +130,7 @@ const Study: React.FC = () => {
         });
 
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error((await response.json()).error || "Unexpected error");
         }
 
         console.log("Study deleted successfully");

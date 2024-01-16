@@ -66,7 +66,7 @@ const InstructionArea: React.FC<Props> = ({
         body: JSON.stringify({ study_id: study_id }),
       });
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error((await response.json()).error || "Unexpected error");
       }
 
       const blob = await response.blob();
@@ -89,19 +89,14 @@ const InstructionArea: React.FC<Props> = ({
   const handleDownloadResults = async () => {
     try {
       setIsDownloading(true);
-      const response = await fetch(
-        `${apiBaseUrl}/api/download_results_file?study_id=${encodeURIComponent(
-          study_id
-        )}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
-        }
-      );
+      const response = await fetch(`${apiBaseUrl}/api/download_results_file?study_id=${encodeURIComponent(study_id)}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error((await response.json()).error || "Unexpected error");
       }
 
       const blob = await response.blob();

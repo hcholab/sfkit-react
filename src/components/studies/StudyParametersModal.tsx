@@ -35,19 +35,16 @@ const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId, i
     const formData = new FormData(e.currentTarget);
 
     try {
-      const response = await fetch(
-        `${apiBaseUrl}/api/parameters?study_id=${study.study_id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${idToken}`,
-          },
-          body: JSON.stringify(Object.fromEntries(formData)),
-        }
-      );
+      const response = await fetch(`${apiBaseUrl}/api/parameters?study_id=${study.study_id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify(Object.fromEntries(formData)),
+      });
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error((await response.json()).error || "Unexpected error");
       }
       window.location.reload();
     } catch (error) {

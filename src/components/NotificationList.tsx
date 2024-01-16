@@ -18,13 +18,17 @@ const NotificationList: React.FC<NotificationListProps> = ({ userId, idToken }) 
 
   useEffect(() => {
     if (userId) {
-      const unsubscribe = onSnapshot(doc(getDb(), "users", userId), (doc) => {
-        let newNotifications = [];
-        if (doc.exists() && doc.data()) {
-          newNotifications = doc.data()!.notifications;
-        }
-        setNotifications(newNotifications);
-      }, err => console.error(`read users/${userId} ${err}`));
+      const unsubscribe = onSnapshot(
+        doc(getDb(), "users", userId),
+        (doc) => {
+          let newNotifications = [];
+          if (doc.exists() && doc.data()) {
+            newNotifications = doc.data()!.notifications;
+          }
+          setNotifications(newNotifications);
+        },
+        (err) => console.error(`read users/${userId} ${err}`)
+      );
 
       return () => unsubscribe();
     }
@@ -32,11 +36,15 @@ const NotificationList: React.FC<NotificationListProps> = ({ userId, idToken }) 
 
   useEffect(() => {
     if (userId) {
-      const unsubscribe = onSnapshot(doc(getDb(), "users", "display_names"), (doc) => {
-        if (doc.exists() && doc.data()) {
-          setDisplayName(doc.data()[userId]);
-        }
-      }, err => console.error(`read users/display_names ${err}`));
+      const unsubscribe = onSnapshot(
+        doc(getDb(), "users", "display_names"),
+        (doc) => {
+          if (doc.exists() && doc.data()) {
+            setDisplayName(doc.data()[userId]);
+          }
+        },
+        (err) => console.error(`read users/display_names ${err}`)
+      );
 
       return () => unsubscribe();
     }
@@ -56,7 +64,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ userId, idToken }) 
       });
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error((await response.json()).error || "Unexpected error");
       }
 
       console.log("Notification removed successfully");
