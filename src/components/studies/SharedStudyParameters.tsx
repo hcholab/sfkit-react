@@ -11,8 +11,8 @@ interface SharedStudyParametersProps {
 const SharedStudyParameters: React.FC<SharedStudyParametersProps> = ({ study, isOwner, userId }) => {
   return (
     <Row className="p-3 text-start">
-      {study.participants.map((participant) =>
-        participant !== "Broad" ? (
+      {study.participants.map((participant: string, index: number) =>
+        index !== 0 ? (
           <React.Fragment key={participant}>
             <Form.Label column htmlFor={`NUM_INDS${participant}`} className="col-form-label">
               Number of Individuals for {study["display_names"][participant]}
