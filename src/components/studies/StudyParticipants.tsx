@@ -95,8 +95,8 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
               <h5 className="mb-0">Study Participants</h5>
             </ListGroup.Item>
             {study.participants.map(
-              (participant: string) =>
-                participant !== "Broad" && (
+              (participant: string, index: number) =>
+                index !== 0 && (
                   <ListGroup.Item className="text-start" key={participant}>
                     <div className="d-flex justify-content-between">
                       <Link className="text-decoration-none" to={`/profile/${encodeURIComponent(participant)}`}>
