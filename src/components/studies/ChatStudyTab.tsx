@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../App";
 import { getDb } from "../../hooks/firebase";
 import { Message, Study } from "../../types/study";
+import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 
 interface Props {
   study: Study;
@@ -14,6 +15,7 @@ const ChatStudyTab: React.FC<Props> = ({ study, userId, idToken }) => {
   const { apiBaseUrl } = useContext(AppContext);
   const [messages, setMessages] = useState<Message[]>([]);
   const [displayNames, setDisplayNames] = useState<{ [key: string]: string }>({});
+  const headers = useGenerateAuthHeaders();
 
   useEffect(() => {
     const db = getDb();
@@ -52,10 +54,7 @@ const ChatStudyTab: React.FC<Props> = ({ study, userId, idToken }) => {
       try {
         const response = await fetch(`${apiBaseUrl}/api/send_message`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${idToken}`,
-          },
+          headers,
           body: JSON.stringify({ message, sender: userId, study_id: study.study_id }),
         });
 

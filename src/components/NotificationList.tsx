@@ -5,6 +5,7 @@ import { Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AppContext } from "../App";
 import { getDb } from "../hooks/firebase";
+import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 
 interface NotificationListProps {
   userId: string;
@@ -15,6 +16,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ userId, idToken }) 
   const { apiBaseUrl } = useContext(AppContext);
   const [notifications, setNotifications] = useState<string[]>([]);
   const [displayName, setDisplayName] = useState("");
+  const headers = useGenerateAuthHeaders();
 
   useEffect(() => {
     if (userId) {
@@ -56,10 +58,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ userId, idToken }) 
 
       const response = await fetch(`${apiBaseUrl}/api/update_notifications`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
+        headers,
         body: JSON.stringify({ notification: notifications[index] }),
       });
 

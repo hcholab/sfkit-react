@@ -2,9 +2,11 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../App";
 import useAuthToken from "../hooks/useAuthToken";
+import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 
 const Profile = () => {
   const { apiBaseUrl } = useContext(AppContext);
+  const headers = useGenerateAuthHeaders();
   const { userId: userIdFromParams } = useParams();
   const decodedUserIdFromParams = decodeURIComponent(userIdFromParams || "");
   const [isEditMode, setIsEditMode] = useState(false);
@@ -22,14 +24,9 @@ const Profile = () => {
 
     const fetchProfileData = async () => {
       try {
-        const response = await fetch(
-          `${apiBaseUrl}/api/profile/${decodedUserIdFromParams}`,
-          {
-            headers: {
-              Authorization: `Bearer ${idToken}`,
-            },
-          }
-        );
+        const response = await fetch(`${apiBaseUrl}/api/profile/${decodedUserIdFromParams}`, {
+          headers,
+        });
 
         if (response.ok) {
           const data = await response.json();
@@ -63,17 +60,11 @@ const Profile = () => {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch(
-        `${apiBaseUrl}/api/profile/${decodedUserIdFromParams}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${idToken}`,
-          },
-          body: JSON.stringify(profileData),
-        }
-      );
+      const response = await fetch(`${apiBaseUrl}/api/profile/${decodedUserIdFromParams}`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(profileData),
+      });
 
       if (response.ok) {
         console.log("Profile updated successfully");

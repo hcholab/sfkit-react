@@ -4,6 +4,7 @@ import { Alert, Col, Container, Row, Tab, Tabs } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import StudyParticipants from "../../components/studies/StudyParticipants";
 import useAuthToken from "../../hooks/useAuthToken";
+import useAuthKey from "../../hooks/useAuthKey";
 import { ParameterGroup, Study as StudyType } from "../../types/study";
 
 import { AppContext } from "../../App";
@@ -12,14 +13,13 @@ import InstructionArea from "../../components/studies/InstructionArea";
 import StudyActionButtons from "../../components/studies/StudyActionButtons";
 import StudyHeader from "../../components/studies/StudyHeader";
 import { getDb } from "../../hooks/firebase";
+import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 
-const fetchStudy = async (apiBaseUrl: string, study_id: string, idToken: string) => {
+const fetchStudy = async (apiBaseUrl: string, study_id: string, headers: Record<string, string>) => {
   try {
     const response = await fetch(`${apiBaseUrl}/api/study?study_id=${study_id}`, {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${idToken}`,
-      },
+      headers,
     });
 
     if (!response.ok) {
@@ -36,9 +36,17 @@ const fetchStudy = async (apiBaseUrl: string, study_id: string, idToken: string)
 
 const Study: React.FC = () => {
   const { apiBaseUrl } = useContext(AppContext);
+  const onTerra = apiBaseUrl.includes("broad");
   const navigate = useNavigate();
-  const { study_id } = useParams();
-  const { idToken, userId, tokenLoading, isDbInitialized } = useAuthToken();
+  const { study_id, auth_key = "" } = useParams();
+  let { idToken, userId, tokenLoading, isDbInitialized } = useAuthToken();
+  if (auth_key && !onTerra) {
+    const authKeyData = useAuthKey();
+    userId = authKeyData.userId;
+    isDbInitialized = authKeyData.isDbInitialized;
+  }
+  const headers = useGenerateAuthHeaders();
+
   const [study, setStudy] = useState<StudyType | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [status, setStatus] = useState<string>("");
@@ -59,9 +67,7 @@ const Study: React.FC = () => {
 
     await fetch(`${apiBaseUrl}/api/restart_study?study_id=${study_id}`, {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${idToken}`,
-      },
+      headers,
     });
 
     setIsRestarting(false);
@@ -71,9 +77,7 @@ const Study: React.FC = () => {
     try {
       const response = await fetch(`${apiBaseUrl}/api/start_protocol?study_id=${study_id}`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
+        headers,
       });
 
       if (!response.ok) {
@@ -94,9 +98,7 @@ const Study: React.FC = () => {
     try {
       const response = await fetch(`${apiBaseUrl}/api/download_auth_key?study_id=${study_id}`, {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
+        headers,
       });
 
       if (!response.ok) {
@@ -124,9 +126,7 @@ const Study: React.FC = () => {
       try {
         const response = await fetch(`${apiBaseUrl}/api/delete_study?study_id=${study_id}`, {
           method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
+          headers,
         });
 
         if (!response.ok) {
@@ -169,10 +169,10 @@ const Study: React.FC = () => {
   }, [isDbInitialized, study_id, userId]);
 
   useEffect(() => {
-    if (idToken) {
+    if (idToken || auth_key) {
       const fetchAndSetStudy = async () => {
         try {
-          const fetchedStudy = await fetchStudy(apiBaseUrl, study_id?.toString() || "", idToken);
+          const fetchedStudy = await fetchStudy(apiBaseUrl, study_id?.toString() || "", headers);
           setStudy(fetchedStudy);
         } catch (error) {
           if (error instanceof Error) {
@@ -212,6 +212,12 @@ const Study: React.FC = () => {
                 />
               )}
             </div>
+
+            {!idToken && (
+              <Alert variant="warning" className="mt-3">
+                Note: you created this study anonymously. Please save the link if you would like to return.
+              </Alert>
+            )}
 
             <Tabs defaultActiveKey="main_study" className="mt-0 pt-0 mb-3">
               <Tab eventKey="main_study" title="Main">

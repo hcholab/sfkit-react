@@ -5,6 +5,7 @@ import { ParameterGroup } from "../../types/study";
 import ConfigureStudyModal from "./ConfigureStudyModal";
 import SubTaskContainer from "./SubTaskContainer";
 import TaskElement from "./TaskElement";
+import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 
 interface Props {
   personalParameters: ParameterGroup;
@@ -52,6 +53,7 @@ const InstructionArea: React.FC<Props> = ({
   const [plotSrc, setPlotSrc] = React.useState("");
   const [isFetchingPlot, setIsFetchingPlot] = React.useState(false);
   const plotSrcRef = React.useRef("");
+  const headers = useGenerateAuthHeaders();
 
   const fetchPlotFile = React.useCallback(async () => {
     try {
@@ -59,10 +61,7 @@ const InstructionArea: React.FC<Props> = ({
 
       const response = await fetch(`${apiBaseUrl}/api/fetch_plot_file`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
+        headers,
         body: JSON.stringify({ study_id: study_id }),
       });
       if (!response.ok) {
@@ -91,9 +90,7 @@ const InstructionArea: React.FC<Props> = ({
       setIsDownloading(true);
       const response = await fetch(`${apiBaseUrl}/api/download_results_file?study_id=${encodeURIComponent(study_id)}`, {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
+        headers,
       });
       if (!response.ok) {
         throw new Error((await response.json()).error || "Unexpected error");

@@ -3,6 +3,7 @@ import { Button, Form, ListGroup, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../App";
 import { Study } from "../../types/study";
+import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 
 interface StudyProps {
   study: Study;
@@ -15,6 +16,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
   const [showInviteModal, setShowInviteModal] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [message, setMessage] = React.useState("");
+  const headers = useGenerateAuthHeaders();
 
   const handleShowInviteModal = () => setShowInviteModal(true);
   const handleCloseInviteModal = () => setShowInviteModal(false);
@@ -25,10 +27,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
     try {
       const response = await fetch(`${apiBaseUrl}/api/invite_participant`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
+        headers,
         body: JSON.stringify({ study_id: study.study_id, inviter_id: userId, invitee_email: email, message }),
       });
 
@@ -46,10 +45,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
     try {
       const response = await fetch(`${apiBaseUrl}/api/remove_participant`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
+        headers,
         body: JSON.stringify({ study_id: study.study_id, userId: participantId }),
       });
 
@@ -69,10 +65,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => 
         `${apiBaseUrl}/api/approve_join_study?study_id=${study.study_id}&userId=${participantId}`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${idToken}`,
-          },
+          headers,
         }
       );
 

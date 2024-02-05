@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
-import { useAuth } from "react-oidc-context";
 import { Link, useNavigate } from "react-router-dom";
 
 const ChooseWorkflow: React.FC = () => {
-  const auth = useAuth();
   const navigate = useNavigate();
   const [studyType, setStudyType] = useState("MPC-GWAS");
   const [setupConfig, setSetupConfig] = useState("website");
@@ -14,16 +12,13 @@ const ChooseWorkflow: React.FC = () => {
   const handleShow = () => setShowModal(true);
 
   const handleSubmit = () => {
-    if (auth.isAuthenticated) {
-      navigate("/studies/create_study", {
-        state: {
-          studyType: studyType,
-          setupConfig: setupConfig,
-        },
-      });
-    } else {
-      alert("You need to log in first!");
-    }
+    navigate("/studies/create_study", {
+      state: {
+        studyType: studyType,
+        setupConfig: setupConfig,
+      },
+    });
+
     handleClose();
   };
 

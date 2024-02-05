@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { AppContext } from "../../App";
 import { Study } from "../../types/study";
+import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 
 interface StudyInfoProps {
   study: Study;
@@ -14,6 +15,7 @@ const StudyInfoModal: React.FC<StudyInfoProps> = ({ study, userId, idToken }) =>
   const [show, setShow] = useState(false);
   const [description, setDescription] = useState(study.description || "");
   const [information, setInformation] = useState(study.study_information || "");
+  const headers = useGenerateAuthHeaders();
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -24,10 +26,7 @@ const StudyInfoModal: React.FC<StudyInfoProps> = ({ study, userId, idToken }) =>
     try {
       const response = await fetch(`${apiBaseUrl}/api/study_information?study_id=${study.study_id}`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
+        headers,
         body: JSON.stringify({ description, information }),
       });
 
