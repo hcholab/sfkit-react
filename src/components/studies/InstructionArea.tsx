@@ -77,7 +77,7 @@ const InstructionArea: React.FC<Props> = ({
     } finally {
       setIsFetchingPlot(false);
     }
-  }, [apiBaseUrl, idToken, study_id]);
+  }, [apiBaseUrl, study_id, headers]);
 
   React.useEffect(() => {
     if (idToken && showManhattanDiv && !plotSrcRef.current) {
@@ -171,7 +171,6 @@ const InstructionArea: React.FC<Props> = ({
             handleClose={handleClose}
             studyType={studyType}
             demo={demo}
-            idToken={idToken}
             studyId={study_id}
             personalParameters={personalParameters}
           />

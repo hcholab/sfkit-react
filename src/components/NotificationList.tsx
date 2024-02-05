@@ -9,10 +9,9 @@ import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 
 interface NotificationListProps {
   userId: string;
-  idToken: string;
 }
 
-const NotificationList: React.FC<NotificationListProps> = ({ userId, idToken }) => {
+const NotificationList: React.FC<NotificationListProps> = ({ userId }) => {
   const { apiBaseUrl } = useContext(AppContext);
   const [notifications, setNotifications] = useState<string[]>([]);
   const [displayName, setDisplayName] = useState("");

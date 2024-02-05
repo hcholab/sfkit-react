@@ -37,7 +37,7 @@ const useAuthToken = (): AuthKeyHook => {
       .catch((err) => {
         console.error("Error:", err);
       });
-  }, [apiBaseUrl]);
+  }, [apiBaseUrl, headers]);
 
   return {
     userId,

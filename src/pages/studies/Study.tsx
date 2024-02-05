@@ -39,12 +39,23 @@ const Study: React.FC = () => {
   const onTerra = apiBaseUrl.includes("broad");
   const navigate = useNavigate();
   const { study_id, auth_key = "" } = useParams();
-  let { idToken, userId, tokenLoading, isDbInitialized } = useAuthToken();
+
+  const authKeyData = useAuthKey();
+  const authTokenData = useAuthToken();
+  let userId: string, idToken: string, tokenLoading: boolean, isDbInitialized: boolean;
+
   if (auth_key && !onTerra) {
-    const authKeyData = useAuthKey();
     userId = authKeyData.userId;
     isDbInitialized = authKeyData.isDbInitialized;
+    idToken = "";
+    tokenLoading = false;
+  } else {
+    userId = authTokenData.userId;
+    idToken = authTokenData.idToken;
+    tokenLoading = authTokenData.tokenLoading;
+    isDbInitialized = authTokenData.isDbInitialized;
   }
+
   const headers = useGenerateAuthHeaders();
 
   const [study, setStudy] = useState<StudyType | null>(null);
@@ -185,7 +196,7 @@ const Study: React.FC = () => {
 
       fetchAndSetStudy();
     }
-  }, [apiBaseUrl, idToken, study_id]);
+  }, [apiBaseUrl, idToken, study_id, headers, auth_key]);
 
   if (errorMessage) return <div>{errorMessage}</div>;
   if (tokenLoading || !isDbInitialized) return <div>Loading...</div>;
@@ -233,7 +244,7 @@ const Study: React.FC = () => {
                     userId={userId}
                     idToken={idToken}
                   />
-                  <StudyParticipants study={study} userId={userId} idToken={idToken} />
+                  <StudyParticipants study={study} userId={userId} />
                   <InstructionArea
                     studyType={study.study_type}
                     demo={study.demo}
@@ -257,7 +268,7 @@ const Study: React.FC = () => {
                 </Container>
               </Tab>
               <Tab eventKey="chat_study" title="Chat">
-                <ChatStudyTab study={study} userId={userId} idToken={idToken} />
+                <ChatStudyTab study={study} userId={userId} />
               </Tab>
             </Tabs>
           </div>

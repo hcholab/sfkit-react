@@ -49,7 +49,7 @@ const useAuthToken = (): AuthTokenHook => {
         console.error("Error:", err);
         setLoading(false);
       });
-  }, [apiBaseUrl, auth.isAuthenticated, auth.user, idToken]);
+  }, [apiBaseUrl, auth.isAuthenticated, auth.user, idToken, headers]);
 
   return {
     idToken,

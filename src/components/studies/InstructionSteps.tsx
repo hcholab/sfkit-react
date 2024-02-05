@@ -9,11 +9,10 @@ import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 interface InstructionStepsProps {
   demo: boolean;
   study_id: string;
-  idToken: string;
   parameters: ParameterGroup;
 }
 
-const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, idToken, parameters }) => {
+const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, parameters }) => {
   const { apiBaseUrl } = useContext(AppContext);
   const [activeKey, setActiveKey] = useState(localStorage.getItem("activeKey") || "0");
   const headers = useGenerateAuthHeaders();

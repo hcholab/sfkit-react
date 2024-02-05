@@ -8,10 +8,9 @@ import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 interface StudyProps {
   study: Study;
   userId: string;
-  idToken: string;
 }
 
-const StudyParticipants: React.FC<StudyProps> = ({ study, userId, idToken }) => {
+const StudyParticipants: React.FC<StudyProps> = ({ study, userId }) => {
   const { apiBaseUrl } = useContext(AppContext);
   const [showInviteModal, setShowInviteModal] = React.useState(false);
   const [email, setEmail] = React.useState("");

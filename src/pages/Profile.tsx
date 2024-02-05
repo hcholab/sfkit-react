@@ -43,7 +43,7 @@ const Profile = () => {
     };
 
     fetchProfileData();
-  }, [apiBaseUrl, idToken, decodedUserIdFromParams]);
+  }, [apiBaseUrl, idToken, decodedUserIdFromParams, headers]);
 
   const handleEditToggle = () => {
     setIsEditMode((prevMode) => !prevMode);

@@ -8,10 +8,9 @@ import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 interface Props {
   study: Study;
   userId: string;
-  idToken: string;
 }
 
-const ChatStudyTab: React.FC<Props> = ({ study, userId, idToken }) => {
+const ChatStudyTab: React.FC<Props> = ({ study, userId }) => {
   const { apiBaseUrl } = useContext(AppContext);
   const [messages, setMessages] = useState<Message[]>([]);
   const [displayNames, setDisplayNames] = useState<{ [key: string]: string }>({});

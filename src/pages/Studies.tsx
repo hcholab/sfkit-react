@@ -50,7 +50,7 @@ const Studies: React.FC = () => {
       }
     };
     fetchMyStudies();
-  }, [apiBaseUrl, idToken]);
+  }, [apiBaseUrl, idToken, headers]);
 
   useEffect(() => {
     const fetchPublicStudies = async () => {

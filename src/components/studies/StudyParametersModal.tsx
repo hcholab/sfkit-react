@@ -9,10 +9,9 @@ import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 interface StudyParametersProps {
   study: Study;
   userId: string;
-  idToken: string;
 }
 
-const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId, idToken }) => {
+const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId }) => {
   const { apiBaseUrl } = useContext(AppContext);
   const headers = useGenerateAuthHeaders();
   const location = useLocation();
