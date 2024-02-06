@@ -3,8 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Alert, Col, Container, Row, Tab, Tabs } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import StudyParticipants from "../../components/studies/StudyParticipants";
-import useAuthToken from "../../hooks/useAuthToken";
-import useAuthKey from "../../hooks/useAuthKey";
+import useFirestore from "../../hooks/useFirestore";
 import { ParameterGroup, Study as StudyType } from "../../types/study";
 
 import { AppContext } from "../../App";
@@ -14,6 +13,7 @@ import StudyActionButtons from "../../components/studies/StudyActionButtons";
 import StudyHeader from "../../components/studies/StudyHeader";
 import { getDb } from "../../hooks/firebase";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
+import { useAuth } from "react-oidc-context";
 
 const fetchStudy = async (apiBaseUrl: string, study_id: string, headers: Record<string, string>) => {
   try {
@@ -36,27 +36,13 @@ const fetchStudy = async (apiBaseUrl: string, study_id: string, headers: Record<
 
 const Study: React.FC = () => {
   const { apiBaseUrl } = useContext(AppContext);
-  const onTerra = apiBaseUrl.includes("broad");
   const navigate = useNavigate();
   const { study_id, auth_key = "" } = useParams();
-
-  const authKeyData = useAuthKey();
-  const authTokenData = useAuthToken();
-  let userId: string, idToken: string, tokenLoading: boolean, isDbInitialized: boolean;
-
-  if (auth_key && !onTerra) {
-    userId = authKeyData.userId;
-    isDbInitialized = authKeyData.isDbInitialized;
-    idToken = "";
-    tokenLoading = false;
-  } else {
-    userId = authTokenData.userId;
-    idToken = authTokenData.idToken;
-    tokenLoading = authTokenData.tokenLoading;
-    isDbInitialized = authTokenData.isDbInitialized;
-  }
-
   const headers = useGenerateAuthHeaders();
+
+  const firestoreData = useFirestore();
+  const { userId, isDbInitialized } = firestoreData;
+  const idToken = useAuth().user?.id_token || "";
 
   const [study, setStudy] = useState<StudyType | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -179,27 +165,26 @@ const Study: React.FC = () => {
     }
   }, [isDbInitialized, study_id, userId]);
 
+  const fetchAndSetStudy = async () => {
+    try {
+      const fetchedStudy = await fetchStudy(apiBaseUrl, study_id?.toString() || "", headers);
+      setStudy(fetchedStudy);
+    } catch (error) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage("An unknown error occurred.");
+      }
+    }
+  };
+
   useEffect(() => {
     if (idToken || auth_key) {
-      const fetchAndSetStudy = async () => {
-        try {
-          const fetchedStudy = await fetchStudy(apiBaseUrl, study_id?.toString() || "", headers);
-          setStudy(fetchedStudy);
-        } catch (error) {
-          if (error instanceof Error) {
-            setErrorMessage(error.message);
-          } else {
-            setErrorMessage("An unknown error occurred.");
-          }
-        }
-      };
-
       fetchAndSetStudy();
     }
-  }, [apiBaseUrl, idToken, study_id, headers, auth_key]);
+  }, [idToken, auth_key]);
 
   if (errorMessage) return <div>{errorMessage}</div>;
-  if (tokenLoading || !isDbInitialized) return <div>Loading...</div>;
   if (!study) return <div>Study not found</div>;
   if (!study.participants.includes(userId)) return <div>Not authorized</div>;
 

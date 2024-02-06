@@ -2,12 +2,12 @@ import React, { useContext, useState } from "react";
 import { Alert, Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../../App";
-import useAuthToken from "../../hooks/useAuthToken";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
+import { useAuth } from "react-oidc-context";
 
 const CreateStudy: React.FC = () => {
   const { apiBaseUrl } = useContext(AppContext);
-  const { idToken } = useAuthToken();
+  const idToken = useAuth().user?.id_token || "";
   const headers = useGenerateAuthHeaders();
   const location = useLocation();
   const { studyType, setupConfig } = location.state as { studyType: string; setupConfig: string };

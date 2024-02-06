@@ -3,12 +3,12 @@ import { AppContext } from "../App";
 import { getFirestoreDatabase } from "./firebase";
 import useGenerateAuthHeaders from "./useGenerateAuthHeaders";
 
-type AuthKeyHook = {
+type FirestoreHook = {
   userId: string;
   isDbInitialized: boolean;
 };
 
-const useAuthToken = (): AuthKeyHook => {
+const useFirestore = (): FirestoreHook => {
   const { apiBaseUrl } = useContext(AppContext);
   const [isDbInitialized, setDbInitialized] = useState(false);
   const [userId, setUserId] = useState("");
@@ -37,7 +37,7 @@ const useAuthToken = (): AuthKeyHook => {
       .catch((err) => {
         console.error("Error:", err);
       });
-  }, [apiBaseUrl, headers]);
+  }, []);
 
   return {
     userId,
@@ -45,4 +45,4 @@ const useAuthToken = (): AuthKeyHook => {
   };
 };
 
-export default useAuthToken;
+export default useFirestore;
