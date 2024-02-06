@@ -165,24 +165,24 @@ const Study: React.FC = () => {
     }
   }, [isDbInitialized, study_id, userId]);
 
-  const fetchAndSetStudy = async () => {
-    try {
-      const fetchedStudy = await fetchStudy(apiBaseUrl, study_id?.toString() || "", headers);
-      setStudy(fetchedStudy);
-    } catch (error) {
-      if (error instanceof Error) {
-        setErrorMessage(error.message);
-      } else {
-        setErrorMessage("An unknown error occurred.");
-      }
-    }
-  };
-
   useEffect(() => {
     if (idToken || auth_key) {
+      const fetchAndSetStudy = async () => {
+        try {
+          const fetchedStudy = await fetchStudy(apiBaseUrl, study_id?.toString() || "", headers);
+          setStudy(fetchedStudy);
+        } catch (error) {
+          if (error instanceof Error) {
+            setErrorMessage(error.message);
+          } else {
+            setErrorMessage("An unknown error occurred.");
+          }
+        }
+      };
+
       fetchAndSetStudy();
     }
-  }, [idToken, auth_key]);
+  }, [idToken, auth_key, apiBaseUrl, study_id, headers]);
 
   if (errorMessage) return <div>{errorMessage}</div>;
   if (!study) return <div>Study not found</div>;

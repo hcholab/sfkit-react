@@ -37,7 +37,7 @@ const useFirestore = (): FirestoreHook => {
       .catch((err) => {
         console.error("Error:", err);
       });
-  }, []);
+  }, [apiBaseUrl, headers]);
 
   return {
     userId,
