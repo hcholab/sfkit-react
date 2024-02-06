@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../App";
 import { getFirestoreDatabase } from "./firebase";
 import useGenerateAuthHeaders from "./useGenerateAuthHeaders";
@@ -13,8 +13,13 @@ const useFirestore = (): FirestoreHook => {
   const [isDbInitialized, setDbInitialized] = useState(false);
   const [userId, setUserId] = useState("");
   const headers = useGenerateAuthHeaders();
+  const isFetchingCustomTokenRef = useRef(false);
 
   useEffect(() => {
+    if (!headers.Authorization || headers.Authorization === "Bearer " || isFetchingCustomTokenRef.current) {
+      return;
+    }
+    isFetchingCustomTokenRef.current = true;
     fetch(`${apiBaseUrl}/api/createCustomToken`, {
       method: "POST",
       headers,
@@ -36,6 +41,9 @@ const useFirestore = (): FirestoreHook => {
       })
       .catch((err) => {
         console.error("Error:", err);
+      })
+      .finally(() => {
+        isFetchingCustomTokenRef.current = false;
       });
   }, [apiBaseUrl, headers]);
 

@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../App";
-import useAuthToken from "../hooks/useAuthToken";
 import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
+import { useAuth } from "react-oidc-context";
+import useFirestore from "../hooks/useFirestore";
 
 const Profile = () => {
   const { apiBaseUrl } = useContext(AppContext);
@@ -15,7 +16,8 @@ const Profile = () => {
     about: "",
   });
 
-  const { idToken, userId } = useAuthToken();
+  const idToken = useAuth().user?.id_token || "";
+  const { userId } = useFirestore();
 
   useEffect(() => {
     if (!idToken) {
