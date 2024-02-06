@@ -227,7 +227,6 @@ const Study: React.FC = () => {
                     description={study.description}
                     study={study}
                     userId={userId}
-                    idToken={idToken}
                   />
                   <StudyParticipants study={study} userId={userId} />
                   <InstructionArea

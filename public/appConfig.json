@@ -1,5 +1,5 @@
 {
-  "apiBaseUrl": "http://127.0.0.1:5000",
+  "apiBaseUrl": "https://sfkit-website-dev-bhj5a4wkqa-uc.a.run.app",
   "auth": {
     "client_id": "a605ffae-592a-4096-b029-78ba66b6d614",
     "authority": "https://sfkitdevb2c.b2clogin.com/sfkitdevb2c.onmicrosoft.com/B2C_1_signupsignin1",
