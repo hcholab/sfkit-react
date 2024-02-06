@@ -53,7 +53,7 @@ const Navbar: React.FC = () => {
             </li>
           </ul>
           <div className="ms-auto d-flex align-items-center">
-            {isDbInitialized && <NotificationList userId={userId} idToken={idToken} />}
+            {isDbInitialized && <NotificationList userId={userId} />}
             {idToken !== "" ? <LogoutButton /> : <LoginButton />}
           </div>
         </div>

@@ -9,7 +9,6 @@ interface ConfigureStudyModalProps {
   showModal: boolean;
   studyType: string;
   demo: boolean;
-  idToken: string;
   studyId: string;
   personalParameters: ParameterGroup;
 }
@@ -20,7 +19,6 @@ const ConfigureStudyModal: React.FC<ConfigureStudyModalProps> = ({
   showModal,
   studyType,
   demo,
-  idToken,
   studyId,
   personalParameters,
 }) => {
@@ -35,7 +33,7 @@ const ConfigureStudyModal: React.FC<ConfigureStudyModalProps> = ({
           <Modal.Title>Configure your {studyType} Study</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <InstructionSteps demo={demo} idToken={idToken} study_id={studyId} parameters={personalParameters} />
+          <InstructionSteps demo={demo} study_id={studyId} parameters={personalParameters} />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

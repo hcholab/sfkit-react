@@ -4,17 +4,18 @@ import { AppContext } from "../../App";
 import info_square from "../../static/images/info-square.svg";
 import { ParameterGroup } from "../../types/study";
 import GivePermissions from "./GivePermissions";
+import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 
 interface InstructionStepsProps {
   demo: boolean;
   study_id: string;
-  idToken: string;
   parameters: ParameterGroup;
 }
 
-const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, idToken, parameters }) => {
+const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, parameters }) => {
   const { apiBaseUrl } = useContext(AppContext);
   const [activeKey, setActiveKey] = useState(localStorage.getItem("activeKey") || "0");
+  const headers = useGenerateAuthHeaders();
   useEffect(() => {
     localStorage.setItem("activeKey", activeKey);
   }, [activeKey]);
@@ -35,10 +36,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, idT
     try {
       const response = await fetch(`${apiBaseUrl}/api/parameters?study_id=${study_id}`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
+        headers,
         body: JSON.stringify(Object.fromEntries(formData)),
       });
       if (!response.ok) {

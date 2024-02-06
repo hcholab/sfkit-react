@@ -2,11 +2,13 @@ import React, { useContext, useState } from "react";
 import { Alert, Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../../App";
-import useAuthToken from "../../hooks/useAuthToken";
+import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
+import { useAuth } from "react-oidc-context";
 
 const CreateStudy: React.FC = () => {
   const { apiBaseUrl } = useContext(AppContext);
-  const { idToken } = useAuthToken();
+  const idToken = useAuth().user?.id_token || "";
+  const headers = useGenerateAuthHeaders();
   const location = useLocation();
   const { studyType, setupConfig } = location.state as { studyType: string; setupConfig: string };
   const navigate = useNavigate();
@@ -33,6 +35,13 @@ const CreateStudy: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (
+      !idToken &&
+      !window.confirm("You are not logged in. Do you want to continue creating the study without logging in?")
+    ) {
+      return;
+    }
+
     const requestData = {
       ...formData,
       study_type: studyType,
@@ -42,10 +51,7 @@ const CreateStudy: React.FC = () => {
     try {
       const response = await fetch(`${apiBaseUrl}/api/create_study`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
+        headers,
         body: JSON.stringify(requestData),
       });
 
@@ -56,7 +62,11 @@ const CreateStudy: React.FC = () => {
       const data = await response.json();
 
       if (data.study_id) {
-        navigate(`/studies/${data.study_id}`, { state: { isNewStudy: true } });
+        if (!idToken) {
+          navigate(`/studies/${data.study_id}/${data.auth_key}`, { state: { isNewStudy: true } });
+        } else {
+          navigate(`/studies/${data.study_id}`, { state: { isNewStudy: true } });
+        }
       } else {
         throw new Error("Unexpected error: Study title not returned from server");
       }

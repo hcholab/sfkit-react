@@ -13,7 +13,6 @@ interface StudyHeaderProps {
   description: string;
   study: Study;
   userId: string;
-  idToken: string;
 }
 
 const StudyHeader: React.FC<StudyHeaderProps> = ({
@@ -25,7 +24,6 @@ const StudyHeader: React.FC<StudyHeaderProps> = ({
   description,
   study,
   userId,
-  idToken,
 }) => {
   return (
     <div className="mt-0 mb-3">
@@ -37,8 +35,8 @@ const StudyHeader: React.FC<StudyHeaderProps> = ({
       <h3 className="h3 mb-0">{title}</h3>
       <StudyConfigBadge setupConfiguration={setupConfiguration} studyType={studyType} />
       <div className="my-3">{description}</div>
-      <StudyInfoModal study={study} userId={userId} idToken={idToken} />
-      <StudyParametersModal study={study} userId={userId} idToken={idToken} />
+      <StudyInfoModal study={study} userId={userId} />
+      <StudyParametersModal study={study} userId={userId} />
     </div>
   );
 };

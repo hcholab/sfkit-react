@@ -5,6 +5,7 @@ import { AppContext } from "../../App";
 import { Study } from "../../types/study";
 import StudyConfigBadge from "./StudyConfigBadge";
 import { DocumentData } from "firebase/firestore";
+import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 
 interface StudyProps {
   study: Study;
@@ -17,6 +18,7 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, idToken, user }) =>
   const { apiBaseUrl } = useContext(AppContext);
   const [infoModalShow, setInfoModalShow] = useState(false);
   const [joinModalShow, setJoinModalShow] = useState(false);
+  const headers = useGenerateAuthHeaders();
 
   const isUserParticipant = () => study.participants.includes(userId);
   const isUserInvited = () => study.invited_participants?.includes(user?.email);
@@ -29,10 +31,7 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, idToken, user }) =>
     try {
       const response = await fetch(`${apiBaseUrl}/api/request_join_study?study_id=${study.study_id}`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
+        headers,
         body: JSON.stringify({ message: (e.target as HTMLFormElement).message.value }),
       });
 
@@ -77,10 +76,7 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, idToken, user }) =>
     try {
       const response = await fetch(`${apiBaseUrl}/api/accept_invitation?study_id=${study.study_id}`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
+        headers,
       });
 
       const data = await response.json();
@@ -114,6 +110,10 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, idToken, user }) =>
   };
 
   const renderJoinStudyOption = () => {
+    if (!idToken) {
+      return null;
+    }
+
     if (isStudyFull()) {
       return <p>(This study is full)</p>;
     } else {

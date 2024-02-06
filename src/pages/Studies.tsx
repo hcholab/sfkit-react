@@ -1,15 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../App";
-import LoginButton from "../components/LoginButton";
 import ChooseWorkflow from "../components/studies/ChooseWorkflow";
 import DisplayStudy from "../components/studies/DisplayStudy";
 import useAuthToken from "../hooks/useAuthToken";
 import { Study } from "../types/study";
 import { DocumentData, doc, onSnapshot } from "firebase/firestore";
 import { getDb } from "../hooks/firebase";
+import LoginButton from "../components/LoginButton";
+import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 
 const Studies: React.FC = () => {
   const { apiBaseUrl } = useContext(AppContext);
+  const onTerra = apiBaseUrl.includes("broad");
   const { idToken, userId, tokenLoading } = useAuthToken();
   const [activeTab, setActiveTab] = useState(() => {
     return localStorage.getItem("activeTab") || "mine";
@@ -17,6 +19,7 @@ const Studies: React.FC = () => {
   const [myStudies, setMyStudies] = useState<Study[] | null>(null);
   const [otherStudies, setOtherStudies] = useState<Study[] | null>(null);
   const [user, setUser] = useState<DocumentData | null>(null);
+  const headers = useGenerateAuthHeaders();
 
   useEffect(() => {
     if (userId) {
@@ -31,47 +34,50 @@ const Studies: React.FC = () => {
   }, [userId]);
 
   useEffect(() => {
-    if (idToken) {
-      const fetchMyStudies = async (idToken: string) => {
-        try {
-          const response = await fetch(`${apiBaseUrl}/api/my_studies`, {
-            headers: {
-              Authorization: `Bearer ${idToken}`,
-            },
-          });
-          const data = await response.json();
-          setMyStudies(data.studies);
-        } catch (error) {
-          console.error("Error fetching my studies:", error);
-        }
-      };
-      fetchMyStudies(idToken);
-
-      const fetchPublicStudies = async (idToken: string) => {
-        try {
-          const response = await fetch(`${apiBaseUrl}/api/public_studies`, {
-            headers: {
-              Authorization: `Bearer ${idToken}`,
-            },
-          });
-          const data = await response.json();
-          setOtherStudies(data.studies);
-        } catch (error) {
-          console.error("Error fetching public studies:", error);
-        }
-      };
-      fetchPublicStudies(idToken);
+    if (!idToken) {
+      return;
     }
-  }, [apiBaseUrl, idToken]);
+
+    const fetchMyStudies = async () => {
+      try {
+        const response = await fetch(`${apiBaseUrl}/api/my_studies`, {
+          headers,
+        });
+        const data = await response.json();
+        setMyStudies(data.studies);
+      } catch (error) {
+        console.error("Error fetching my studies:", error);
+      }
+    };
+    fetchMyStudies();
+  }, [apiBaseUrl, idToken, headers]);
 
   useEffect(() => {
-    localStorage.setItem("activeTab", activeTab);
-  }, [activeTab]);
+    const fetchPublicStudies = async () => {
+      try {
+        const response = await fetch(`${apiBaseUrl}/api/public_studies`);
+        const data = await response.json();
+        setOtherStudies(data.studies);
+      } catch (error) {
+        console.error("Error fetching public studies:", error);
+      }
+    };
+    fetchPublicStudies();
+  }, [apiBaseUrl]);
+
+  useEffect(() => {
+    if (myStudies && myStudies.length > 0) {
+      setActiveTab("mine");
+    } else if (otherStudies && otherStudies.length > 0) {
+      setActiveTab("others");
+    }
+  }, [myStudies, otherStudies]);
 
   if (tokenLoading) {
     return <div>Loading...</div>;
   }
-  if (!idToken) {
+
+  if (!idToken && onTerra) {
     return (
       <div
         className="d-flex flex-column align-items-center justify-content-center"
@@ -88,11 +94,7 @@ const Studies: React.FC = () => {
     <section className="py-5 main-content">
       <div className="container">
         <div className="row text-center">
-          {myStudies && myStudies.length !== 0 ? (
-            <h1 className="fw-normal">Registered Studies</h1>
-          ) : (
-            <h3 className="fw-normal">There are no registered studies.</h3>
-          )}
+          <h1 className="fw-normal">Registered Studies</h1>
         </div>
 
         <ChooseWorkflow />
@@ -123,7 +125,9 @@ const Studies: React.FC = () => {
             <div className={`container tab-pane fade ${activeTab === "mine" ? "show active" : ""}`} id="mine">
               <div className="row">
                 {myStudies === null ? (
-                  <div>Loading...</div>
+                  <div className="col-12 mt-4">
+                    <p className="text-muted">You are not logged in so have no studies.</p>
+                  </div>
                 ) : myStudies.length === 0 ? (
                   <div className="col-12 mt-4">
                     <p className="text-muted">You are not currently participating in any studies.</p>

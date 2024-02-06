@@ -4,7 +4,7 @@ import { Firestore, getFirestore } from "firebase/firestore";
 
 let db: Firestore;
 
-export const getFirestoreDatabase = async (customToken: string, apiKey: string, projectId: string, databaseId: string) => {
+export const getFirestoreDatabase = async (customToken: string, apiKey: string, projectId: string, databaseId: string): Promise<string> => {
   const app = initializeApp({ apiKey, projectId });
   const auth = getAuth(app);
   const { user: { uid } } = await signInWithCustomToken(auth, customToken);

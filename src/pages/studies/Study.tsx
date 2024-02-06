@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Alert, Col, Container, Row, Tab, Tabs } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import StudyParticipants from "../../components/studies/StudyParticipants";
-import useAuthToken from "../../hooks/useAuthToken";
+import useFirestore from "../../hooks/useFirestore";
 import { ParameterGroup, Study as StudyType } from "../../types/study";
 
 import { AppContext } from "../../App";
@@ -12,14 +12,14 @@ import InstructionArea from "../../components/studies/InstructionArea";
 import StudyActionButtons from "../../components/studies/StudyActionButtons";
 import StudyHeader from "../../components/studies/StudyHeader";
 import { getDb } from "../../hooks/firebase";
+import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
+import { useAuth } from "react-oidc-context";
 
-const fetchStudy = async (apiBaseUrl: string, study_id: string, idToken: string) => {
+const fetchStudy = async (apiBaseUrl: string, study_id: string, headers: Record<string, string>) => {
   try {
     const response = await fetch(`${apiBaseUrl}/api/study?study_id=${study_id}`, {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${idToken}`,
-      },
+      headers,
     });
 
     if (!response.ok) {
@@ -37,8 +37,13 @@ const fetchStudy = async (apiBaseUrl: string, study_id: string, idToken: string)
 const Study: React.FC = () => {
   const { apiBaseUrl } = useContext(AppContext);
   const navigate = useNavigate();
-  const { study_id } = useParams();
-  const { idToken, userId, tokenLoading, isDbInitialized } = useAuthToken();
+  const { study_id, auth_key = "" } = useParams();
+  const headers = useGenerateAuthHeaders();
+
+  const firestoreData = useFirestore();
+  const { userId, isDbInitialized } = firestoreData;
+  const idToken = useAuth().user?.id_token || "";
+
   const [study, setStudy] = useState<StudyType | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [status, setStatus] = useState<string>("");
@@ -59,9 +64,7 @@ const Study: React.FC = () => {
 
     await fetch(`${apiBaseUrl}/api/restart_study?study_id=${study_id}`, {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${idToken}`,
-      },
+      headers,
     });
 
     setIsRestarting(false);
@@ -71,9 +74,7 @@ const Study: React.FC = () => {
     try {
       const response = await fetch(`${apiBaseUrl}/api/start_protocol?study_id=${study_id}`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
+        headers,
       });
 
       if (!response.ok) {
@@ -94,9 +95,7 @@ const Study: React.FC = () => {
     try {
       const response = await fetch(`${apiBaseUrl}/api/download_auth_key?study_id=${study_id}`, {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
+        headers,
       });
 
       if (!response.ok) {
@@ -124,9 +123,7 @@ const Study: React.FC = () => {
       try {
         const response = await fetch(`${apiBaseUrl}/api/delete_study?study_id=${study_id}`, {
           method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
+          headers,
         });
 
         if (!response.ok) {
@@ -169,10 +166,10 @@ const Study: React.FC = () => {
   }, [isDbInitialized, study_id, userId]);
 
   useEffect(() => {
-    if (idToken) {
+    if (idToken || auth_key) {
       const fetchAndSetStudy = async () => {
         try {
-          const fetchedStudy = await fetchStudy(apiBaseUrl, study_id?.toString() || "", idToken);
+          const fetchedStudy = await fetchStudy(apiBaseUrl, study_id?.toString() || "", headers);
           setStudy(fetchedStudy);
         } catch (error) {
           if (error instanceof Error) {
@@ -185,10 +182,9 @@ const Study: React.FC = () => {
 
       fetchAndSetStudy();
     }
-  }, [apiBaseUrl, idToken, study_id]);
+  }, [idToken, auth_key, apiBaseUrl, study_id, headers]);
 
   if (errorMessage) return <div>{errorMessage}</div>;
-  if (tokenLoading || !isDbInitialized) return <div>Loading...</div>;
   if (!study) return <div>Study not found</div>;
   if (!study.participants.includes(userId)) return <div>Not authorized</div>;
 
@@ -213,6 +209,12 @@ const Study: React.FC = () => {
               )}
             </div>
 
+            {!idToken && (
+              <Alert variant="warning" className="mt-3">
+                Note: you created this study anonymously. Please save the link if you would like to return.
+              </Alert>
+            )}
+
             <Tabs defaultActiveKey="main_study" className="mt-0 pt-0 mb-3">
               <Tab eventKey="main_study" title="Main">
                 <Container>
@@ -225,9 +227,8 @@ const Study: React.FC = () => {
                     description={study.description}
                     study={study}
                     userId={userId}
-                    idToken={idToken}
                   />
-                  <StudyParticipants study={study} userId={userId} idToken={idToken} />
+                  <StudyParticipants study={study} userId={userId} />
                   <InstructionArea
                     studyType={study.study_type}
                     demo={study.demo}
@@ -251,7 +252,7 @@ const Study: React.FC = () => {
                 </Container>
               </Tab>
               <Tab eventKey="chat_study" title="Chat">
-                <ChatStudyTab study={study} userId={userId} idToken={idToken} />
+                <ChatStudyTab study={study} userId={userId} />
               </Tab>
             </Tabs>
           </div>

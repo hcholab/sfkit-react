@@ -4,16 +4,16 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../../App";
 import { Study } from "../../types/study";
 import SharedStudyParameters from "./SharedStudyParameters";
+import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 
 interface StudyParametersProps {
   study: Study;
   userId: string;
-  idToken: string;
 }
 
-const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId, idToken }) => {
+const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId }) => {
   const { apiBaseUrl } = useContext(AppContext);
-  // show modal if study is new
+  const headers = useGenerateAuthHeaders();
   const location = useLocation();
   const navigate = useNavigate();
   const isNewStudy = location.state?.isNewStudy;
@@ -37,10 +37,7 @@ const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId, i
     try {
       const response = await fetch(`${apiBaseUrl}/api/parameters?study_id=${study.study_id}`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
+        headers,
         body: JSON.stringify(Object.fromEntries(formData)),
       });
       if (!response.ok) {
