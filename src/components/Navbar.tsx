@@ -2,11 +2,13 @@ import * as React from "react";
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
 import NotificationList from "./NotificationList";
-import useAuthToken from "../hooks/useAuthToken";
 import { Link } from "react-router-dom";
+import { useAuth } from "react-oidc-context";
+import useFirestore from "../hooks/useFirestore";
 
 const Navbar: React.FC = () => {
-  const { idToken, userId, isDbInitialized } = useAuthToken();
+  const idToken = useAuth().user?.id_token || "";
+  const { userId, isDbInitialized } = useFirestore();
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light py-4">

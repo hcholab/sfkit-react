@@ -1,25 +1,29 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../App";
 import ChooseWorkflow from "../components/studies/ChooseWorkflow";
 import DisplayStudy from "../components/studies/DisplayStudy";
-import useAuthToken from "../hooks/useAuthToken";
 import { Study } from "../types/study";
 import { DocumentData, doc, onSnapshot } from "firebase/firestore";
 import { getDb } from "../hooks/firebase";
 import LoginButton from "../components/LoginButton";
 import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
+import useFirestore from "../hooks/useFirestore";
+import { useAuth } from "react-oidc-context";
 
 const Studies: React.FC = () => {
   const { apiBaseUrl } = useContext(AppContext);
   const onTerra = apiBaseUrl.includes("broad");
-  const { idToken, userId, tokenLoading } = useAuthToken();
   const [activeTab, setActiveTab] = useState(() => {
     return localStorage.getItem("activeTab") || "mine";
   });
   const [myStudies, setMyStudies] = useState<Study[] | null>(null);
   const [otherStudies, setOtherStudies] = useState<Study[] | null>(null);
   const [user, setUser] = useState<DocumentData | null>(null);
+  const isFetchingPublicStudiesRef = useRef(false);
+
   const headers = useGenerateAuthHeaders();
+  const idToken = useAuth().user?.id_token || "";
+  const { userId } = useFirestore();
 
   useEffect(() => {
     if (userId) {
@@ -34,36 +38,50 @@ const Studies: React.FC = () => {
   }, [userId]);
 
   useEffect(() => {
-    if (!idToken) {
-      return;
+    if (idToken) {
+      const fetchMyStudies = async () => {
+        try {
+          const response = await fetch(`${apiBaseUrl}/api/my_studies`, {
+            headers,
+          });
+          const data = await response.json();
+          setMyStudies(data.studies);
+        } catch (error) {
+          console.error("Error fetching my studies:", error);
+        }
+      };
+      fetchMyStudies();
     }
-
-    const fetchMyStudies = async () => {
-      try {
-        const response = await fetch(`${apiBaseUrl}/api/my_studies`, {
-          headers,
-        });
-        const data = await response.json();
-        setMyStudies(data.studies);
-      } catch (error) {
-        console.error("Error fetching my studies:", error);
-      }
-    };
-    fetchMyStudies();
   }, [apiBaseUrl, idToken, headers]);
 
   useEffect(() => {
+    // on Terra, we need authorization
+    if ((!headers.Authorization || headers.Authorization === "Bearer ") && onTerra) {
+      return;
+    }
+    // we don't need to fetch public studies if we already have them
+    if (otherStudies && otherStudies.length > 0) {
+      return;
+    }
     const fetchPublicStudies = async () => {
-      try {
-        const response = await fetch(`${apiBaseUrl}/api/public_studies`);
-        const data = await response.json();
-        setOtherStudies(data.studies);
-      } catch (error) {
-        console.error("Error fetching public studies:", error);
+      if (!isFetchingPublicStudiesRef.current) {
+        isFetchingPublicStudiesRef.current = true;
+        try {
+          const response = await fetch(`${apiBaseUrl}/api/public_studies`, {
+            headers,
+          });
+          const data = await response.json();
+          setOtherStudies(data.studies);
+        } catch (error) {
+          console.error("Error fetching public studies:", error);
+        } finally {
+          isFetchingPublicStudiesRef.current = false;
+        }
       }
     };
+
     fetchPublicStudies();
-  }, [apiBaseUrl]);
+  }, [apiBaseUrl, headers, onTerra, otherStudies]);
 
   useEffect(() => {
     if (myStudies && myStudies.length > 0) {
@@ -72,10 +90,6 @@ const Studies: React.FC = () => {
       setActiveTab("others");
     }
   }, [myStudies, otherStudies]);
-
-  if (tokenLoading) {
-    return <div>Loading...</div>;
-  }
 
   if (!idToken && onTerra) {
     return (
