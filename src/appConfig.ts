@@ -1,4 +1,5 @@
 import { UserManagerSettings } from "oidc-client-ts";
+import { WebStorageStateStore } from "oidc-client-ts";
 
 export type AppConfig = {
     apiBaseUrl: string;
@@ -21,6 +22,7 @@ export const getAppConfig = async (): Promise<AppConfig> => {
             accessTokenExpiringNotificationTimeInSeconds: 330,
             includeIdTokenInSilentRenew: true,
             extraQueryParams: { access_type: 'offline' },
+            userStore: new WebStorageStateStore({ store: window.localStorage }),
             ...auth,
         }
     };
