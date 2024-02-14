@@ -185,6 +185,7 @@ const Study: React.FC = () => {
   }, [idToken, auth_key, apiBaseUrl, study_id, headers]);
 
   if (errorMessage) return <div>{errorMessage}</div>;
+  // TODO: distinguish between "not found" and "finding"
   if (!study) return <div>Study not found</div>;
   if (!study.participants.includes(userId)) return <div>Not authorized</div>;
 
