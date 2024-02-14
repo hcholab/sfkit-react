@@ -22,6 +22,13 @@ const ChooseWorkflow: React.FC = () => {
     handleClose();
   };
 
+  const workflowOptions = [
+    { id: "mpcgwas", value: "MPC-GWAS", label: "MPC-GWAS" },
+    { id: "sfgwas", value: "SF-GWAS", label: "SF-GWAS" },
+    { id: "pca", value: "PCA", label: "SF-PCA" },
+    { id: "sfrelate", value: "SF-RELATE", label: "SF-RELATE" },
+  ];
+
   return (
     <div>
       <div className="row justify-content-center mb-5 mt-2">
@@ -38,50 +45,22 @@ const ChooseWorkflow: React.FC = () => {
           <div>
             <p>Which workflow would you like to run?</p>
 
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="CHOOSE_STUDY_TYPE"
-                id="mpcgwas"
-                value="MPC-GWAS"
-                checked={studyType === "MPC-GWAS"}
-                onChange={() => setStudyType("MPC-GWAS")}
-              />
-              <label className="form-check-label" htmlFor="mpcgwas">
-                MPC-GWAS
-              </label>
-            </div>
-
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="CHOOSE_STUDY_TYPE"
-                id="sfgwas"
-                value="SF-GWAS"
-                checked={studyType === "SF-GWAS"}
-                onChange={() => setStudyType("SF-GWAS")}
-              />
-              <label className="form-check-label" htmlFor="sfgwas">
-                SF-GWAS
-              </label>
-            </div>
-
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="CHOOSE_STUDY_TYPE"
-                id="pca"
-                value="PCA"
-                checked={studyType === "PCA"}
-                onChange={() => setStudyType("PCA")}
-              />
-              <label className="form-check-label" htmlFor="pca">
-                SF-PCA
-              </label>
-            </div>
+            {workflowOptions.map((option) => (
+              <div className="form-check" key={option.id}>
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="CHOOSE_STUDY_TYPE"
+                  id={option.id}
+                  value={option.value}
+                  checked={studyType === option.value}
+                  onChange={() => setStudyType(option.value)}
+                />
+                <label className="form-check-label" htmlFor={option.id}>
+                  {option.label}
+                </label>
+              </div>
+            ))}
 
             <div className="mt-2">
               <small className="text-muted">

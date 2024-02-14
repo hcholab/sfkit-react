@@ -62,7 +62,8 @@ const TabContent: React.FC<TabContentProps> = ({ activeTab, tabType }) => {
                     The genotype or minor allele dosage matrix is encoded using the PGEN file format for each
                     chromosome. This format has been introduced in the standard
                     <a className="text-decoration-none" href="https://www.cog-genomics.org/plink/2.0/formats">
-                      PLINK2
+                      {" "}
+                      PLINK2{" "}
                     </a>
                     tool for genomic data processing as an efficient way to store large-scale genomic datasets. Note
                     that this file encodes the genomic positions of the SNPs directly.

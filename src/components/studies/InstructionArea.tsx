@@ -6,6 +6,7 @@ import ConfigureStudyModal from "./ConfigureStudyModal";
 import SubTaskContainer from "./SubTaskContainer";
 import TaskElement from "./TaskElement";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
+import { useParams } from "react-router-dom";
 
 interface Props {
   personalParameters: ParameterGroup;
@@ -46,6 +47,7 @@ const InstructionArea: React.FC<Props> = ({
   handleDownloadAuthKey,
 }) => {
   const { apiBaseUrl } = useContext(AppContext);
+  const { auth_key = "" } = useParams();
   const [showModal, setShowModal] = React.useState(false);
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
@@ -80,10 +82,10 @@ const InstructionArea: React.FC<Props> = ({
   }, [apiBaseUrl, study_id, headers]);
 
   React.useEffect(() => {
-    if (idToken && showManhattanDiv && !plotSrcRef.current) {
+    if ((idToken || auth_key) && showManhattanDiv && !plotSrcRef.current) {
       fetchPlotFile();
     }
-  }, [showManhattanDiv, fetchPlotFile, idToken]);
+  }, [showManhattanDiv, fetchPlotFile, idToken, auth_key]);
 
   const handleDownloadResults = async () => {
     try {
@@ -211,22 +213,28 @@ const InstructionArea: React.FC<Props> = ({
           <div className="task text-start">{renderTasks()}</div>
           {String(personalParameters["SEND_RESULTS"]?.value) === "Yes" && (
             <>
-              {showDownloadDiv && (
-                <button onClick={handleDownloadResults} className="btn btn-link text-decoration-none">
-                  Download results
-                  {isDownloading && (
-                    <span className="ms-2 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              {studyType === "SF-RELATE" ? (
+                <div className="mt-2">Your study has completed! Please ssh into your machine to view your results.</div>
+              ) : (
+                <>
+                  {showDownloadDiv && (
+                    <button onClick={handleDownloadResults} className="btn btn-link text-decoration-none">
+                      Download results
+                      {isDownloading && (
+                        <span className="ms-2 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                      )}
+                    </button>
                   )}
-                </button>
-              )}
-              {showManhattanDiv && (
-                <div className="mt-2">
-                  {isFetchingPlot ? (
-                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                  ) : (
-                    <img src={plotSrc} alt="Plot" className="w-100 h-100" />
+                  {showManhattanDiv && (
+                    <div className="mt-2">
+                      {isFetchingPlot ? (
+                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                      ) : (
+                        <img src={plotSrc} alt="Plot" className="w-100 h-100" />
+                      )}
+                    </div>
                   )}
-                </div>
+                </>
               )}
             </>
           )}

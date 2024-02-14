@@ -123,6 +123,27 @@ const Workflows: React.FC = () => {
             encrypted at all times.
           </p>
         </div>
+
+        <div>
+          <h3 className="mt-5 my-4">Discovery of Genetic Relatives</h3>
+          <p>
+            Using genetic data to identify familial relationships between individuals is a common task in genetics that
+            has important implications for both research and personal genomics.
+          </p>
+        </div>
+        <div>
+          <h4 className="my-4 fw-normal">SF-RELATE</h4>
+          <p>
+            SF-RELATE stands for Secure and Federated Genetic Relatives Detection. This workflow is part of our suite of
+            privacy-preserving genetic analysis tools, specifically designed to estimate familial relationships between
+            individuals across different datasets. Like our other SF workflows, SF-RELATE operates under the principle
+            that data privacy is paramount. It allows for the secure comparison of genetic information to infer
+            relationships such as parent-child, siblings, or more distant relations, without ever exposing the raw
+            genetic data to other parties. By leveraging both secure multiparty computation (MPC) and homomorphic
+            encryption (HE), SF-RELATE ensures that all analyses are conducted on encrypted data, providing a powerful
+            tool for researchers and individuals looking to explore genetic relationships securely.
+          </p>
+        </div>
       </div>
     </section>
   );
