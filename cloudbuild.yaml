@@ -3,20 +3,20 @@ steps:
     args: ['build',
            '--build-arg', 'APP_VERSION=$_APP_VERSION',
            '--build-arg', 'BUILD_VERSION=$_BUILD_VERSION',
-           '-t', 'gcr.io/$PROJECT_ID/sfkit-react:$COMMIT_SHA',
+           '-t', 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA',
            '.']
     id: Build
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/sfkit-react:$COMMIT_SHA']
+    args: ['push', 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA']
     id: Push
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
     args:
       - run
       - services
       - update
-      - sfkit-react
+      - $_SERVICE_NAME
       - '--platform=managed'
-      - '--image=gcr.io/$PROJECT_ID/sfkit-react:$COMMIT_SHA'
+      - '--image=gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA'
       - '--region=us-central1'
       - '--min-instances=1'
       - '--quiet'
@@ -28,13 +28,13 @@ steps:
       - run
       - services
       - add-iam-policy-binding
-      - sfkit-react
+      - $_SERVICE_NAME
       - '--region=us-central1'
       - '--member=allUsers'
       - '--role=roles/run.invoker'
     id: SetIAM
 images:
-  - 'gcr.io/$PROJECT_ID/sfkit-react:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA'
 options:
   logging: CLOUD_LOGGING_ONLY
   substitutionOption: ALLOW_LOOSE
@@ -42,6 +42,7 @@ substitutions:
   _DEPLOY_REGION: us-central1
   _APP_VERSION: latest
   _BUILD_VERSION: latest
+  _SERVICE_NAME: sfkit-react-dev
 tags:
   - gcp-cloud-build-deploy-cloud-run
   - gcp-cloud-build-deploy-cloud-run-managed
