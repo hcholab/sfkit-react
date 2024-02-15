@@ -213,7 +213,7 @@ const InstructionArea: React.FC<Props> = ({
           <div className="task text-start">{renderTasks()}</div>
           {String(personalParameters["SEND_RESULTS"]?.value) === "Yes" && (
             <>
-              {studyType === "SF-RELATE" ? (
+              {studyType === "SF-RELATE" && showDownloadDiv ? (
                 <div className="mt-2">Your study has completed! Please ssh into your machine to view your results.</div>
               ) : (
                 <>
