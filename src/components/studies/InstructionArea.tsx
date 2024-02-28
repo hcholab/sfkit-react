@@ -214,7 +214,16 @@ const InstructionArea: React.FC<Props> = ({
           {String(personalParameters["SEND_RESULTS"]?.value) === "Yes" && (
             <>
               {studyType === "SF-RELATE" && showDownloadDiv ? (
-                <div className="mt-2">Your study has completed! Please ssh into your machine to view your results.</div>
+                <div className="mt-2">
+                  Study completed! Download your results below or ssh into your machine to view details.
+                  <br></br>
+                  <button onClick={handleDownloadResults} className="btn btn-link text-decoration-none">
+                    Download results
+                    {isDownloading && (
+                      <span className="ms-2 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    )}
+                  </button>
+                </div>
               ) : (
                 <>
                   {showDownloadDiv && (
