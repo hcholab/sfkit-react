@@ -11,6 +11,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, setActiveTab, 
     { id: "data-mpcgwas", label: "MPC-GWAS workflow" },
     { id: "data-sfgwas", label: "SF-GWAS workflow" },
     { id: "data-sfpca", label: "SF-PCA workflow" },
+    { id: "data-sfrelate", label: "SF-Relate workflow" },
   ];
 
   const configTabs = [
