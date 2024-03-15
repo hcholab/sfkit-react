@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../App";
 import { getFirestoreDatabase } from "./firebase";
 import useGenerateAuthHeaders from "./useGenerateAuthHeaders";
+import { useAuth } from "react-oidc-context";
 
 type FirestoreHook = {
   userId: string;
@@ -14,6 +15,7 @@ const useFirestore = (): FirestoreHook => {
   const [userId, setUserId] = useState("");
   const headers = useGenerateAuthHeaders();
   const isFetchingCustomTokenRef = useRef(false);
+  const auth = useAuth();
 
   useEffect(() => {
     if (!headers.Authorization || headers.Authorization === "Bearer " || isFetchingCustomTokenRef.current) {
@@ -25,6 +27,10 @@ const useFirestore = (): FirestoreHook => {
       headers,
     })
       .then(async (res) => {
+        if (res.status === 401) {
+          auth.removeUser();
+          window.location.reload();
+        }
         const data = await res.json();
         if (data.customToken && data.firebaseApiKey && data.firebaseProjectId && data.firestoreDatabaseId) {
           const uid = await getFirestoreDatabase(
