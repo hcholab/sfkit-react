@@ -51,7 +51,7 @@ const useFirestore = (): FirestoreHook => {
       .finally(() => {
         isFetchingCustomTokenRef.current = false;
       });
-  }, [apiBaseUrl, headers]);
+  }, [apiBaseUrl, headers, auth]);
 
   return {
     userId,
