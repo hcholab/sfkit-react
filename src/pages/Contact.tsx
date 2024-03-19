@@ -3,7 +3,7 @@ import * as React from "react";
 const Contact: React.FC = () => {
   return (
     <section className="py-5">
-      <div className="container col-12 col-lg-6" style={{ textAlign: "left" }}>
+      <div className="container col-12 col-lg-7" style={{ textAlign: "left" }}>
         <h2 className="mb-4 text-center fw-normal">Contact Us</h2>
         <hr />
         <h4 className="mt-4">Email</h4>

@@ -102,7 +102,7 @@ const TabContent: React.FC<TabContentProps> = ({ activeTab, tabType }) => {
             id="data-sfrelate"
           >
             <div className="row mt-3">
-              <p>
+              <div>
                 Input to this workflow consists of the following files:
                 <ul>
                   <li>
@@ -133,7 +133,7 @@ const TabContent: React.FC<TabContentProps> = ({ activeTab, tabType }) => {
                     minor allele frequency of the base pair.
                   </li>
                 </ul>
-              </p>
+              </div>
             </div>
           </div>
         </>

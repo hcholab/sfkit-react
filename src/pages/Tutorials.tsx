@@ -7,7 +7,7 @@ const Tutorials: React.FC = () => {
 
   return (
     <section className="py-5">
-      <div className="container col-12 col-lg-6">
+      <div className="container col-12 col-lg-7">
         <h2 className="mb-4 text-center fw-normal">Tutorials</h2>
 
         <ul className="nav nav-tabs justify-content-center mb-4">
