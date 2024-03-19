@@ -3,16 +3,19 @@ export const submitStudyParameters = async (
   apiBaseUrl: string,
   studyId: string,
   headers: HeadersInit,
-  setFeedback?: (feedback: string) => void
+  setFeedback?: (feedback: string) => void,
+  setErrorMessage?: (message: string) => void
 ) => {
   event.preventDefault();
 
   const formData = new FormData(event.currentTarget);
-  let parameters: { [key: string]: string | number } = {};
+  const parameters: { [key: string]: string | number } = {};
   formData.forEach((value, key) => {
-    if (typeof value === "string") {
+    if (key === "BASE_P") {
+      parameters[key] = value.toString();
+    } else if (typeof value === "string") {
       const numberValue = Number(value);
-      parameters[key] = !isNaN(numberValue) && value !== "" ? numberValue : value;
+      parameters[key] = !isNaN(numberValue) && value !== "" && numberValue <= Number.MAX_SAFE_INTEGER ? numberValue : value;
     }
   });
 
@@ -34,7 +37,10 @@ export const submitStudyParameters = async (
   } catch (error) {
     console.error("Failed to save study parameters:", error);
     if (setFeedback) {
-      setFeedback("Failed!");
+      setFeedback("Failed! - " + (error as Error).message);
+    }
+    if (setErrorMessage) {
+      setErrorMessage((error as Error).message || "Failed to save study parameters");
     }
   }
 };

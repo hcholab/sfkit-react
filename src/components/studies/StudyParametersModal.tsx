@@ -19,6 +19,7 @@ const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId })
   const navigate = useNavigate();
   const isNewStudy = location.state?.isNewStudy;
   const [show, setShow] = useState(isNewStudy);
+  const [errorMessage, setErrorMessage] = useState("");
   useEffect(() => {
     if (isNewStudy) {
       navigate(location.pathname, { replace: true, state: {} });
@@ -31,7 +32,7 @@ const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId })
   const handleShow = () => setShow(true);
 
   const handleSaveChanges = (e: React.FormEvent<HTMLFormElement>) => {
-    submitStudyParameters(e, apiBaseUrl, study.study_id, headers);
+    submitStudyParameters(e, apiBaseUrl, study.study_id, headers, undefined, setErrorMessage);
   };
 
   return (
@@ -46,6 +47,7 @@ const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId })
         </Modal.Header>
         <Form onSubmit={handleSaveChanges}>
           <Modal.Body>
+            {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
             <SharedStudyParameters study={study} isOwner={owner} userId={userId} />
           </Modal.Body>
           <Modal.Footer>
