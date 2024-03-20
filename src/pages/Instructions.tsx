@@ -12,7 +12,7 @@ const Instructions: React.FC = () => {
 
   return (
     <section className="py-5">
-      <div className="container col-12 col-lg-6">
+      <div className="container col-12 col-lg-7">
         <h2 className="mb-4 text-center fw-normal">Instructions</h2>
         <hr />
 

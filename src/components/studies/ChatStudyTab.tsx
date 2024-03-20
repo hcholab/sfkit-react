@@ -54,7 +54,7 @@ const ChatStudyTab: React.FC<Props> = ({ study, userId }) => {
         const response = await fetch(`${apiBaseUrl}/api/send_message`, {
           method: "POST",
           headers,
-          body: JSON.stringify({ message, sender: userId, study_id: study.study_id }),
+          body: JSON.stringify({ message, study_id: study.study_id }),
         });
 
         if (!response.ok) {

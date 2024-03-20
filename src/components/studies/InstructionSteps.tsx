@@ -5,6 +5,7 @@ import info_square from "../../static/images/info-square.svg";
 import { ParameterGroup } from "../../types/study";
 import GivePermissions from "./GivePermissions";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
+import { submitStudyParameters } from "../../utils/formUtils";
 
 interface InstructionStepsProps {
   demo: boolean;
@@ -26,28 +27,8 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
     setSubmitFeedback(null);
   }, [activeKey]);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    setSubmitFeedback("Processing...");
-
-    const formData = new FormData(event.currentTarget);
-
-    try {
-      const response = await fetch(`${apiBaseUrl}/api/parameters?study_id=${study_id}`, {
-        method: "POST",
-        headers,
-        body: JSON.stringify(Object.fromEntries(formData)),
-      });
-      if (!response.ok) {
-        throw new Error((await response.json()).error || "Unexpected error");
-      }
-
-      setSubmitFeedback("Success!");
-    } catch (error) {
-      console.error("Failed to save study parameters:", error);
-      setSubmitFeedback("Failed!");
-    }
+  const handleSubmitParameters = (event: React.FormEvent<HTMLFormElement>) => {
+    submitStudyParameters(event, apiBaseUrl, study_id, headers, setSubmitFeedback);
   };
 
   return (
@@ -129,7 +110,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
                 (the default configuration/settings for the bucket are fine).
               </p>
               <p>2. Please set the following user-specific parameters:</p>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmitParameters}>
                 <div className="row mb-3 p-3 bg-light">
                   {["GCP_PROJECT", "DATA_PATH"].map((key) => (
                     <React.Fragment key={key}>
@@ -198,7 +179,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
                 </a>{" "}
                 section in the instructions page.
               </p>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmitParameters}>
                 <div className="row mb-3">
                   <label htmlFor="NUM_CPUS" className="col-sm-3 col-form-label text-start">
                     {parameters.NUM_CPUS.name}
@@ -273,7 +254,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
             <div>
               <p>Options for what happens on protocol completion:</p>
             </div>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmitParameters}>
               {["DELETE_VM", "SEND_RESULTS"].map((key) => (
                 <div className="text-start row" key={key}>
                   <label htmlFor={key} className="col-sm-3 col-form-label text-start">
