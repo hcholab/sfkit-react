@@ -29,7 +29,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId }) => {
       const response = await fetch(`${apiBaseUrl}/api/invite_participant`, {
         method: "POST",
         headers,
-        body: JSON.stringify({ study_id: study.study_id, inviter_id: userId, invitee_email: email, message }),
+        body: JSON.stringify({ study_id: study.study_id, invitee_email: email, message }),
       });
 
       if (!response.ok) {

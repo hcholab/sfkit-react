@@ -48,6 +48,9 @@ const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId })
         <Form onSubmit={handleSaveChanges}>
           <Modal.Body>
             {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+            <div className="alert alert-info">
+              You can come back and edit these parameters at any time before you start the study.
+            </div>
             <SharedStudyParameters study={study} isOwner={owner} userId={userId} />
           </Modal.Body>
           <Modal.Footer>
