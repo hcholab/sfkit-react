@@ -84,6 +84,19 @@ const SampleDataSection: React.FC<SectionProps> = ({ activeTab, setActiveTab }) 
               </a>
             </div>
           </div>
+          <div
+            className={`container tab-pane fade ${activeTab === "data-sfrelate" ? "show active" : ""}`}
+            id="data-sfrelate"
+          >
+            <div className="d-flex justify-content-around align-items-center">
+              <a className="btn btn-secondary" href={`${BASE_URL}/sfrelate_p1.zip`}>
+                Party 1 SF-RELATE Sample Data
+              </a>
+              <a className="btn btn-secondary" href={`${BASE_URL}/sfrelate_p2.zip`}>
+                Party 2 SF-RELATE Sample Data
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
