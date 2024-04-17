@@ -90,11 +90,50 @@ const TabContent: React.FC<TabContentProps> = ({ activeTab, tabType }) => {
           <div className={`container tab-pane fade ${activeTab === "data-sfpca" ? "show active" : ""}`} id="data-sfpca">
             <div className="row mt-3">
               <p>
-                Each user data, consisting in an horizontal partition of the input matrix (in which the rows are the
-                data samples and the columns correspond to the features) must be locally stored as a single
-                tab-separated file called
+                Each user data, consisting in a horizontal partition of the input matrix (in which the rows are the data
+                samples and the columns correspond to the features) must be locally stored as a single tab-separated
+                file called
                 <code> data.txt</code>.
               </p>
+            </div>
+          </div>
+          <div
+            className={`container tab-pane fade ${activeTab === "data-sfrelate" ? "show active" : ""}`}
+            id="data-sfrelate"
+          >
+            <div className="row mt-3">
+              <div>
+                Input to this workflow consists of the following files:
+                <ul>
+                  <li>
+                    <code>all_chrs.[pgen|psam|pvar]</code> - Phased haplotype and metadata files encoding sample and
+                    variant information in the standard{" "}
+                    <a className="text-decoration-none" href="https://www.cog-genomics.org/plink/2.0/input#pgen">
+                      PLINK2 genotype format
+                    </a>
+                    .
+                  </li>
+                  <li>
+                    <code>chr[1-22].gmap.gz</code> - Gzipped genetic maps. The first line of the file contains{" "}
+                    <code>pos\tchr\tcM</code>, and each following line contains the bp location, the chromosome ID and
+                    the corresponding genetic location (separated by tabs). One can retrieve these files from{" "}
+                    <a className="text-decoration-none" href="https://github.com/odelaneau/shapeit4/tree/master/maps">
+                      shapeit4
+                    </a>{" "}
+                    or other public resources, but should be careful to make sure the genome build positions match the
+                    ones in <code>haps/chr[1-22].pvar</code>.
+                  </li>
+                  <li>
+                    <code>snpsForKING.txt</code> - This file lists the RSIDs, one on each line, on which the KING
+                    estimator is computed. The RSIDs should be a subset of the variants in the .pvar file.
+                  </li>
+                  <li>
+                    <code>chr[1-22].txt</code> - Allele frequency files. In the order of appearance in the{" "}
+                    <code>all_chrs.pvar</code> file, each line in the file stores a floating point number denoting the
+                    minor allele frequency of the base pair.
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </>

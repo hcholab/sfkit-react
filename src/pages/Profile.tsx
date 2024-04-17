@@ -15,6 +15,7 @@ const Profile = () => {
     displayName: "",
     about: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
 
   const idToken = useAuth().user?.id_token || "";
   const { userId } = useFirestore();
@@ -38,9 +39,12 @@ const Profile = () => {
           });
         } else {
           console.error("Failed to fetch profile data");
+          const errorData = await response.json();
+          setErrorMessage(errorData.message || "Failed to fetch profile data");
         }
       } catch (error) {
         console.error("Error fetching profile data:", error);
+        setErrorMessage("An error occurred while fetching the profile data.");
       }
     };
 
@@ -71,11 +75,14 @@ const Profile = () => {
       if (response.ok) {
         console.log("Profile updated successfully");
         setIsEditMode(false);
+        setErrorMessage("");
       } else {
-        console.error("Failed to update profile");
+        const errorData = await response.json();
+        console.error(errorData.error || "Failed to update profile");
+        setErrorMessage(errorData.error || "Failed to update profile");
       }
     } catch (error) {
-      console.error("Error updating profile:", error);
+      setErrorMessage("Failed to update profile");
     }
   };
 
@@ -88,9 +95,9 @@ const Profile = () => {
           <div className="col-12 col-lg-9 mx-auto">
             <div className="p-5 bg-light rounded">
               <h2 className="fw-normal text-center">Profile</h2>
+              {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
               {isEditMode ? (
                 <form onSubmit={handleFormSubmit}>
-                  {/* Edit mode with form inputs */}
                   <div className="mb-3">
                     <label className="form-label" htmlFor="displayName">
                       <b>Display Name</b>
@@ -105,7 +112,6 @@ const Profile = () => {
                     />
                     <div className="form-text">This is the name that will be displayed on your posts.</div>
                   </div>
-                  {/* ... (more form inputs for other profile data) */}
                   <div className="mb-3">
                     <label className="form-label" htmlFor="about">
                       <b>About</b>

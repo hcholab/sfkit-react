@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-type WorkflowType = "mpcgwas" | "sfgwas" | "sfpca";
-const workflows: WorkflowType[] = ["mpcgwas", "sfgwas", "sfpca"];
+type WorkflowType = "mpcgwas" | "sfgwas" | "sfpca" | "sfrelate";
+const workflows: WorkflowType[] = ["mpcgwas", "sfgwas", "sfpca", "sfrelate"];
 
 type SelectionsType = {
   [key in WorkflowType]: {
@@ -23,6 +23,7 @@ const MachineRecommendation: React.FC = () => {
     mpcgwas: { rows: 0, cols: 0 },
     sfgwas: { rows: 0, cols: 0 },
     sfpca: { rows: 0, cols: 0 },
+    sfrelate: { rows: 0, cols: 0 },
   });
 
   const recommendMachine = (workflow: string) => {
@@ -64,47 +65,56 @@ const MachineRecommendation: React.FC = () => {
               className={`tab-pane fade ${activeTab === workflow ? "show active" : ""}`}
               role="tabpanel"
             >
-              <div className="row mt-3">
-                <div className="col-6">
-                  <select
-                    className="form-select"
-                    value={selections[workflow].rows}
-                    onChange={(e) => {
-                      setSelections((prev) => ({
-                        ...prev,
-                        [workflow]: { ...prev[workflow], rows: parseInt(e.target.value) },
-                      }));
-                    }}
-                  >
-                    <option value="0">Approximately how many samples/individuals are in your dataset?</option>
-                    <option value="1">fewer than 30,000</option>
-                    <option value="2">30,000 - 100,000</option>
-                    <option value="3">100,000 - 500,000</option>
-                    <option value="4">more than 500,000</option>
-                  </select>
+              {workflow !== "sfrelate" ? (
+                <div className="row mt-3">
+                  <div className="col-6">
+                    <select
+                      className="form-select"
+                      value={selections[workflow].rows}
+                      onChange={(e) => {
+                        setSelections((prev) => ({
+                          ...prev,
+                          [workflow]: { ...prev[workflow], rows: parseInt(e.target.value) },
+                        }));
+                      }}
+                    >
+                      <option value="0">Approximately how many samples/individuals are in your dataset?</option>
+                      <option value="1">fewer than 30,000</option>
+                      <option value="2">30,000 - 100,000</option>
+                      <option value="3">100,000 - 500,000</option>
+                      <option value="4">more than 500,000</option>
+                    </select>
+                  </div>
+                  <div className="col-6">
+                    <select
+                      className="form-select"
+                      value={selections[workflow].cols}
+                      onChange={(e) => {
+                        setSelections((prev) => ({
+                          ...prev,
+                          [workflow]: { ...prev[workflow], cols: parseInt(e.target.value) },
+                        }));
+                      }}
+                    >
+                      <option value="0">Approximately how many SNPs/rows/columns are in your dataset?</option>
+                      <option value="1">fewer than 700,000</option>
+                      <option value="2">700,000 - 10,000,000</option>
+                      <option value="3">10,000,000 - 30,000,000</option>
+                      <option value="4">more than 30,000,000</option>
+                    </select>
+                  </div>
+                  <div className="col mt-3">
+                    <div className="card card-body">{recommendMachine(workflow)}</div>
+                  </div>
                 </div>
-                <div className="col-6">
-                  <select
-                    className="form-select"
-                    value={selections[workflow].cols}
-                    onChange={(e) => {
-                      setSelections((prev) => ({
-                        ...prev,
-                        [workflow]: { ...prev[workflow], cols: parseInt(e.target.value) },
-                      }));
-                    }}
-                  >
-                    <option value="0">Approximately how many SNPs/rows/columns are in your dataset?</option>
-                    <option value="1">fewer than 700,000</option>
-                    <option value="2">700,000 - 10,000,000</option>
-                    <option value="3">10,000,000 - 30,000,000</option>
-                    <option value="4">more than 30,000,000</option>
-                  </select>
+              ) : (
+                <div className="row mt-3">
+                  <p>
+                    For the SF-Relate workflow, we generally recommend the n2-highmem-128 machines (estimated cost of
+                    $6.50/hour).
+                  </p>
                 </div>
-                <div className="col mt-3">
-                  <div className="card card-body">{recommendMachine(workflow)}</div>
-                </div>
-              </div>
+              )}
             </div>
           ))}
         </div>

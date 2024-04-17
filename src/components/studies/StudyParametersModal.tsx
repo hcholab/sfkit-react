@@ -5,6 +5,7 @@ import { AppContext } from "../../App";
 import { Study } from "../../types/study";
 import SharedStudyParameters from "./SharedStudyParameters";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
+import { submitStudyParameters } from "../../utils/formUtils";
 
 interface StudyParametersProps {
   study: Study;
@@ -18,6 +19,7 @@ const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId })
   const navigate = useNavigate();
   const isNewStudy = location.state?.isNewStudy;
   const [show, setShow] = useState(isNewStudy);
+  const [errorMessage, setErrorMessage] = useState("");
   useEffect(() => {
     if (isNewStudy) {
       navigate(location.pathname, { replace: true, state: {} });
@@ -29,24 +31,8 @@ const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId })
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleSaveChanges = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const formData = new FormData(e.currentTarget);
-
-    try {
-      const response = await fetch(`${apiBaseUrl}/api/parameters?study_id=${study.study_id}`, {
-        method: "POST",
-        headers,
-        body: JSON.stringify(Object.fromEntries(formData)),
-      });
-      if (!response.ok) {
-        throw new Error((await response.json()).error || "Unexpected error");
-      }
-      window.location.reload();
-    } catch (error) {
-      console.error("Failed to save study parameters:", error);
-    }
+  const handleSaveChanges = (e: React.FormEvent<HTMLFormElement>) => {
+    submitStudyParameters(e, apiBaseUrl, study.study_id, headers, undefined, setErrorMessage);
   };
 
   return (
@@ -61,6 +47,10 @@ const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId })
         </Modal.Header>
         <Form onSubmit={handleSaveChanges}>
           <Modal.Body>
+            {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+            <div className="alert alert-info">
+              You can come back and edit these parameters at any time before you start the study.
+            </div>
             <SharedStudyParameters study={study} isOwner={owner} userId={userId} />
           </Modal.Body>
           <Modal.Footer>

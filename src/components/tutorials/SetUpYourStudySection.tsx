@@ -1,17 +1,18 @@
 import React from "react";
 import TabNavigation from "../instructions/TabNavigation";
 
+import { Link } from "react-router-dom";
 import mpcgwas1 from "../../static/images/sample_parameters/mpcgwas1.png";
 import mpcgwas2 from "../../static/images/sample_parameters/mpcgwas2.png";
 import sfgwas1 from "../../static/images/sample_parameters/sfgwas1.png";
 import sfgwas2 from "../../static/images/sample_parameters/sfgwas2.png";
 import sfpca from "../../static/images/sample_parameters/sfpca.png";
-import requestJoin from "../../static/images/tutorial/request_join.png";
+import sfrelate from "../../static/images/sample_parameters/sfrelate.png";
 import approveRequest from "../../static/images/tutorial/approve_request.png";
 import pcaPrepareProject from "../../static/images/tutorial/pca_prepare_project.png";
 import pcaUploadData from "../../static/images/tutorial/pca_upload_data.png";
+import requestJoin from "../../static/images/tutorial/request_join.png";
 import storageBucket from "../../static/images/tutorial/storage_bucket.png";
-import { Link } from "react-router-dom";
 
 interface SectionProps {
   activeTab: string;
@@ -73,6 +74,17 @@ const SetUpYourStudySection: React.FC<SectionProps> = ({ activeTab, setActiveTab
               <div className="row justify-content-center mt-2">
                 <div className="col-md-6">
                   <img className="img-fluid border border-secondary" src={sfpca} alt="" />
+                </div>
+              </div>
+            </div>
+
+            <div
+              className={`tab-pane fade ${activeTab === "data-sfrelate" ? "show active" : ""}`}
+              id="parameters-sfrelate"
+            >
+              <div className="row justify-content-center mt-2">
+                <div className="col-md-6">
+                  <img className="img-fluid border border-secondary" src={sfrelate} alt="" />
                 </div>
               </div>
             </div>

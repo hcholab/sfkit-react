@@ -14,6 +14,7 @@ const StudyInfoModal: React.FC<StudyInfoProps> = ({ study, userId }) => {
   const [show, setShow] = useState(false);
   const [description, setDescription] = useState(study.description || "");
   const [information, setInformation] = useState(study.study_information || "");
+  const [errorMessage, setErrorMessage] = useState("");
   const headers = useGenerateAuthHeaders();
 
   const handleClose = () => setShow(false);
@@ -30,11 +31,13 @@ const StudyInfoModal: React.FC<StudyInfoProps> = ({ study, userId }) => {
       });
 
       if (!response.ok) {
-        throw new Error((await response.json()).error || "Unexpected error");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Unexpected error");
       }
       window.location.reload();
     } catch (error) {
       console.error("Failed to save changes:", error);
+      setErrorMessage((error as Error).message || "Failed to save changes");
     }
   };
 
@@ -50,6 +53,7 @@ const StudyInfoModal: React.FC<StudyInfoProps> = ({ study, userId }) => {
         </Modal.Header>
         <Form onSubmit={handleSaveChanges}>
           <Modal.Body>
+            {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
             <Form.Group className="mb-3">
               <Form.Label>Study Description</Form.Label>
               <Form.Control

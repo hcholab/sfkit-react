@@ -15,6 +15,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId }) => {
   const [showInviteModal, setShowInviteModal] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [message, setMessage] = React.useState("");
+  const [errorMessage, setErrorMessage] = React.useState("");
   const headers = useGenerateAuthHeaders();
 
   const handleShowInviteModal = () => setShowInviteModal(true);
@@ -22,25 +23,29 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId }) => {
 
   const handleInviteSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setErrorMessage("");
 
     try {
       const response = await fetch(`${apiBaseUrl}/api/invite_participant`, {
         method: "POST",
         headers,
-        body: JSON.stringify({ study_id: study.study_id, inviter_id: userId, invitee_email: email, message }),
+        body: JSON.stringify({ study_id: study.study_id, invitee_email: email, message }),
       });
 
       if (!response.ok) {
-        throw new Error((await response.json()).error || "Unexpected error");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Unexpected error");
       }
 
       window.location.reload();
     } catch (error) {
       console.error("Failed to invite participant:", error);
+      setErrorMessage((error as Error).message || "Failed to invite participant");
     }
   };
 
   const handleRemoveParticipant = async (participantId: string) => {
+    setErrorMessage("");
     try {
       const response = await fetch(`${apiBaseUrl}/api/remove_participant`, {
         method: "POST",
@@ -49,16 +54,19 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId }) => {
       });
 
       if (!response.ok) {
-        throw new Error((await response.json()).error || "Unexpected error");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Unexpected error");
       }
 
       window.location.reload();
     } catch (error) {
       console.error("Failed to remove participant:", error);
+      setErrorMessage((error as Error).message || "Failed to remove participant");
     }
   };
 
   const handleApproveRequest = async (participantId: string) => {
+    setErrorMessage("");
     try {
       const response = await fetch(
         `${apiBaseUrl}/api/approve_join_study?study_id=${study.study_id}&userId=${participantId}`,
@@ -69,17 +77,20 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId }) => {
       );
 
       if (!response.ok) {
-        throw new Error((await response.json()).error || "Unexpected error");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Unexpected error");
       }
 
       window.location.reload();
     } catch (error) {
       console.error("Failed to approve request:", error);
+      setErrorMessage((error as Error).message || "Failed to approve request");
     }
   };
 
   return (
     <div className="my-5">
+      {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
       <div className="mb-1">
         <div className="col-lg-7 mx-auto">
           <ListGroup>

@@ -24,6 +24,7 @@ const SharedStudyParameters: React.FC<SharedStudyParametersProps> = ({ study, is
                 name={`NUM_INDS${participant}`}
                 defaultValue={study.personal_parameters[participant]?.NUM_INDS?.value}
                 disabled={userId !== participant}
+                required
               />
             </Col>
             <p className="mt-1 text-start text-muted">
@@ -51,6 +52,7 @@ const SharedStudyParameters: React.FC<SharedStudyParametersProps> = ({ study, is
               step="any"
               defaultValue={study.parameters[parameterName].value}
               disabled={!isOwner}
+              required
             />
           </Col>
           <p className="mt-1 text-start text-muted">{study.parameters[parameterName].description}</p>
