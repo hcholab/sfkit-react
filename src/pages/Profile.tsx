@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useAuth } from "react-oidc-context";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../App";
-import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
-import { useAuth } from "react-oidc-context";
 import useFirestore from "../hooks/useFirestore";
+import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 
 const Profile = () => {
   const { apiBaseUrl } = useContext(AppContext);
@@ -33,11 +33,11 @@ const Profile = () => {
         });
 
         if (response.ok) {
-          const data = await response.json();
+          const { profile: p } = await response.json();
           setProfileData({
-            displayName: data.profile.displayName || "",
-            email: data.profile.email || "",
-            about: data.profile.about || "",
+            displayName: p.displayName || "",
+            email: p.email || "",
+            about: p.about || "",
           });
         } else {
           console.error("Failed to fetch profile data");
