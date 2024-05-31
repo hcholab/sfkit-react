@@ -13,6 +13,7 @@ const Profile = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [profileData, setProfileData] = useState({
     displayName: "",
+    email: "",
     about: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
@@ -35,6 +36,7 @@ const Profile = () => {
           const data = await response.json();
           setProfileData({
             displayName: data.profile.displayName || "",
+            email: data.profile.email || "",
             about: data.profile.about || "",
           });
         } else {
@@ -146,6 +148,13 @@ const Profile = () => {
                           Edit
                         </button>
                       )}
+                    </p>
+                  </div>
+                  <div className="mb-3">
+                    <p>
+                      <b>Email</b>
+                      <br />
+                      {profileData.email}
                     </p>
                   </div>
                   <div className="mb-3">
