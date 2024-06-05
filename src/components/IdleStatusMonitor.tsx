@@ -29,19 +29,22 @@ export const IdleStatusMonitor = () => {
       const isTimeoutEnabled = true || groups.some(g => g.groupName === 'session_timeout');
       if (!isTimeoutEnabled) return;
 
+      const logIdle = (msg: string) =>
+        console.log(`[${new Date().toLocaleString()}] ${msg}`);
+
       const resetTimer = () => {
         if (timeoutId.current) {
-          console.log(`[${new Date().toLocaleString()}] User activity detected. Resetting idle timeout.`);
+          logIdle('User activity detected. Resetting idle timeout.');
           clearTimeout(timeoutId.current);
         }
         timeoutId.current = window.setTimeout(async () => {
-          console.log(`[${new Date().toLocaleString()}] User has been idle for ${idleTimeoutMins} minutes. Signing out.`);
+          logIdle(`User has been idle for ${idleTimeoutMins} minutes. Signing out.`);
           await signOut();
           setRedirectTo('/');
         }, idleTimeout);
       };
 
-      console.log(`[${new Date().toLocaleString()}] Idle timeout is enabled. ` +
+      logIdle('Idle timeout is enabled. ' +
         `User will be signed out after ${idleTimeoutMins} minutes of inactivity.`
       );
       resetTimer();
@@ -51,7 +54,7 @@ export const IdleStatusMonitor = () => {
       );
 
       return () => {
-        console.log(`[${new Date().toLocaleString()}] Cleaning up idle timeout.`);
+        logIdle(`Cleaning up idle timeout.`);
         idleEvents.forEach(e =>
           document.removeEventListener(e, resetTimer)
         );
