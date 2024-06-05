@@ -7,6 +7,7 @@ const useGenerateAuthHeaders = (): Record<string, string> => {
   const { auth_key } = useParams();
   const auth = useAuth();
   const idToken = auth.user?.id_token || "";
+  const accessToken = auth.user?.access_token || "";
   const { apiBaseUrl } = useContext(AppContext);
 
   return useMemo(() => {
@@ -15,7 +16,7 @@ const useGenerateAuthHeaders = (): Record<string, string> => {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
-    console.log('access_token', auth.user?.access_token);
+    console.log('access_token', accessToken);
     console.log('idToken', idToken);
     if (idToken) {
       headers.Authorization = `Bearer ${idToken}`;
@@ -24,7 +25,7 @@ const useGenerateAuthHeaders = (): Record<string, string> => {
     }
 
     return headers;
-  }, [auth_key, idToken, apiBaseUrl]);
+  }, [auth_key, idToken, accessToken, apiBaseUrl]);
 };
 
 export default useGenerateAuthHeaders;
