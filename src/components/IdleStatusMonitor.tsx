@@ -48,6 +48,7 @@ export const IdleStatusMonitor = () => {
       );
 
       return () => {
+        console.log('Cleaning up idle timeout.');
         idleEvents.forEach(e =>
           document.removeEventListener(e, resetTimer)
         );
