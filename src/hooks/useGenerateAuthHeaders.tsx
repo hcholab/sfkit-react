@@ -10,7 +10,8 @@ const useGenerateAuthHeaders = (): Record<string, string> => {
   const { apiBaseUrl } = useContext(AppContext);
 
   return useMemo(() => {
-    const onTerra = apiBaseUrl.includes("broad");
+    const url = new URL(apiBaseUrl);
+    const onTerra = url.hostname.endsWith('.broadinstitute.org');
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
