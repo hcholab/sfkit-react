@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "react-oidc-context";
-import { useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 import { useTerra } from "../hooks/useTerra";
 
@@ -13,7 +13,7 @@ export const IdleStatusMonitor = () => {
   const headers = useGenerateAuthHeaders();
   const { onTerra, apiBaseUrl } = useTerra();
   const timeoutId = useRef<number>();
-  const navigate = useNavigate();
+  const [redirectTo, setRedirectTo] = useState<string>();
 
   const signOut = auth.signoutRedirect;
 
@@ -37,7 +37,7 @@ export const IdleStatusMonitor = () => {
         timeoutId.current = window.setTimeout(async () => {
           console.log(`[${new Date().toLocaleString()}] User has been idle for ${idleTimeoutMins} minutes. Signing out.`);
           await signOut();
-          navigate('/');
+          setRedirectTo('/');
         }, idleTimeout);
       };
 
@@ -57,7 +57,7 @@ export const IdleStatusMonitor = () => {
         );
       };
     })().catch(console.error);
-  }, [auth.isAuthenticated, onTerra, apiBaseUrl, headers, signOut, navigate]);
+  }, [auth.isAuthenticated, onTerra, apiBaseUrl, headers, signOut]);
 
-  return <div />;
+  return redirectTo ? <Navigate to={redirectTo} /> : <div />;
 };
