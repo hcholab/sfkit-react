@@ -3,7 +3,7 @@ import { useAuth } from "react-oidc-context";
 import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 import { useTerra } from "../hooks/useTerra";
 
-const idleTimeoutMins = 15; // minutes of inactivity
+const idleTimeoutMins = 1; // minutes of inactivity
 const idleTimeout = idleTimeoutMins * 60 * 1000;
 const idleEvents = ['click', 'keydown'];
 
