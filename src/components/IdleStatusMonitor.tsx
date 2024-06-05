@@ -27,7 +27,7 @@ export const IdleStatusMonitor = () => {
 
       const res = await fetch(samGroupUrl, { headers });
       const groups = await res.json() as { groupName: string }[];
-      const isTimeoutEnabled = groups.some(g => g.groupName === 'session_timeout');
+      const isTimeoutEnabled = true; //groups.some(g => g.groupName === 'session_timeout');
       if (!isTimeoutEnabled) return;
 
       const resetTimer = () => {
