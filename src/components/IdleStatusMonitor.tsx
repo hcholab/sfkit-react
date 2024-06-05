@@ -1,7 +1,7 @@
-import { useContext, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useAuth } from "react-oidc-context";
-import { AppContext } from "../App";
 import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
+import { useTerra } from "../hooks/useTerra";
 
 const idleTimeout = 15 * 60 * 1000; // 15 minutes of inactivity
 const idleEvents = ['click', 'keydown'];
@@ -9,20 +9,16 @@ const idleEvents = ['click', 'keydown'];
 export const IdleStatusMonitor = () => {
   const auth = useAuth();
   const headers = useGenerateAuthHeaders();
-  const { apiBaseUrl } = useContext(AppContext);
+  const { onTerra, apiBaseUrl } = useTerra();
   const timeoutId = useRef<number>();
 
   const signOut = auth.signoutRedirect;
 
   useEffect(() => {
     (async () => {
-      if (!auth.isAuthenticated) return;
+      if (!onTerra || !auth.isAuthenticated) return;
 
-      const url = new URL(apiBaseUrl);
-      const onTerra = url.hostname.endsWith('.broadinstitute.org');
-      if (!onTerra) return;
-
-      const samHostname = url.hostname.replace(/^[^.]+/, 'sam');
+      const samHostname = apiBaseUrl.hostname.replace(/^[^.]+/, 'sam');
       const samGroupUrl = `https://${samHostname}/api/groups/v1`;
 
       const res = await fetch(samGroupUrl, { headers });
@@ -49,7 +45,7 @@ export const IdleStatusMonitor = () => {
         );
       };
     })().catch(console.error);
-  }, [auth.isAuthenticated, apiBaseUrl, headers, signOut]);
+  }, [auth.isAuthenticated, onTerra, apiBaseUrl, headers, signOut]);
 
   return <div/>;
 };

@@ -1,17 +1,15 @@
-import { useContext, useMemo } from "react";
-import { AppContext } from "../App";
-import { useParams } from "react-router-dom";
+import { useMemo } from "react";
 import { useAuth } from "react-oidc-context";
+import { useParams } from "react-router-dom";
+import { useTerra } from "./useTerra";
 
 const useGenerateAuthHeaders = (): Record<string, string> => {
   const { auth_key } = useParams();
   const auth = useAuth();
   const accessToken = auth.user?.access_token || "";
-  const { apiBaseUrl } = useContext(AppContext);
+  const { onTerra } = useTerra();
 
   return useMemo(() => {
-    const url = new URL(apiBaseUrl);
-    const onTerra = url.hostname.endsWith('.broadinstitute.org');
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
@@ -22,7 +20,7 @@ const useGenerateAuthHeaders = (): Record<string, string> => {
     }
 
     return headers;
-  }, [auth_key, accessToken, apiBaseUrl]);
+  }, [auth_key, accessToken, onTerra]);
 };
 
 export default useGenerateAuthHeaders;

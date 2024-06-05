@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { AppContext } from "../App";
+import React, { useEffect, useRef, useState } from "react";
 import ChooseWorkflow from "../components/studies/ChooseWorkflow";
 import DisplayStudy from "../components/studies/DisplayStudy";
 import { Study } from "../types/study";
@@ -9,10 +8,10 @@ import LoginButton from "../components/LoginButton";
 import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 import useFirestore from "../hooks/useFirestore";
 import { useAuth } from "react-oidc-context";
+import { useTerra } from "../hooks/useTerra";
 
 const Studies: React.FC = () => {
-  const { apiBaseUrl } = useContext(AppContext);
-  const onTerra = apiBaseUrl.includes("broad");
+  const { onTerra, apiBaseUrl } = useTerra();
   const [activeTab, setActiveTab] = useState(() => {
     return localStorage.getItem("activeTab") || "mine";
   });
