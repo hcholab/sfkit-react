@@ -15,6 +15,8 @@ const useGenerateAuthHeaders = (): Record<string, string> => {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
+    console.log('access_token', auth.user?.access_token);
+    console.log('idToken', idToken);
     if (idToken) {
       headers.Authorization = `Bearer ${idToken}`;
     } else if (auth_key && !onTerra) {
