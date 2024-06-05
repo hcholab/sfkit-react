@@ -5,17 +5,19 @@ import { AppContext } from "../App";
 import useFirestore from "../hooks/useFirestore";
 import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 
+const emptyProfile = {
+  displayName: "",
+  email: "",
+  about: "",
+};
+
 const Profile = () => {
   const { apiBaseUrl } = useContext(AppContext);
   const headers = useGenerateAuthHeaders();
   const { userId: userIdFromParams } = useParams();
   const decodedUserIdFromParams = decodeURIComponent(userIdFromParams || "");
   const [isEditMode, setIsEditMode] = useState(false);
-  const [profileData, setProfileData] = useState({
-    displayName: "",
-    email: "",
-    about: "",
-  });
+  const [profileData, setProfileData] = useState({ ...emptyProfile });
   const [errorMessage, setErrorMessage] = useState("");
 
   const idToken = useAuth().user?.id_token || "";
@@ -23,6 +25,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (!idToken) {
+      setProfileData({ ...emptyProfile });
       return;
     }
 
