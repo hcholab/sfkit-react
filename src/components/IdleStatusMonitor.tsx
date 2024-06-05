@@ -31,7 +31,7 @@ export const IdleStatusMonitor = () => {
         if (timeoutId.current) {
           console.log(`[${new Date().toLocaleString()}] User activity detected. Resetting idle timeout.`);
           clearTimeout(timeoutId.current);
-        };
+        }
         timeoutId.current = window.setTimeout(() => {
           console.log(`[${new Date().toLocaleString()}] User has been idle for ${idleTimeoutMins} minutes. Signing out.`);
           signOut({ post_logout_redirect_uri: location.origin })
