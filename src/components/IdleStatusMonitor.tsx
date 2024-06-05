@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useAuth } from "react-oidc-context";
+import { useNavigate } from 'react-router-dom';
 import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 import { useTerra } from "../hooks/useTerra";
 
@@ -12,6 +13,7 @@ export const IdleStatusMonitor = () => {
   const headers = useGenerateAuthHeaders();
   const { onTerra, apiBaseUrl } = useTerra();
   const timeoutId = useRef<number>();
+  const navigate = useNavigate();
 
   const signOut = auth.signoutRedirect;
 
@@ -32,9 +34,10 @@ export const IdleStatusMonitor = () => {
           console.log(`[${new Date().toLocaleString()}] User activity detected. Resetting idle timeout.`);
           clearTimeout(timeoutId.current);
         }
-        timeoutId.current = window.setTimeout(() => {
+        timeoutId.current = window.setTimeout(async () => {
           console.log(`[${new Date().toLocaleString()}] User has been idle for ${idleTimeoutMins} minutes. Signing out.`);
-          signOut({ post_logout_redirect_uri: location.origin })
+          await signOut();
+          navigate('/');
         }, idleTimeout);
       };
 
@@ -54,7 +57,7 @@ export const IdleStatusMonitor = () => {
         );
       };
     })().catch(console.error);
-  }, [auth.isAuthenticated, onTerra, apiBaseUrl, headers, signOut]);
+  }, [auth.isAuthenticated, onTerra, apiBaseUrl, headers, signOut, navigate]);
 
   return <div />;
 };
