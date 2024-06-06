@@ -60,7 +60,7 @@ export const IdleStatusMonitor = () => {
         );
       };
     })().catch(console.error);
-  }, [auth.isAuthenticated, onTerra, apiBaseUrl, headers, signOut]);
+  }, [auth.isAuthenticated, onTerra, apiBaseUrl, headers, navigate, signOut]);
 
   return <div />;
 };
