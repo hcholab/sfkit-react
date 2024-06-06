@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { AuthProvider } from "react-oidc-context";
-import { Outlet, Route, RouterProvider, Routes, createBrowserRouter } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { AppConfig, getAppConfig } from "./appConfig";
 import Footer from "./components/Footer";
 import { IdleStatusMonitor } from "./components/IdleStatusMonitor";
@@ -26,46 +26,28 @@ const App: React.FC = () => {
     getAppConfig().then(setAppConfig);
   }, []);
 
-  const Layout = () => (
-    <div className="App d-flex flex-column min-vh-100">
-      <Navbar />
-      <div className="flex-grow-1">
-        <Outlet />
-      </div>
-      <IdleStatusMonitor />
-      <Footer />
-    </div>
-  );
-
-  const Root = () => (
-    <Routes>
-      <Route element={<Layout />} />
-    </Routes>
-  );
-
-  const router = createBrowserRouter([
-    {
-      element: <Layout />,
-      children: [
-        { path: "/", element: <Home /> },
-        { path: "/profile/:userId", element: <Profile /> },
-        { path: "/workflows", element: <Workflows /> },
-        { path: "/instructions", element: <Instructions /> },
-        { path: "/tutorials", element: <Tutorials /> },
-        { path: "/studies", element: <Studies /> },
-        { path: "/studies/create_study", element: <CreateStudy /> },
-        { path: "/studies/:study_id/:auth_key?", element: <Study /> },
-        { path: "/contact", element: <Contact /> },
-        { path: "*", element: <Root /> },
-      ],
-    }
-  ]);
-
   return (
     appConfig && (
       <AuthProvider {...appConfig.auth}>
         <AppContext.Provider value={{ ...appConfig }}>
-          <RouterProvider router={router} />
+          <div className="App d-flex flex-column min-vh-100">
+            <Navbar />
+            <div className="flex-grow-1">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/profile/:userId" element={<Profile />} />
+                <Route path="/workflows" element={<Workflows />} />
+                <Route path="/instructions" element={<Instructions />} />
+                <Route path="/tutorials" element={<Tutorials />} />
+                <Route path="/studies" element={<Studies />} />
+                <Route path="/studies/create_study" element={<CreateStudy />} />
+                <Route path="/studies/:study_id/:auth_key?" element={<Study />} />
+                <Route path="/contact" element={<Contact />} />
+              </Routes>
+            </div>
+            <IdleStatusMonitor />
+            <Footer />
+          </div>
         </AppContext.Provider>
       </AuthProvider>
     )
