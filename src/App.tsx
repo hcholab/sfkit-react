@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { AuthProvider } from "react-oidc-context";
-import { Route, RouterProvider, Routes, createBrowserRouter } from "react-router-dom";
+import { RouterProvider, Routes, createBrowserRouter } from "react-router-dom";
 import { AppConfig, getAppConfig } from "./appConfig";
 import Footer from "./components/Footer";
 import { IdleStatusMonitor } from "./components/IdleStatusMonitor";
