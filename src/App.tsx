@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { AuthProvider } from "react-oidc-context";
-import { Outlet, Route, RouterProvider, Routes, createBrowserRouter } from "react-router-dom";
+import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
 import { AppConfig, getAppConfig } from "./appConfig";
 import Footer from "./components/Footer";
 import { IdleStatusMonitor } from "./components/IdleStatusMonitor";
@@ -37,12 +37,6 @@ const App: React.FC = () => {
     </div>
   );
 
-  const Root = () => (
-    <Routes>
-      <Route element={<Layout />} />
-    </Routes>
-  );
-
   const router = createBrowserRouter([
     { path: "/", element: <Home /> },
     { path: "/profile/:userId", element: <Profile /> },
@@ -53,7 +47,7 @@ const App: React.FC = () => {
     { path: "/studies/create_study", element: <CreateStudy /> },
     { path: "/studies/:study_id/:auth_key?", element: <Study /> },
     { path: "/contact", element: <Contact /> },
-    { path: "*", element: <Root /> },
+    { path: "*", element: <Layout /> },
   ]);
 
   return (
