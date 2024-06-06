@@ -19,7 +19,7 @@ export const IdleStatusMonitor = () => {
 
   useEffect(() => {
     (async () => {
-      if (!onTerra || !auth.isAuthenticated) return;
+      if (!onTerra || !auth.isAuthenticated || timeoutId.current) return;
 
       const samHostname = apiBaseUrl.hostname.replace(/^[^.]+/, 'sam');
       const samGroupUrl = `https://${samHostname}/api/groups/v1`;
@@ -58,6 +58,7 @@ export const IdleStatusMonitor = () => {
         idleEvents.forEach(e =>
           document.removeEventListener(e, resetTimer)
         );
+        timeoutId.current = undefined;
       };
     })().catch(console.error);
   }, [auth.isAuthenticated, onTerra, apiBaseUrl, headers, navigate, signOut]);

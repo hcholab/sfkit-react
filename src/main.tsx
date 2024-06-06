@@ -2,14 +2,14 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.css";
 import * as React from "react";
 import ReactDOM from "react-dom/client";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+// import { Provider } from "react-redux";
 import App from "./App.tsx";
+// import { store } from './app/store';
 
-const router = createBrowserRouter([{ path: "*", element: <App /> }]);
-const root = document.getElementById("root")!;
-
-ReactDOM.createRoot(root).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    {/* <Provider store={store}> */}
+    <App />
+    {/* </Provider> */}
   </React.StrictMode>
 );
