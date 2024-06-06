@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useAuth } from "react-oidc-context";
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 import { useTerra } from "../hooks/useTerra";
 
-const idleTimeoutMins = 1; // minutes of inactivity
+const idleTimeoutMins = 0.5; // minutes of inactivity
 const idleTimeout = idleTimeoutMins * 60 * 1000;
 const idleEvents = ['click', 'keydown'];
 
@@ -13,7 +13,7 @@ export const IdleStatusMonitor = () => {
   const headers = useGenerateAuthHeaders();
   const { onTerra, apiBaseUrl } = useTerra();
   const timeoutId = useRef<number>();
-  const [redirectTo, setRedirectTo] = useState<string>();
+  const navigate = useNavigate();
 
   const signOut = auth.signoutRedirect;
 
@@ -40,15 +40,14 @@ export const IdleStatusMonitor = () => {
         timeoutId.current = window.setTimeout(async () => {
           logIdle(`User has been idle for ${idleTimeoutMins} minutes. Signing out.`);
           await signOut();
-          setRedirectTo('/');
-          setRedirectTo("");
+          navigate('/');
         }, idleTimeout);
       };
 
+      resetTimer();
       logIdle('Idle timeout is enabled. ' +
         `User will be signed out after ${idleTimeoutMins} minutes of inactivity.`
       );
-      resetTimer();
 
       idleEvents.forEach(e =>
         document.addEventListener(e, resetTimer)
@@ -63,5 +62,5 @@ export const IdleStatusMonitor = () => {
     })().catch(console.error);
   }, [auth.isAuthenticated, onTerra, apiBaseUrl, headers, signOut]);
 
-  return redirectTo ? <Navigate to={redirectTo} /> : <div />;
+  return <div />;
 };
