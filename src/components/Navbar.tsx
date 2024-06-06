@@ -7,7 +7,7 @@ import LogoutButton from "./LogoutButton";
 import NotificationList from "./NotificationList";
 
 const Navbar: React.FC = () => {
-  const { isAuthenticated: isAuthed } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { userId, isDbInitialized } = useFirestore();
 
   return (
@@ -55,8 +55,8 @@ const Navbar: React.FC = () => {
             </li>
           </ul>
           <div className="ms-auto d-flex align-items-center">
-            {isAuthed && isDbInitialized && <NotificationList userId={userId} />}
-            {isAuthed ? <LogoutButton /> : <LoginButton />}
+            {isAuthenticated && isDbInitialized && <NotificationList userId={userId} />}
+            {isAuthenticated ? <LogoutButton /> : <LoginButton />}
           </div>
         </div>
       </div>

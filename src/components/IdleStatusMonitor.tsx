@@ -41,6 +41,7 @@ export const IdleStatusMonitor = () => {
           logIdle(`User has been idle for ${idleTimeoutMins} minutes. Signing out.`);
           await signOut();
           setRedirectTo('/');
+          setRedirectTo("");
         }, idleTimeout);
       };
 
