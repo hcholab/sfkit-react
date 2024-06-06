@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { AuthProvider } from "react-oidc-context";
-import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
+import { Outlet, Route, RouterProvider, Routes, createBrowserRouter } from "react-router-dom";
 import { AppConfig, getAppConfig } from "./appConfig";
 import Footer from "./components/Footer";
 import { IdleStatusMonitor } from "./components/IdleStatusMonitor";
@@ -37,17 +37,28 @@ const App: React.FC = () => {
     </div>
   );
 
+  const Root = () => (
+    <Routes>
+      <Route element={<Layout />} />
+    </Routes>
+  );
+
   const router = createBrowserRouter([
-    { path: "/", element: <Home /> },
-    { path: "/profile/:userId", element: <Profile /> },
-    { path: "/workflows", element: <Workflows /> },
-    { path: "/instructions", element: <Instructions /> },
-    { path: "/tutorials", element: <Tutorials /> },
-    { path: "/studies", element: <Studies /> },
-    { path: "/studies/create_study", element: <CreateStudy /> },
-    { path: "/studies/:study_id/:auth_key?", element: <Study /> },
-    { path: "/contact", element: <Contact /> },
-    { path: "*", element: <Layout /> },
+    {
+      element: <Layout />,
+      children: [
+        { path: "/", element: <Home /> },
+        { path: "/profile/:userId", element: <Profile /> },
+        { path: "/workflows", element: <Workflows /> },
+        { path: "/instructions", element: <Instructions /> },
+        { path: "/tutorials", element: <Tutorials /> },
+        { path: "/studies", element: <Studies /> },
+        { path: "/studies/create_study", element: <CreateStudy /> },
+        { path: "/studies/:study_id/:auth_key?", element: <Study /> },
+        { path: "/contact", element: <Contact /> },
+        { path: "*", element: <Root /> },
+      ],
+    }
   ]);
 
   return (
