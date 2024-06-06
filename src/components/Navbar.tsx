@@ -55,7 +55,7 @@ const Navbar: React.FC = () => {
             </li>
           </ul>
           <div className="ms-auto d-flex align-items-center">
-            {!auth.isAuthenticated && isDbInitialized && <NotificationList userId={userId} />}
+            {auth.isAuthenticated && isDbInitialized && <NotificationList userId={userId} />}
             {auth.isAuthenticated ? <LogoutButton /> : <LoginButton />}
           </div>
         </div>
