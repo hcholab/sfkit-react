@@ -8,7 +8,6 @@ import NotificationList from "./NotificationList";
 
 const Navbar: React.FC = () => {
   const auth = useAuth();
-  const idToken = auth.user?.id_token || "";
   const { userId, isDbInitialized } = useFirestore();
 
   return (
@@ -57,7 +56,7 @@ const Navbar: React.FC = () => {
           </ul>
           <div className="ms-auto d-flex align-items-center">
             {!auth.isAuthenticated && isDbInitialized && <NotificationList userId={userId} />}
-            {idToken !== "" ? <LogoutButton /> : <LoginButton />}
+            {auth.isAuthenticated ? <LogoutButton /> : <LoginButton />}
           </div>
         </div>
       </div>
