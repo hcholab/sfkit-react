@@ -1,10 +1,10 @@
 import * as React from "react";
+import { useAuth } from "react-oidc-context";
+import { Link } from "react-router-dom";
+import useFirestore from "../hooks/useFirestore";
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
 import NotificationList from "./NotificationList";
-import { Link } from "react-router-dom";
-import { useAuth } from "react-oidc-context";
-import useFirestore from "../hooks/useFirestore";
 
 const Navbar: React.FC = () => {
   const idToken = useAuth().user?.id_token || "";
@@ -55,7 +55,7 @@ const Navbar: React.FC = () => {
             </li>
           </ul>
           <div className="ms-auto d-flex align-items-center">
-            {isDbInitialized && <NotificationList userId={userId} />}
+            {isDbInitialized && !idToken && <NotificationList userId={userId} />}
             {idToken !== "" ? <LogoutButton /> : <LoginButton />}
           </div>
         </div>

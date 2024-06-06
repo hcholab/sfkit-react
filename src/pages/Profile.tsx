@@ -90,7 +90,7 @@ const Profile = () => {
 
   const isOwnProfile = userId === decodedUserIdFromParams;
 
-  return !idToken ? <div /> : (
+  return (
     <section className="py-5">
       <div className="container">
         <div className="row">
