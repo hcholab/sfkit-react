@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { AuthProvider } from "react-oidc-context";
-import { RouterProvider, Routes, createBrowserRouter } from "react-router-dom";
+import { Outlet, Route, RouterProvider, Routes, createBrowserRouter } from "react-router-dom";
 import { AppConfig, getAppConfig } from "./appConfig";
 import Footer from "./components/Footer";
 import { IdleStatusMonitor } from "./components/IdleStatusMonitor";
@@ -26,15 +26,21 @@ const App: React.FC = () => {
     getAppConfig().then(setAppConfig);
   }, []);
 
-  const Root = () => (
+  const Layout = () => (
     <div className="App d-flex flex-column min-vh-100">
       <Navbar />
       <div className="flex-grow-1">
-        <Routes />
+        <Outlet />
       </div>
       <IdleStatusMonitor />
       <Footer />
     </div>
+  );
+
+  const Root = () => (
+    <Routes>
+      <Route element={<Layout />} />
+    </Routes>
   );
 
   const router = createBrowserRouter([
