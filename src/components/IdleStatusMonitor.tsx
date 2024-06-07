@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 import { useTerra } from "../hooks/useTerra";
 
-const idleTimeoutMins = 0.5; // minutes of inactivity
+const idleTimeoutMins = 15; // minutes of inactivity
 const idleTimeout = idleTimeoutMins * 60 * 1000;
 const idleEvents = ['click', 'keydown'];
 
@@ -26,7 +26,7 @@ export const IdleStatusMonitor = () => {
 
       const res = await fetch(samGroupUrl, { headers });
       const groups = await res.json() as { groupName: string }[];
-      const isTimeoutEnabled = true || groups.some(g => g.groupName === 'session_timeout');
+      const isTimeoutEnabled = groups.some(g => g.groupName === 'session_timeout');
       if (!isTimeoutEnabled) return;
 
       const logIdle = (msg: string) =>
@@ -34,7 +34,6 @@ export const IdleStatusMonitor = () => {
 
       const resetTimer = () => {
         if (timeoutId.current) {
-          logIdle('User activity detected. Resetting idle timeout.');
           clearTimeout(timeoutId.current);
         }
         timeoutId.current = window.setTimeout(async () => {
@@ -54,7 +53,6 @@ export const IdleStatusMonitor = () => {
       );
 
       return () => {
-        logIdle(`Cleaning up idle timeout.`);
         idleEvents.forEach(e =>
           document.removeEventListener(e, resetTimer)
         );
