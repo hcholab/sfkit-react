@@ -3,6 +3,7 @@ import { AuthProvider } from "react-oidc-context";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { AppConfig, getAppConfig } from "./appConfig";
 import Footer from "./components/Footer";
+import { IdleStatusMonitor } from "./components/IdleStatusMonitor";
 import Navbar from "./components/Navbar";
 import Contact from "./pages/Contact";
 import Home from "./pages/Home";
@@ -45,6 +46,7 @@ const App: React.FC = () => {
                   <Route path="/contact" element={<Contact />} />
                 </Routes>
               </div>
+              <IdleStatusMonitor />
               <Footer />
             </div>
           </Router>
