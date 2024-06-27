@@ -10,6 +10,7 @@ on:
       - "*.json"
       - "*.ts"
       - "Dockerfile"
+      - "nginx.conf"
       - "public/**"
       - "src/**"
       - ".github/workflows/build_push_terra.yml"
@@ -20,6 +21,7 @@ on:
       - "*.json"
       - "*.ts"
       - "Dockerfile"
+      - "nginx.conf"
       - "public/**"
       - "src/**"
       - ".github/workflows/build_push_terra.yml"
@@ -148,7 +150,7 @@ jobs:
     permissions:
       contents: "read"
       id-token: "write"
-  
+
   set-version-in-terra-dev:
     # Put new version in Broad dev environment
     uses: broadinstitute/sherlock/.github/workflows/client-set-environment-app-version.yaml@main
