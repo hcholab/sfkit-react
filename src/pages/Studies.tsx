@@ -38,7 +38,6 @@ const Studies: React.FC = () => {
 
   useEffect(() => {
     if (idToken) {
-      console.log("useEffect fetchMyStudies");
       const fetchMyStudies = async () => {
         try {
           const response = await fetch(`${apiBaseUrl}/api/my_studies`, {
@@ -65,7 +64,6 @@ const Studies: React.FC = () => {
     }
     const fetchPublicStudies = async () => {
       if (!isFetchingPublicStudiesRef.current) {
-        console.log("useEffect fetchPublicStudies");
         isFetchingPublicStudiesRef.current = true;
         try {
           const response = await fetch(`${apiBaseUrl}/api/public_studies`, {
