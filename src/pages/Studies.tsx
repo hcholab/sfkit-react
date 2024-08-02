@@ -24,11 +24,6 @@ const Studies: React.FC = () => {
   const idToken = useAuth().user?.id_token || "";
   const { userId } = useFirestore();
 
-  console.log("apiBaseUrl", apiBaseUrl);
-  console.log("onTerra", onTerra);
-  console.log("idToken", idToken);
-  console.log("headers", headers);
-
   useEffect(() => {
     if (userId) {
       const unsubscribe = onSnapshot(doc(getDb(), "users", userId), (doc) => {
@@ -42,8 +37,8 @@ const Studies: React.FC = () => {
   }, [userId]);
 
   useEffect(() => {
-    console.log("useEffect fetchMyStudies");
     if (idToken) {
+      console.log("useEffect fetchMyStudies");
       const fetchMyStudies = async () => {
         try {
           const response = await fetch(`${apiBaseUrl}/api/my_studies`, {
@@ -70,6 +65,7 @@ const Studies: React.FC = () => {
     }
     const fetchPublicStudies = async () => {
       if (!isFetchingPublicStudiesRef.current) {
+        console.log("useEffect fetchPublicStudies");
         isFetchingPublicStudiesRef.current = true;
         try {
           const response = await fetch(`${apiBaseUrl}/api/public_studies`, {
