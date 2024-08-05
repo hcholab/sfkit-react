@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../App";
+import LoginButton from "../components/LoginButton";
 import useFirestore from "../hooks/useFirestore";
 import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 
@@ -20,6 +21,18 @@ const Profile = () => {
 
   const idToken = useAuth().user?.id_token || "";
   const { userId } = useFirestore();
+
+  if (!idToken) {
+    return (
+      <div
+        className="d-flex flex-column align-items-center justify-content-center"
+        style={{ transform: "translateY(+200%)" }}
+      >
+        <p className="mb-4">Please log in to view a user profile.</p>
+        <LoginButton />
+      </div>
+    );
+  }
 
   useEffect(() => {
     if (!idToken) {
