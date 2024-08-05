@@ -22,18 +22,6 @@ const Profile = () => {
   const idToken = useAuth().user?.id_token || "";
   const { userId } = useFirestore();
 
-  if (!idToken) {
-    return (
-      <div
-        className="d-flex flex-column align-items-center justify-content-center"
-        style={{ transform: "translateY(+200%)" }}
-      >
-        <p className="mb-4">Please log in to view a user profile.</p>
-        <LoginButton />
-      </div>
-    );
-  }
-
   useEffect(() => {
     if (!idToken) {
       return;
@@ -102,6 +90,18 @@ const Profile = () => {
   };
 
   const isOwnProfile = userId === decodedUserIdFromParams;
+
+  if (!idToken) {
+    return (
+      <div
+        className="d-flex flex-column align-items-center justify-content-center"
+        style={{ transform: "translateY(+200%)" }}
+      >
+        <p className="mb-4">Please log in to view a user profile.</p>
+        <LoginButton />
+      </div>
+    );
+  }
 
   return (
     <section className="py-5">
