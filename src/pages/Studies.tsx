@@ -1,14 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import { DocumentData, doc, onSnapshot } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { useAuth } from "react-oidc-context";
+import LoginButton from "../components/LoginButton";
 import ChooseWorkflow from "../components/studies/ChooseWorkflow";
 import DisplayStudy from "../components/studies/DisplayStudy";
-import { Study } from "../types/study";
-import { DocumentData, doc, onSnapshot } from "firebase/firestore";
 import { getDb } from "../hooks/firebase";
-import LoginButton from "../components/LoginButton";
-import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 import useFirestore from "../hooks/useFirestore";
-import { useAuth } from "react-oidc-context";
+import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 import { useTerra } from "../hooks/useTerra";
+import { Study } from "../types/study";
 
 const Studies: React.FC = () => {
   const { onTerra, apiBaseUrl } = useTerra();
@@ -18,7 +18,6 @@ const Studies: React.FC = () => {
   const [myStudies, setMyStudies] = useState<Study[] | null>(null);
   const [otherStudies, setOtherStudies] = useState<Study[] | null>(null);
   const [user, setUser] = useState<DocumentData | null>(null);
-  const isFetchingPublicStudiesRef = useRef(false);
 
   const headers = useGenerateAuthHeaders();
   const idToken = useAuth().user?.id_token || "";
@@ -59,19 +58,14 @@ const Studies: React.FC = () => {
       return;
     }
     const fetchPublicStudies = async () => {
-      if (!isFetchingPublicStudiesRef.current) {
-        isFetchingPublicStudiesRef.current = true;
-        try {
-          const response = await fetch(`${apiBaseUrl}/api/public_studies`, {
-            headers,
-          });
-          const data = await response.json();
-          setOtherStudies(data.studies);
-        } catch (error) {
-          console.error("Error fetching public studies:", error);
-        } finally {
-          isFetchingPublicStudiesRef.current = false;
-        }
+      try {
+        const response = await fetch(`${apiBaseUrl}/api/public_studies`, {
+          headers,
+        });
+        const data = await response.json();
+        setOtherStudies(data.studies);
+      } catch (error) {
+        console.error("Error fetching public studies:", error);
       }
     };
 
