@@ -58,10 +58,6 @@ const Studies: React.FC = () => {
     if ((!headers.Authorization || headers.Authorization === "Bearer ") && onTerra) {
       return;
     }
-    // we don't need to fetch public studies if we already have them
-    if (otherStudies && otherStudies.length > 0) {
-      return;
-    }
     const fetchPublicStudies = async () => {
       if (!isFetchingPublicStudiesRef.current) {
         isFetchingPublicStudiesRef.current = true;
