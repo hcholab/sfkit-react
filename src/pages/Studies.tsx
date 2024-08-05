@@ -80,7 +80,7 @@ const Studies: React.FC = () => {
     };
 
     fetchPublicStudies();
-  }, [apiBaseUrl, headers, onTerra, otherStudies]);
+  }, [apiBaseUrl, onTerra, headers]);
 
   useEffect(() => {
     if (myStudies && myStudies.length > 0) {
