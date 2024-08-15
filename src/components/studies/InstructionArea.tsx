@@ -1,12 +1,12 @@
 import React, { useContext } from "react";
 import { Button } from "react-bootstrap";
+import { useParams } from "react-router-dom";
 import { AppContext } from "../../App";
+import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { ParameterGroup } from "../../types/study";
 import ConfigureStudyModal from "./ConfigureStudyModal";
 import SubTaskContainer from "./SubTaskContainer";
 import TaskElement from "./TaskElement";
-import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
-import { useParams } from "react-router-dom";
 
 interface Props {
   personalParameters: ParameterGroup;
@@ -16,7 +16,6 @@ interface Props {
   demo: boolean;
   studyType: string;
   status: string;
-  setupConfiguration: string;
   showWaitingDiv: boolean;
   tasks: string[];
   parameters: ParameterGroup;
@@ -37,7 +36,6 @@ const InstructionArea: React.FC<Props> = ({
   demo,
   studyType,
   status,
-  setupConfiguration,
   showWaitingDiv,
   tasks,
   showDownloadDiv,
@@ -163,9 +161,11 @@ const InstructionArea: React.FC<Props> = ({
     );
   };
 
+  const createVm = personalParameters.CREATE_VM?.value === "Yes";
+
   return (
     <div className="mt-3" id="instructions">
-      {status === "" && setupConfiguration === "website" ? (
+      {status === "" && createVm ? (
         <>
           <ConfigureStudyModal
             showModal={showModal}
@@ -183,7 +183,7 @@ const InstructionArea: React.FC<Props> = ({
           </div>
         </>
       ) : null}
-      {status === "" && setupConfiguration !== "website" ? (
+      {status === "" && createVm ? (
         <div className="text-start">
           <p>
             Once all participants have joined the study, and you have set the 'Study Parameters', you can proceed with

@@ -6,6 +6,7 @@ import StudyParticipants from "../../components/studies/StudyParticipants";
 import useFirestore from "../../hooks/useFirestore";
 import { ParameterGroup, Study as StudyType } from "../../types/study";
 
+import { useAuth } from "react-oidc-context";
 import { AppContext } from "../../App";
 import ChatStudyTab from "../../components/studies/ChatStudyTab";
 import InstructionArea from "../../components/studies/InstructionArea";
@@ -13,7 +14,6 @@ import StudyActionButtons from "../../components/studies/StudyActionButtons";
 import StudyHeader from "../../components/studies/StudyHeader";
 import { getDb } from "../../hooks/firebase";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
-import { useAuth } from "react-oidc-context";
 
 const fetchStudy = async (apiBaseUrl: string, study_id: string, headers: Record<string, string>) => {
   try {
@@ -223,7 +223,6 @@ const Study: React.FC = () => {
                     ownerName={study.owner_name}
                     created={study.created}
                     title={study.title}
-                    setupConfiguration={study.setup_configuration}
                     studyType={study.study_type}
                     description={study.description}
                     study={study}
@@ -238,7 +237,6 @@ const Study: React.FC = () => {
                     title={study.title}
                     personalParameters={study.personal_parameters[userId]}
                     status={status}
-                    setupConfiguration={study.setup_configuration}
                     showWaitingDiv={showWaitingDiv}
                     tasks={tasks}
                     parameters={parameters}

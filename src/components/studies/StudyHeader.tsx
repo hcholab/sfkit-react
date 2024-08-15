@@ -8,7 +8,6 @@ interface StudyHeaderProps {
   ownerName: string;
   created: string;
   title: string;
-  setupConfiguration: string;
   studyType: string;
   description: string;
   study: Study;
@@ -19,7 +18,6 @@ const StudyHeader: React.FC<StudyHeaderProps> = ({
   ownerName,
   created,
   title,
-  setupConfiguration,
   studyType,
   description,
   study,
@@ -33,7 +31,7 @@ const StudyHeader: React.FC<StudyHeaderProps> = ({
         </small>
       </div>
       <h3 className="h3 mb-0">{title}</h3>
-      <StudyConfigBadge setupConfiguration={setupConfiguration} studyType={studyType} />
+      <StudyConfigBadge studyType={studyType} />
       <div className="my-3">{description}</div>
       <StudyInfoModal study={study} userId={userId} />
       <StudyParametersModal study={study} userId={userId} />

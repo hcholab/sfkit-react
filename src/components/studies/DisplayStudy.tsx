@@ -1,11 +1,11 @@
+import { DocumentData } from "firebase/firestore";
 import React, { useContext, useState } from "react";
 import { Button, Card, Form, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../App";
+import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { Study } from "../../types/study";
 import StudyConfigBadge from "./StudyConfigBadge";
-import { DocumentData } from "firebase/firestore";
-import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 
 interface StudyProps {
   study: Study;
@@ -178,7 +178,7 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, idToken, user }) =>
 
           {study.study_information && renderInfoButton()}
 
-          <StudyConfigBadge setupConfiguration={study.setup_configuration} studyType={study.study_type} />
+          <StudyConfigBadge studyType={study.study_type} />
           <Card.Text className="my-2">{study.description}</Card.Text>
 
           {isUserParticipant()
