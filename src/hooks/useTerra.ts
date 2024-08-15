@@ -1,7 +1,7 @@
 import { useContext, useMemo } from "react";
 import { AppContext } from "../App";
 
-const terraRe = /^(sfkitui\.dsde-(dev|staging|prod)\.broadinstitute\.org|sfkit\.terra\.bio)$/;
+const terraRe = /^(sfkit\.dsde-(dev|staging|prod)\.broadinstitute\.org)$/;
 
 export const useTerra = () => {
     const { apiBaseUrl } = useContext(AppContext);
