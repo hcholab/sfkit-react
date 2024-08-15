@@ -161,11 +161,9 @@ const InstructionArea: React.FC<Props> = ({
     );
   };
 
-  const createVm = personalParameters.CREATE_VM?.value === "Yes";
-
   return (
     <div className="mt-3" id="instructions">
-      {status === "" && createVm ? (
+      {status === "" ? (
         <>
           <ConfigureStudyModal
             showModal={showModal}
@@ -183,7 +181,8 @@ const InstructionArea: React.FC<Props> = ({
           </div>
         </>
       ) : null}
-      {status === "" && createVm ? (
+      <hr/>OR<hr/>
+      {status === "" ? (
         <div className="text-start">
           <p>
             Once all participants have joined the study, and you have set the 'Study Parameters', you can proceed with
