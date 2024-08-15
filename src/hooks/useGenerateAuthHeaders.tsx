@@ -5,8 +5,8 @@ import { useTerra } from "./useTerra";
 
 const useGenerateAuthHeaders = (): Record<string, string> => {
   const { auth_key } = useParams();
-  const user = useAuth().user;
-  const token = user?.access_token || user?.id_token || "";
+  const auth = useAuth();
+  const token = auth.user?.access_token || "";
   const { onTerra } = useTerra();
 
   return useMemo(() => {
