@@ -27,7 +27,7 @@ export const IdleStatusMonitor = () => {
       const res = await fetch(samGroupUrl, { headers });
       const groups = await res.json() as { groupName: string }[];
       const isTimeoutEnabled = groups.some(g => g.groupName === 'session_timeout');
-      console.log(`Idle timeout is {isTimeoutEnabled ? 'enabled' : 'disabled'}.`);
+      console.log(`Idle timeout is ${isTimeoutEnabled ? 'enabled' : 'disabled'}.`);
       if (!isTimeoutEnabled) return;
 
       const logIdle = (msg: string) =>
