@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import TabNavigation from "../components/instructions/TabNavigation";
-import TabContent from "../components/instructions/TabContent";
-import ProcessSteps from "../components/instructions/ProcessSteps";
-import MachineRecommendation from "../components/instructions/MachineRecommendation";
-import info_square from "../static/images/info-square.svg";
 import { Link } from "react-router-dom";
+import MachineRecommendation from "../components/instructions/MachineRecommendation";
+import ProcessSteps from "../components/instructions/ProcessSteps";
+import TabContent from "../components/instructions/TabContent";
+import TabNavigation from "../components/instructions/TabNavigation";
+import { useTerra } from "../hooks/useTerra";
+import info_square from "../static/images/info-square.svg";
 
 const Instructions: React.FC = () => {
+  const { onTerra } = useTerra();
   const [activeTab1, setActiveTab1] = useState<string>("data-mpcgwas");
   const [activeTab2, setActiveTab2] = useState<string>("Auto-configured");
 
@@ -22,17 +24,34 @@ const Instructions: React.FC = () => {
             Two ways to use <b>sfkit</b>
           </h5>
           <p>
-            In an <span className="badge bg-auto-cfg">auto-configured</span> mode, once the study is configured and
-            launched on the website, sfkit will automatically create the computing environment and deploy the joint
-            analysis protocol in the Google Cloud Platform (GCP). To allow this automation, sfkit will ask for a minimal
-            set of permissions for your GCP project.
+            Once the study is configured on the website, you can launch it in two different modes:
           </p>
+          { onTerra && (
+            <>
+              <p>
+                1. You can upload data to your Terra workspace through Terra or sfkit portal, and then
+                let sfkit automatically launch an analysis workflow in that Terra workspace.
+              </p>
 
-          <p>
-            In a <span className="badge bg-user-cfg">user-configured</span> mode, once the study is configured, you can
-            easily run the protocol on your own machine (and your collaborators on their machines) using the sfkit
-            command-line interface (CLI).
-          </p>
+              <p>
+                2. You can easily launch the protocol manually either inside a Terra interactive analysis machine,
+                or on your own machine outside of Terra, using the sfkit command-line interface (CLI).
+              </p>
+            </>
+          ) || (
+            <>
+              <p>
+                1. You can let sfkit automatically create the computing environment and deploy the joint
+                analysis protocol on the Google Cloud Platform (GCP). To allow this automation, sfkit will ask for a minimal
+                set of permissions in your GCP project.
+              </p>
+
+              <p>
+                2. You can easily launch the protocol on your own machine (and your collaborators on their machines) using the sfkit
+                command-line interface (CLI).
+              </p>
+            </>
+          )}
         </div>
 
         {/* Prerequisites Section */}
