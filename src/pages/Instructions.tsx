@@ -30,11 +30,11 @@ const Instructions: React.FC = () => {
             <>
               <p>
                 1. You can upload data to your Terra workspace through Terra or sfkit portal, and then
-                let sfkit automatically launch an analysis workflow in that Terra workspace.
+                let sfkit automatically launch an analysis workflow in that workspace.
               </p>
 
               <p>
-                2. You can easily launch the protocol manually either inside a Terra interactive analysis machine,
+                2. You can launch the protocol manually either inside a Terra interactive analysis machine,
                 or on your own machine outside of Terra, using the sfkit command-line interface (CLI).
               </p>
             </>

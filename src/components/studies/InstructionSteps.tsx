@@ -107,7 +107,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
                     ))}
                   </Dropdown.Menu>
                 </Dropdown>
-                </div>
+              </div>
             </div>
             ) : (
             <div>
