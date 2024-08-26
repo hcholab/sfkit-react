@@ -45,7 +45,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
 
     const listWorkspaces = async () => {
       try {
-        const url = `${rawlsApiURL}/workspaces?fields=workspace.namespace,workspace.name,workspace.bucketName`;
+        const url = `${rawlsApiURL}/workspaces?fields=accessLevel,workspace.namespace,workspace.name,workspace.bucketName`;
         const res = await fetch(url, { headers });
         const data = await res.json();
         if (!res.ok) {
