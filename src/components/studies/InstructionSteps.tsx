@@ -87,7 +87,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
                 1. Please select a Terra workspace to host the input dataset and run privacy-preserving computation on it.
               </p>
               <div className="mb-2">
-                <Dropdown onSelect={(key, _) => key && setSelectedWorkspace(key)}>
+                <Dropdown onSelect={key => key && setSelectedWorkspace(key)}>
                   <Dropdown.Toggle className="form-select">
                     {selectedWorkspace || 'Select Workspace'}
                   </Dropdown.Toggle>
