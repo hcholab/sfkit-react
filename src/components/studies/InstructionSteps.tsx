@@ -64,7 +64,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
     };
 
     listWorkspaces();
-  }, [rawlsApiURL, headers]);
+  }, [onTerra, rawlsApiURL, headers]);
 
   const handleSubmitParameters = (event: React.FormEvent<HTMLFormElement>) => {
     submitStudyParameters(event, apiBaseUrl, study_id, headers, setSubmitFeedback);
