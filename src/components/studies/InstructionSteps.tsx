@@ -17,6 +17,8 @@ type Workspace = {
   bucketName: string;
   name: string;
   namespace: string;
+  cloudPlatform: string;
+  accessLevel: string;
 };
 
 const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, parameters }) => {
@@ -49,7 +51,13 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
         if (!res.ok) {
           throw new Error(data.message || "");
         }
-        setWorkspaces(data.map(({ workspace }: { workspace: Workspace }) => workspace));
+        setWorkspaces(data
+          .map(({ workspace, accessLevel }: { workspace: Workspace, accessLevel: string }) => ({
+            ...workspace,
+            accessLevel
+          }))
+          .filter((ws: Workspace) => ws.cloudPlatform === "Gcp" && ws.accessLevel !== "READER")
+        );
       } catch (err) {
         console.error("Error fetching workspaces:", err);
       }
