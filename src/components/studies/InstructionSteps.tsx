@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Accordion, Button, Card } from "react-bootstrap";
-import { AppContext } from "../../App";
+import React, { useEffect, useState } from "react";
+import { Accordion, Button, Card, Dropdown, Form } from "react-bootstrap";
+import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
+import { useTerra } from "../../hooks/useTerra";
 import info_square from "../../static/images/info-square.svg";
 import { ParameterGroup } from "../../types/study";
-import GivePermissions from "./GivePermissions";
-import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { submitStudyParameters } from "../../utils/formUtils";
+import GivePermissions from "./GivePermissions";
 
 interface InstructionStepsProps {
   demo: boolean;
@@ -13,10 +13,21 @@ interface InstructionStepsProps {
   parameters: ParameterGroup;
 }
 
+type Workspace = {
+  bucketName: string;
+  name: string;
+  namespace: string;
+};
+
 const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, parameters }) => {
-  const { apiBaseUrl } = useContext(AppContext);
+  const { onTerra, apiBaseUrl } = useTerra();
   const [activeKey, setActiveKey] = useState(localStorage.getItem("activeKey") || "0");
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
+  const [selectedWorkspace, setSelectedWorkspace] = useState<string>();
+  const [workspaceSearchTerm, setWorkspaceSearchTerm] = useState("");
   const headers = useGenerateAuthHeaders();
+  const rawlsApiURL = `https://${apiBaseUrl.hostname.replace(/^sfkit\./, "rawls.")}/api`;
+
   useEffect(() => {
     localStorage.setItem("activeKey", activeKey);
   }, [activeKey]);
@@ -27,16 +38,70 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
     setSubmitFeedback(null);
   }, [activeKey]);
 
+  useEffect(() => {
+    if (!onTerra || !headers.Authorization) return;
+
+    const listWorkspaces = async () => {
+      try {
+        const url = `${rawlsApiURL}/workspaces?fields=workspace.namespace,workspace.name,workspace.bucketName`;
+        const res = await fetch(url, { headers });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "");
+        }
+        setWorkspaces(data.map(({ workspace }: { workspace: Workspace }) => workspace));
+      } catch (err) {
+        console.error("Error fetching workspaces:", err);
+      }
+    };
+
+    listWorkspaces();
+  }, [rawlsApiURL, headers]);
+
   const handleSubmitParameters = (event: React.FormEvent<HTMLFormElement>) => {
     submitStudyParameters(event, apiBaseUrl, study_id, headers, setSubmitFeedback);
   };
 
+  const filteredOptions = workspaces.filter(ws =>
+    ws.name.toLowerCase().startsWith(workspaceSearchTerm.toLowerCase()) ||
+    ws.namespace.toLowerCase().startsWith(workspaceSearchTerm.toLowerCase())
+  );
+
   return (
     <Accordion activeKey={activeKey}>
       <Card>
-        <Card.Header>1. Prepare Project</Card.Header>
+        <Card.Header>1. {onTerra ? "Select Terra Workspace" : "Prepare Project"}</Card.Header>
         <Accordion.Collapse eventKey="0">
           <Card.Body>
+            { onTerra ? (
+            <div>
+              <p>
+                1. Please select a Terra workspace to host the input dataset and run privacy-preserving computation on it.
+              </p>
+              <div className="mb-2">
+                <Dropdown onSelect={(key, _) => key && setSelectedWorkspace(key)}>
+                  <Dropdown.Toggle className="form-select">
+                    {selectedWorkspace || 'Select Workspace'}
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu>
+                    <Form.Control
+                      autoFocus
+                      className="mx-3 my-2 w-auto"
+                      placeholder="Type to filter..."
+                      onChange={(e) => setWorkspaceSearchTerm(e.target.value)}
+                      value={workspaceSearchTerm}
+                    />
+                    {filteredOptions.map((option, index) => (
+                      <Dropdown.Item key={index} eventKey={`${option.namespace}/${option.name}`}>
+                        {option.namespace}/{option.name}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
+                </div>
+            </div>
+            ) : (
             <div>
               <p>
                 1. You should create a GCP (Google Cloud Platform) project that is dedicated to this study. If you are
@@ -81,6 +146,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
                 .
               </p>
             </div>
+            )}
             <div className="text-end">
               <Button variant="success" onClick={() => setActiveKey("1")}>
                 Next

@@ -1,6 +1,6 @@
 export const submitStudyParameters = async (
   event: React.FormEvent<HTMLFormElement>,
-  apiBaseUrl: string,
+  apiBaseUrl: string | URL,
   studyId: string,
   headers: HeadersInit,
   setFeedback?: (feedback: string) => void,
