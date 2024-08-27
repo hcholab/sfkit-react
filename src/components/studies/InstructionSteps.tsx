@@ -170,6 +170,9 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
                 </a>
                 .
               </p>
+              <p className="px-2">
+                1c. <GivePermissions demo={demo} />
+              </p>
             </div>
             )}
             <div className="text-end">
@@ -271,25 +274,8 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
       </Card>
 
       <Card>
-        <Card.Header>3. Give Permissions</Card.Header>
+        <Card.Header>3. Choose VM Size</Card.Header>
         <Accordion.Collapse eventKey="2">
-          <Card.Body>
-            <GivePermissions demo={demo} />
-            <div className="text-end">
-              <Button variant="success" onClick={() => setActiveKey("1")}>
-                Previous
-              </Button>{" "}
-              <Button variant="success" onClick={() => setActiveKey("3")}>
-                Next
-              </Button>
-            </div>
-          </Card.Body>
-        </Accordion.Collapse>
-      </Card>
-
-      <Card>
-        <Card.Header>4. Choose VM Size</Card.Header>
-        <Accordion.Collapse eventKey="3">
           <Card.Body>
             <div>
               <p>
@@ -350,10 +336,10 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
               </form>
             </div>
             <div className="text-end">
-              <Button variant="success" onClick={() => setActiveKey("2")}>
+              <Button variant="success" onClick={() => setActiveKey("1")}>
                 Previous
               </Button>{" "}
-              <Button variant="success" onClick={() => setActiveKey("4")}>
+              <Button variant="success" onClick={() => setActiveKey("3")}>
                 Next
               </Button>
             </div>
@@ -362,8 +348,8 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
       </Card>
 
       <Card>
-        <Card.Header>5. Post-Processing</Card.Header>
-        <Accordion.Collapse eventKey="4">
+        <Card.Header>4. Post-Processing</Card.Header>
+        <Accordion.Collapse eventKey="3">
           <Card.Body>
             {demo && (
               <div className="alert alert-info" role="alert">
@@ -416,7 +402,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
               </div>
             </form>
             <div className="text-end">
-              <Button variant="success" onClick={() => setActiveKey("3")}>
+              <Button variant="success" onClick={() => setActiveKey("2")}>
                 Previous
               </Button>{" "}
               <Button variant="success" onClick={() => window.location.reload()}>
