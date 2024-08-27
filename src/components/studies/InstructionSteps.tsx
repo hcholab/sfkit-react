@@ -25,9 +25,10 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
   const { onTerra, apiBaseUrl } = useTerra();
   const [activeKey, setActiveKey] = useState(localStorage.getItem("activeKey") || "0");
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
-  const [_, setSelectedWorkspace] = useState<string>();
+  const [selectedWorkspace, setSelectedWorkspace] = useState<string>();
   const [workspaceSearchTerm, setWorkspaceSearchTerm] = useState("");
   const [workspaceSearchDropdownOpen, setWorkspaceSearchDropdownOpen] = useState(false);
+  const [workspaceBucketUrl, setWorkspaceBucketUrl] = useState<string>("");
   const headers = useGenerateAuthHeaders();
   const rawlsApiURL = `https://${apiBaseUrl.hostname.replace(/^sfkit\./, "rawls.")}/api`;
 
@@ -74,6 +75,10 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
   const filteredOptions = workspaces.filter(ws =>
     `${ws.namespace}/${ws.name}`.toLowerCase().includes(workspaceSearchTerm.toLowerCase())
   );
+
+  const handleUploadData = () => {
+    console.log("Uploading data to workspace", selectedWorkspace);
+  };
 
   return (
     <Accordion activeKey={activeKey}>
@@ -168,7 +173,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
             </div>
             )}
             <div className="text-end">
-              <Button variant="success" onClick={() => setActiveKey("1")}>
+              <Button variant="success" onClick={() => setActiveKey("1")} disabled={onTerra && !selectedWorkspace}>
                 Next
               </Button>
             </div>
@@ -180,6 +185,36 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
         <Card.Header>2. Upload Data</Card.Header>
         <Accordion.Collapse eventKey="1">
           <Card.Body>
+            { onTerra ? (
+              <div>
+                <p>
+                  Upload a folder with your data (unzipped) to the workspace bucket using the button below:
+                </p>
+                <p>
+                  <Button variant="success" onClick={handleUploadData}>
+                    Upload Data
+                  </Button>
+                </p>
+                <p>
+                  Alternatively, you can upload it manually or via Terra portal, and paste the bucket URL here:
+                </p>
+                <p>
+                  <Form.Control
+                    type="text"
+                    placeholder="Paste bucket URL starting with gs://..."
+                    value={workspaceBucketUrl}
+                    onChange={e => {
+                      const url = e.target.value;
+                      console.log("url", url);
+                      if (!url || /^gs:\/(\/[-\w]+)+\/?$/.test(url)) {
+                        setWorkspaceBucketUrl(url.replace(/\/$/, ""))
+                      }
+                    }}
+                    autoFocus
+                  />
+                </p>
+              </div>
+            ) : (
             <div>
               <p>
                 1. Upload a folder with your data (unzipped) to a Google cloud storage bucket in your GCP (Google Cloud
@@ -222,11 +257,12 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
                 </div>
               </form>
             </div>
+            )}
             <div className="text-end">
               <Button variant="success" onClick={() => setActiveKey("0")}>
                 Previous
               </Button>{" "}
-              <Button variant="success" onClick={() => setActiveKey("2")}>
+              <Button variant="success" onClick={() => setActiveKey("2")} disabled={onTerra && !workspaceBucketUrl}>
                 Next
               </Button>
             </div>
