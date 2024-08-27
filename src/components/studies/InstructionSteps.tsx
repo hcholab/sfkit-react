@@ -27,6 +27,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [selectedWorkspace, setSelectedWorkspace] = useState<string>();
   const [workspaceSearchTerm, setWorkspaceSearchTerm] = useState("");
+  const [workspaceSearchDropdownOpen, setWorkspaceSearchDropdownOpen] = useState(false);
   const headers = useGenerateAuthHeaders();
   const rawlsApiURL = `https://${apiBaseUrl.hostname.replace(/^sfkit\./, "rawls.")}/api`;
 
@@ -71,8 +72,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
   };
 
   const filteredOptions = workspaces.filter(ws =>
-    ws.name.toLowerCase().startsWith(workspaceSearchTerm.toLowerCase()) ||
-    ws.namespace.toLowerCase().startsWith(workspaceSearchTerm.toLowerCase())
+    `${ws.namespace}/${ws.name}`.toLowerCase().includes(workspaceSearchTerm.toLowerCase())
   );
 
   return (
@@ -87,21 +87,33 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
                 1. Please select a Terra workspace to host the input dataset and run privacy-preserving computation on it.
               </p>
               <div className="mb-2">
-                <Dropdown onSelect={key => key && setSelectedWorkspace(key)}>
-                  <Dropdown.Toggle className="form-select">
-                    {selectedWorkspace || 'Select Workspace'}
+                <Dropdown
+                  onSelect={key => key && setSelectedWorkspace(key)}
+                  onToggle={setWorkspaceSearchDropdownOpen}
+                  show={workspaceSearchDropdownOpen}
+                >
+                  <Dropdown.Toggle as="div" className="form-select">
+                    <Form.Control
+                      type="text"
+                      placeholder="Search or Select Workspace..."
+                      value={workspaceSearchTerm}
+                      onChange={e => {
+                        setWorkspaceSearchTerm(e.target.value);
+                        if (filteredOptions.length && !workspaceSearchDropdownOpen) {
+                          setWorkspaceSearchDropdownOpen(true);
+                        }
+                      }}
+                      autoFocus
+                    />
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu>
-                    <Form.Control
-                      autoFocus
-                      className="mx-3 my-2 w-auto"
-                      placeholder="Type to filter..."
-                      onChange={(e) => setWorkspaceSearchTerm(e.target.value)}
-                      value={workspaceSearchTerm}
-                    />
                     {filteredOptions.map((option, index) => (
-                      <Dropdown.Item key={index} eventKey={`${option.namespace}/${option.name}`}>
+                      <Dropdown.Item
+                        key={index}
+                        eventKey={`${option.namespace}/${option.name}`}
+                        onClick={() => setWorkspaceSearchTerm(`${option.namespace}/${option.name}`)}
+                      >
                         {option.namespace}/{option.name}
                       </Dropdown.Item>
                     ))}
