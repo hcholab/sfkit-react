@@ -7,17 +7,15 @@ interface ConfigureStudyModalProps {
   handleShow: () => void;
   handleClose: () => void;
   showModal: boolean;
-  studyType: string;
   demo: boolean;
   studyId: string;
   personalParameters: ParameterGroup;
 }
 
-const ConfigureStudyModal: React.FC<ConfigureStudyModalProps> = ({
+const ConfigureComputeEnvModal: React.FC<ConfigureStudyModalProps> = ({
   handleShow,
   handleClose,
   showModal,
-  studyType,
   demo,
   studyId,
   personalParameters,
@@ -25,12 +23,12 @@ const ConfigureStudyModal: React.FC<ConfigureStudyModalProps> = ({
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
-        Configure Study
+        Configure Compute Environment
       </Button>
 
       <Modal size="xl" show={showModal} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Configure your {studyType} Study</Modal.Title>
+          <Modal.Title>Configure Compute Environment</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <InstructionSteps demo={demo} study_id={studyId} parameters={personalParameters} />
@@ -45,4 +43,4 @@ const ConfigureStudyModal: React.FC<ConfigureStudyModalProps> = ({
   );
 };
 
-export default ConfigureStudyModal;
+export default ConfigureComputeEnvModal;

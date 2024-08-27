@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { AppContext } from "../../App";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { ParameterGroup } from "../../types/study";
-import ConfigureStudyModal from "./ConfigureStudyModal";
+import ConfigureComputeEnvModal from "./ConfigureStudyModal";
 import SubTaskContainer from "./SubTaskContainer";
 import TaskElement from "./TaskElement";
 
@@ -165,11 +165,10 @@ const InstructionArea: React.FC<Props> = ({
     <div className="mt-3" id="instructions">
       {status === "" ? (
         <>
-          <ConfigureStudyModal
+          <ConfigureComputeEnvModal
             showModal={showModal}
             handleShow={handleShow}
             handleClose={handleClose}
-            studyType={studyType}
             demo={demo}
             studyId={study_id}
             personalParameters={personalParameters}
