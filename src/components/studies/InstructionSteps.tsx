@@ -7,8 +7,6 @@ import { ParameterGroup } from "../../types/study";
 import { submitStudyParameters } from "../../utils/formUtils";
 import GivePermissions from "./GivePermissions";
 
-import testWs from "./workspaces.json";
-
 interface InstructionStepsProps {
   demo: boolean;
   study_id: string;
@@ -68,6 +66,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
         console.error("Error fetching workspaces:", err);
       } finally {
         if (dev) {
+          const testWs = await import("./workspaces.json");
           setWorkspaces(testWs.map(ws => ({ ...ws.workspace, accessLevel: ws.accessLevel })));
         }
       }
