@@ -50,7 +50,9 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
     const listWorkspaces = async () => {
       try {
         const url = `${rawlsApiURL}/workspaces?fields=accessLevel,workspace.namespace,workspace.name,workspace.cloudPlatform,workspace.bucketName`;
-        const res = await fetch(url, { headers });
+        const res = dev
+          ? { ok: true, json: async () => (await import("./workspaces.json")).default }
+          : await fetch(url, { headers });
         const data = await res.json();
         if (!res.ok) {
           throw new Error(data.message || "");
@@ -64,11 +66,6 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
         );
       } catch (err) {
         console.error("Error fetching workspaces:", err);
-      } finally {
-        if (dev) {
-          const testWs = await import("./workspaces.json");
-          setWorkspaces(testWs.map(ws => ({ ...ws.workspace, accessLevel: ws.accessLevel })));
-        }
       }
     };
 
