@@ -239,6 +239,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
                     style={{ display: 'none' }}
                     id="upload-data-input"
                     autoFocus
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
                     webkitdirectory=""
                   />
