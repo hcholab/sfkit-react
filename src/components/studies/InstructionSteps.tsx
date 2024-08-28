@@ -18,6 +18,7 @@ type Workspace = {
   name: string;
   namespace: string;
   cloudPlatform: string;
+  googleProject: string;
   accessLevel: string;
 };
 
@@ -80,8 +81,39 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
     `${ws.namespace}/${ws.name}`.toLowerCase().includes(workspaceSearchTerm.toLowerCase())
   );
 
-  const handleUploadData = () => {
-    console.log("Uploading data to workspace", selectedWorkspace);
+  const handleUploadData = async (files: FileList | null) => {
+    const ws = workspaces.find(ws =>
+      `${ws.namespace}/${ws.name}` == selectedWorkspace
+    );
+    if (!files || !ws) return;
+
+    const samApiUrl = `${rawlsApiURL.replace(/rawls\./, "sam.")}/google/v1/user/petServiceAccount/${ws.googleProject}/token`;
+    const samRes = await fetch(samApiUrl, {
+      method: "POST",
+      headers,
+      body: JSON.stringify([
+        "https://www.googleapis.com/auth/devstorage.read_write",
+      ]),
+    });
+    if (!samRes.ok) {
+      console.error("Error fetching SAM token:", await samRes.text());
+      return;
+    }
+    const gcsToken = await samRes.text();
+
+    await Promise.all(Array.from(files).map(f => {
+      const url = `https://storage.googleapis.com/upload/storage/v1/b/${ws.bucketName}/o?uploadType=media&name=${f.name}`;
+      console.log("uploading file", f, url);
+      return fetch(url, {
+        method: "POST",
+        body: f,
+        headers: {
+          Authorization: `Bearer ${gcsToken}`,
+        },
+      });
+    }));
+
+    setWorkspaceBucketUrl(`gs://${ws.bucketName}/_sfkit/${study_id}/data`);
   };
 
   return (
@@ -198,9 +230,18 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
                   Upload a folder with your data (unzipped) to the workspace bucket using the button below:
                 </p>
                 <p>
-                  <Button variant="success" onClick={handleUploadData}>
+                  <label htmlFor="upload-data-input" className="btn btn-success">
                     Upload Data
-                  </Button>
+                  </label>
+                  <input
+                    type="file"
+                    onChange={e => handleUploadData(e.target.files)}
+                    style={{ display: 'none' }}
+                    id="upload-data-input"
+                    autoFocus
+                    // @ts-ignore
+                    webkitdirectory=""
+                  />
                 </p>
                 <p>
                   Alternatively, you can upload it manually or via Terra portal, and paste the bucket URL here:
