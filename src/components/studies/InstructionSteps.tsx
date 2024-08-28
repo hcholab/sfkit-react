@@ -7,6 +7,8 @@ import { ParameterGroup } from "../../types/study";
 import { submitStudyParameters } from "../../utils/formUtils";
 import GivePermissions from "./GivePermissions";
 
+import testWs from "./workspaces.json";
+
 interface InstructionStepsProps {
   demo: boolean;
   study_id: string;
@@ -22,7 +24,7 @@ type Workspace = {
 };
 
 const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, parameters }) => {
-  const { onTerra, apiBaseUrl } = useTerra();
+  const { onTerra, dev, apiBaseUrl } = useTerra();
   const [activeKey, setActiveKey] = useState(localStorage.getItem("activeKey") || "0");
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [selectedWorkspace, setSelectedWorkspace] = useState<string>();
@@ -30,7 +32,9 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
   const [workspaceSearchDropdownOpen, setWorkspaceSearchDropdownOpen] = useState(false);
   const [workspaceBucketUrl, setWorkspaceBucketUrl] = useState<string>("");
   const headers = useGenerateAuthHeaders();
-  const rawlsApiURL = `https://${apiBaseUrl.hostname.replace(/^sfkit\./, "rawls.")}/api`;
+  const rawlsApiURL = dev
+    ? "https://sfkit.dsde-dev.broadinstitute.org/api"
+    : `https://${apiBaseUrl.hostname.replace(/^sfkit\./, "rawls.")}/api`;
 
   useEffect(() => {
     localStorage.setItem("activeKey", activeKey);
@@ -62,11 +66,15 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
         );
       } catch (err) {
         console.error("Error fetching workspaces:", err);
+      } finally {
+        if (dev) {
+          setWorkspaces(testWs.map(ws => ({ ...ws.workspace, accessLevel: ws.accessLevel })));
+        }
       }
     };
 
     listWorkspaces();
-  }, [onTerra, rawlsApiURL, headers]);
+  }, [onTerra, dev, rawlsApiURL, headers]);
 
   const handleSubmitParameters = (event: React.FormEvent<HTMLFormElement>) => {
     submitStudyParameters(event, apiBaseUrl, study_id, headers, setSubmitFeedback);

@@ -8,10 +8,12 @@ export const useTerra = () => {
 
     return useMemo(() => {
         const url = new URL(apiBaseUrl);
+        const dev = process.env.NODE_ENV === "development";
 
         return {
-            onTerra: terraRe.test(url.hostname),
+            onTerra: dev || terraRe.test(url.hostname),
             apiBaseUrl: url,
+            dev,
         };
     }, [apiBaseUrl]);
 };
