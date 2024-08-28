@@ -326,8 +326,8 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
               <p>
                 Choose the Virtual Machine (VM) size that you would like to use for your study. The VM size determines
                 the amount of memory and CPU cores that will be available to your study. The VM size also determines the
-                cost of your study. If you would like guidance on what size machine to use, see the
-                <a className="text-decoration-none" href="#machine_recommendations">
+                cost of your study. If you would like guidance on what size machine to use, see the{" "}
+                <a className="text-decoration-none" href="/instructions#machine_recommendations">
                   Machine Recommendations
                 </a>{" "}
                 section in the instructions page.
@@ -408,7 +408,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
               <p>Options for what happens on protocol completion:</p>
             </div>
             <form onSubmit={handleSubmitParameters}>
-              {["DELETE_VM", "SEND_RESULTS"].map((key) => (
+              { (onTerra ? ["SEND_RESULTS"] : ["DELETE_VM", "SEND_RESULTS"]).map((key) => (
                 <div className="text-start row" key={key}>
                   <label htmlFor={key} className="col-sm-3 col-form-label text-start">
                     {parameters[key]?.name}
@@ -423,28 +423,32 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
                 </div>
               ))}
 
-              <div className="text-start row">
-                <label htmlFor="RESULTS_PATH" className="col-sm-3 col-form-label text-start">
-                  {parameters.RESULTS_PATH.name}
-                </label>
-                <div className="col-sm-9">
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="RESULTS_PATH"
-                    id="RESULTS_PATH"
-                    defaultValue={parameters.RESULTS_PATH.value}
-                  />
-                </div>
-                <p className="mt-3 text-start text-muted">{parameters.RESULTS_PATH.description}</p>
-              </div>
+              { !onTerra && (
+                <>
+                  <div className="text-start row">
+                    <label htmlFor="RESULTS_PATH" className="col-sm-3 col-form-label text-start">
+                      {parameters.RESULTS_PATH.name}
+                    </label>
+                    <div className="col-sm-9">
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="RESULTS_PATH"
+                        id="RESULTS_PATH"
+                        defaultValue={parameters.RESULTS_PATH.value}
+                      />
+                    </div>
+                    <p className="mt-3 text-start text-muted">{parameters.RESULTS_PATH.description}</p>
+                  </div>
 
-              <div className="text-center">
-                <div>{submitFeedback}</div>
-                <button className="btn btn-primary" type="submit">
-                  Confirm Post-Processing Configuration
-                </button>
-              </div>
+                  <div className="text-center">
+                    <div>{submitFeedback}</div>
+                    <button className="btn btn-primary" type="submit">
+                      Confirm Post-Processing Configuration
+                    </button>
+                  </div>
+                </>
+              )}
             </form>
             <div className="text-end">
               <Button variant="success" onClick={() => setActiveKey("2")}>
