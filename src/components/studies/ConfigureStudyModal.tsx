@@ -1,23 +1,27 @@
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
-import InstructionSteps from "./InstructionSteps";
 import { ParameterGroup } from "../../types/study";
+import InstructionSteps from "./InstructionSteps";
 
 interface ConfigureStudyModalProps {
   handleShow: () => void;
   handleClose: () => void;
+  handleStartWorkflow: () => void;
   showModal: boolean;
   demo: boolean;
   studyId: string;
+  studyType: string;
   personalParameters: ParameterGroup;
 }
 
 const ConfigureComputeEnvModal: React.FC<ConfigureStudyModalProps> = ({
   handleShow,
   handleClose,
+  handleStartWorkflow,
   showModal,
   demo,
   studyId,
+  studyType,
   personalParameters,
 }) => {
   return (
@@ -31,7 +35,13 @@ const ConfigureComputeEnvModal: React.FC<ConfigureStudyModalProps> = ({
           <Modal.Title>Configure Compute Environment</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <InstructionSteps demo={demo} study_id={studyId} parameters={personalParameters} />
+          <InstructionSteps
+            demo={demo}
+            studyId={studyId}
+            studyType={studyType}
+            parameters={personalParameters}
+            handleStartWorkflow={handleStartWorkflow}
+          />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

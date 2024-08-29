@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import { Button } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../../App";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
@@ -169,15 +168,12 @@ const InstructionArea: React.FC<Props> = ({
             showModal={showModal}
             handleShow={handleShow}
             handleClose={handleClose}
+            handleStartWorkflow={handleStartWorkflow}
             demo={demo}
             studyId={study_id}
+            studyType={studyType}
             personalParameters={personalParameters}
           />
-          <div className="mt-2">
-            <Button variant="success" onClick={handleStartWorkflow}>
-              Begin {studyType} Workflow
-            </Button>
-          </div>
         </>
       ) : null}
       <hr/>OR<hr/>

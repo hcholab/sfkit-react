@@ -15,8 +15,10 @@ declare module 'react' {
 
 interface InstructionStepsProps {
   demo: boolean;
-  study_id: string;
+  studyId: string;
+  studyType: string;
   parameters: ParameterGroup;
+  handleStartWorkflow: () => void;
 }
 
 type Workspace = {
@@ -28,7 +30,7 @@ type Workspace = {
   accessLevel: string;
 };
 
-const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, parameters }) => {
+const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, studyType, parameters, handleStartWorkflow }) => {
   const { onTerra, dev, apiBaseUrl } = useTerra();
   const [activeKey, setActiveKey] = useState("0");
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
@@ -76,7 +78,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
   }, [onTerra, dev, rawlsApiURL, headers]);
 
   const handleSubmitParameters = (event: React.FormEvent<HTMLFormElement>) => {
-    submitStudyParameters(event, apiBaseUrl, study_id, headers, setSubmitFeedback);
+    submitStudyParameters(event, apiBaseUrl, studyId, headers, setSubmitFeedback);
   };
 
   const filteredOptions = workspaces.filter(ws =>
@@ -103,7 +105,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
     }
     const gcsToken = (await samRes.text()).replace(/"/g, "");
 
-    const dataPath = `_sfkit/${study_id}/data`;
+    const dataPath = `_sfkit/${studyId}/data`;
     await Promise.all(Array.from(files).map(async f => {
       const filePath = f.webkitRelativePath.split('/').slice(1).join('/');
       const objPath = encodeURIComponent(`${dataPath}/${filePath}`);
@@ -138,6 +140,68 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
     }));
 
     setWorkspaceBucketUrl(`gs://${ws.bucketName}/${dataPath}`);
+  };
+
+  const handleStartTerraWorkflow = async () => {
+    // Create entity
+    const entityRes = await fetch(`${rawlsApiURL}/workspaces/${selectedWorkspace}/entities`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        name: studyId,
+        entityType: "study",
+        attributes: {
+          data: workspaceBucketUrl,
+        },
+      }),
+    });
+    if (!entityRes.ok) {
+      console.error("Error creating entity:", await entityRes.text());
+      return;
+    }
+
+    // Create method config (will "fail" if already exists, which is OK)
+    const namespace = selectedWorkspace?.split("/")[0];
+    const methodConfigurationName = "sfkit";
+    await fetch(`${rawlsApiURL}/workspaces/${selectedWorkspace}/methodconfigs`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        namespace,
+        name: methodConfigurationName,
+        rootEntityType: "study",
+        inputs: {
+          "sfkit.study_id": "this.study_id",
+          "sfkit.data": "this.data",
+          "sfkit.api_url": `\"${apiBaseUrl}\"`,
+        },
+        outputs: {},
+        methodConfigVersion: 1,
+        methodRepoMethod: {
+          methodUri: "dockstore://github.com%2Fhcholab%2Fsfkit/main",
+        },
+        deleted: false,
+      }),
+    });
+
+    // Submit Terra workflow
+    const submissionRes = await fetch(`${rawlsApiURL}/workspaces/${selectedWorkspace}/submissions`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        entityType: "study",
+        entityName: studyId,
+        methodConfigurationNamespace: namespace,
+        methodConfigurationName: "sfkit",
+        useCallCache: false,
+      }),
+    });
+    if (!submissionRes.ok) {
+      console.error("Error submitting workflow:", await submissionRes.text());
+      return;
+    }
+
+    handleStartWorkflow();
   };
 
   return (
@@ -490,6 +554,11 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
           </Card.Body>
         </Accordion.Collapse>
       </Card>
+      <div className="d-flex justify-content-center mt-3">
+        <Button variant="success" onClick={onTerra ? handleStartTerraWorkflow : handleStartWorkflow}>
+          Begin {studyType} Workflow
+        </Button>
+      </div>
     </Accordion>
   );
 };
