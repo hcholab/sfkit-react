@@ -7,6 +7,12 @@ import { ParameterGroup } from "../../types/study";
 import { submitStudyParameters } from "../../utils/formUtils";
 import GivePermissions from "./GivePermissions";
 
+declare module 'react' {
+  interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
+    webkitdirectory?: boolean;
+  }
+}
+
 interface InstructionStepsProps {
   demo: boolean;
   study_id: string;
@@ -107,7 +113,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
     await Promise.all(Array.from(files).map(async f => {
       const filePath = f.webkitRelativePath.split('/').slice(1).join('/');
       const objPath = encodeURIComponent(`${dataPath}/${filePath}`);
-      setUploadProgress(prev => ({ ...prev, [objPath]: 0 }));
+      setUploadProgress(p => ({ ...p, [objPath]: 0 }));
 
       const xhr = new XMLHttpRequest();
       xhr.open("POST", `https://storage.googleapis.com/upload/storage/v1/b/${ws.bucketName}/o?uploadType=media&name=${objPath}`);
@@ -263,9 +269,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
                     style={{ display: 'none' }}
                     id="upload-data-input"
                     autoFocus
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    webkitdirectory=""
+                    webkitdirectory
                   />
                 </p>
                 {Object.entries(uploadProgress).map(([fileName, progress]) => (
