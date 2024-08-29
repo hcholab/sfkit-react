@@ -206,8 +206,6 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
       console.error("Error submitting workflow:", await submissionRes.text());
       return;
     }
-
-    handleStartWorkflow();
   };
 
   return (
@@ -343,7 +341,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
                   </div>
                 ))}
                 <p>
-                  Alternatively, you can upload it manually or via Terra portal, and paste the bucket URL here:
+                  Alternatively, you can upload it manually or via Terra portal, and paste the bucket <i>folder</i> URL here:
                 </p>
                 <p>
                   <Form.Control
@@ -558,7 +556,10 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
         </Accordion.Collapse>
       </Card>
       <div className="d-flex justify-content-center mt-3">
-        <Button variant="success" onClick={onTerra ? handleStartTerraWorkflow : handleStartWorkflow}>
+        <Button variant="success" onClick={async () => {
+          onTerra ? await handleStartTerraWorkflow() : handleStartWorkflow();
+          location.reload();
+        }}>
           Begin {studyType} Workflow
         </Button>
       </div>
