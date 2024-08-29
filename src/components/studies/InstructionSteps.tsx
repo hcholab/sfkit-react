@@ -30,24 +30,18 @@ type Workspace = {
 
 const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, parameters }) => {
   const { onTerra, dev, apiBaseUrl } = useTerra();
-  const [activeKey, setActiveKey] = useState(localStorage.getItem("activeKey") || "0");
+  const [activeKey, setActiveKey] = useState("0");
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [selectedWorkspace, setSelectedWorkspace] = useState<string>();
   const [workspaceSearchTerm, setWorkspaceSearchTerm] = useState("");
   const [workspaceSearchDropdownOpen, setWorkspaceSearchDropdownOpen] = useState(false);
   const [workspaceBucketUrl, setWorkspaceBucketUrl] = useState<string>("");
   const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
+  const [submitFeedback, setSubmitFeedback] = useState<string | null>(null);
   const headers = useGenerateAuthHeaders();
   const rawlsApiURL = dev
     ? "https://sfkit.dsde-dev.broadinstitute.org/api"
     : `https://${apiBaseUrl.hostname.replace(/^sfkit\./, "rawls.")}/api`;
-
-
-  useEffect(() => {
-    localStorage.setItem("activeKey", activeKey);
-  }, [activeKey]);
-
-  const [submitFeedback, setSubmitFeedback] = useState<string | null>(null);
 
   useEffect(() => {
     setSubmitFeedback(null);
