@@ -159,15 +159,15 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
         },
       }),
     });
-    if (!entityRes.ok) {
+    if (!entityRes.ok && entityRes.status !== 409) {
       console.error("Error creating entity:", await entityRes.text());
       return;
     }
 
-    // Create method config (will "fail" if already exists, which is OK)
+    // Create method config
     const namespace = selectedWorkspace?.split("/")[0];
     const methodConfigurationName = "sfkit";
-    await fetch(`${rawlsBaseUrl}/methodconfigs`, {
+    const methodConfRes = await fetch(`${rawlsBaseUrl}/methodconfigs`, {
       ...post,
       body: JSON.stringify({
         namespace,
@@ -186,6 +186,10 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
         deleted: false,
       }),
     });
+    if (!methodConfRes.ok && methodConfRes.status !== 409) {
+      console.error("Error creating method config:", await methodConfRes.text());
+      return;
+    }
 
     // Submit Terra workflow
     const submissionRes = await fetch(`${rawlsBaseUrl}/submissions`, {
