@@ -144,7 +144,8 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
 
   const handleStartTerraWorkflow = async () => {
     // Create entity
-    const entityRes = await fetch(`${rawlsApiURL}/workspaces/${selectedWorkspace}/entities`, {
+    const rawlsBaseUrl = `${rawlsApiURL}/workspaces/${selectedWorkspace}`;
+    const entityRes = await fetch(`${rawlsBaseUrl}/entities`, {
       method: "POST",
       headers,
       body: JSON.stringify({
@@ -163,7 +164,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     // Create method config (will "fail" if already exists, which is OK)
     const namespace = selectedWorkspace?.split("/")[0];
     const methodConfigurationName = "sfkit";
-    await fetch(`${rawlsApiURL}/workspaces/${selectedWorkspace}/methodconfigs`, {
+    await fetch(`${rawlsBaseUrl}/methodconfigs`, {
       method: "POST",
       headers,
       body: JSON.stringify({
@@ -185,7 +186,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     });
 
     // Submit Terra workflow
-    const submissionRes = await fetch(`${rawlsApiURL}/workspaces/${selectedWorkspace}/submissions`, {
+    const submissionRes = await fetch(`${rawlsBaseUrl}/submissions`, {
       method: "POST",
       headers,
       body: JSON.stringify({
