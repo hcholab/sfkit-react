@@ -99,12 +99,12 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
       console.error("Error fetching SAM token:", await samRes.text());
       return;
     }
-    const gcsToken = await samRes.text();
+    const gcsToken = (await samRes.text()).replace(/"/g, "");
 
+    const dataPath = `_sfkit/${study_id}/data`;
     await Promise.all(Array.from(files).map(f => {
-      const url = `https://storage.googleapis.com/upload/storage/v1/b/${ws.bucketName}/o?uploadType=media&name=${f.name}`;
-      console.log("uploading file", f, url);
-      return fetch(url, {
+      const objPath = encodeURIComponent(`${dataPath}/${f.name}`);
+      return fetch(`https://storage.googleapis.com/upload/storage/v1/b/${ws.bucketName}/o?uploadType=media&name=${objPath}`, {
         method: "POST",
         body: f,
         headers: {
@@ -113,7 +113,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
       });
     }));
 
-    setWorkspaceBucketUrl(`gs://${ws.bucketName}/_sfkit/${study_id}/data`);
+    setWorkspaceBucketUrl(`gs://${ws.bucketName}/${dataPath}`);
   };
 
   return (
