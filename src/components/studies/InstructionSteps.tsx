@@ -113,31 +113,31 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
     await Promise.all(Array.from(files).map(async f => {
       const filePath = f.webkitRelativePath.split('/').slice(1).join('/');
       const objPath = encodeURIComponent(`${dataPath}/${filePath}`);
-      setUploadProgress(p => ({ ...p, [objPath]: 0 }));
+      setUploadProgress(p => ({ ...p, [filePath]: 0 }));
 
       const xhr = new XMLHttpRequest();
       xhr.open("POST", `https://storage.googleapis.com/upload/storage/v1/b/${ws.bucketName}/o?uploadType=media&name=${objPath}`);
       xhr.setRequestHeader("Authorization", `Bearer ${gcsToken}`);
 
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
+      xhr.upload.onprogress = e => {
+        if (e.lengthComputable) {
           setUploadProgress(p => ({
             ...p,
-            [objPath]: (event.loaded / event.total) * 100,
+            [filePath]: (e.loaded / e.total) * 100,
           }));
         }
       };
 
       xhr.onload = () => {
         if (xhr.status === 200) {
-          setUploadProgress(({ [objPath]: _, ...p }) => p);
+          setUploadProgress(({ [filePath]: _, ...p }) => p);
         } else {
-          console.error(`Error uploading file ${objPath}: ${xhr.status} ${xhr.statusText}`);
+          console.error(`Error uploading file ${filePath}: ${xhr.status} ${xhr.statusText}`);
         }
       };
 
       xhr.onerror = () => {
-        console.error(`Network error uploading ${objPath}`);
+        console.error(`Network error uploading ${filePath}`);
       };
 
       xhr.send(f);
