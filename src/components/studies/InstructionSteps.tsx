@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Accordion, Button, Card, Dropdown, Form } from "react-bootstrap";
+import { Accordion, Button, Card, Dropdown, Form, ProgressBar } from "react-bootstrap";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { useTerra } from "../../hooks/useTerra";
 import info_square from "../../static/images/info-square.svg";
@@ -30,10 +30,12 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
   const [workspaceSearchTerm, setWorkspaceSearchTerm] = useState("");
   const [workspaceSearchDropdownOpen, setWorkspaceSearchDropdownOpen] = useState(false);
   const [workspaceBucketUrl, setWorkspaceBucketUrl] = useState<string>("");
+  const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
   const headers = useGenerateAuthHeaders();
   const rawlsApiURL = dev
     ? "https://sfkit.dsde-dev.broadinstitute.org/api"
     : `https://${apiBaseUrl.hostname.replace(/^sfkit\./, "rawls.")}/api`;
+
 
   useEffect(() => {
     localStorage.setItem("activeKey", activeKey);
@@ -102,15 +104,37 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
     const gcsToken = (await samRes.text()).replace(/"/g, "");
 
     const dataPath = `_sfkit/${study_id}/data`;
-    await Promise.all(Array.from(files).map(f => {
-      const objPath = encodeURIComponent(`${dataPath}/${f.name}`);
-      return fetch(`https://storage.googleapis.com/upload/storage/v1/b/${ws.bucketName}/o?uploadType=media&name=${objPath}`, {
-        method: "POST",
-        body: f,
-        headers: {
-          Authorization: `Bearer ${gcsToken}`,
-        },
-      });
+    await Promise.all(Array.from(files).map(async f => {
+      const filePath = f.webkitRelativePath.split('/').slice(1).join('/');
+      const objPath = encodeURIComponent(`${dataPath}/${filePath}`);
+      setUploadProgress(prev => ({ ...prev, [objPath]: 0 }));
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", `https://storage.googleapis.com/upload/storage/v1/b/${ws.bucketName}/o?uploadType=media&name=${objPath}`);
+      xhr.setRequestHeader("Authorization", `Bearer ${gcsToken}`);
+
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          setUploadProgress(p => ({
+            ...p,
+            [objPath]: (event.loaded / event.total) * 100,
+          }));
+        }
+      };
+
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          setUploadProgress(({ [objPath]: _, ...p }) => p);
+        } else {
+          console.error(`Error uploading file ${objPath}: ${xhr.status} ${xhr.statusText}`);
+        }
+      };
+
+      xhr.onerror = () => {
+        console.error(`Network error uploading ${objPath}`);
+      };
+
+      xhr.send(f);
     }));
 
     setWorkspaceBucketUrl(`gs://${ws.bucketName}/${dataPath}`);
@@ -244,6 +268,12 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
                     webkitdirectory=""
                   />
                 </p>
+                {Object.entries(uploadProgress).map(([fileName, progress]) => (
+                  <div key={fileName} className="mb-2">
+                    <p className="mb-1">{fileName}</p>
+                    <ProgressBar variant="success" now={progress} />
+                  </div>
+                ))}
                 <p>
                   Alternatively, you can upload it manually or via Terra portal, and paste the bucket URL here:
                 </p>
