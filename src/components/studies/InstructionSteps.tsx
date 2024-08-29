@@ -9,7 +9,7 @@ import GivePermissions from "./GivePermissions";
 
 declare module 'react' {
   interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
-    webkitdirectory?: boolean;
+    webkitdirectory?: boolean | string;
   }
 }
 
@@ -269,7 +269,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
                     style={{ display: 'none' }}
                     id="upload-data-input"
                     autoFocus
-                    webkitdirectory
+                    webkitdirectory=""
                   />
                 </p>
                 {Object.entries(uploadProgress).map(([fileName, progress]) => (
