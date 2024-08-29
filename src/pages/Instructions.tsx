@@ -10,7 +10,7 @@ import info_square from "../static/images/info-square.svg";
 const Instructions: React.FC = () => {
   const { onTerra } = useTerra();
   const [activeTab1, setActiveTab1] = useState<string>("data-mpcgwas");
-  const [activeTab2, setActiveTab2] = useState<string>("Auto-configured");
+  const [activeTab2, setActiveTab2] = useState<string>("auto");
 
   return (
     <section className="py-5">
@@ -154,9 +154,9 @@ const Instructions: React.FC = () => {
           </p>
         </div>
 
-        {/* Configuration Options Section */}
+        {/* Compute Environment Options Section */}
         <div>
-          <h4 className="my-4 fw-normal">Configuration Options</h4>
+          <h4 className="my-4 fw-normal">Compute Environment Options</h4>
 
           <div className="row p-4 bg-light rounded">
             <TabNavigation activeTab={activeTab2} setActiveTab={setActiveTab2} tabType="config" />
