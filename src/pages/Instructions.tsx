@@ -11,6 +11,7 @@ const Instructions: React.FC = () => {
   const { onTerra } = useTerra();
   const [activeTab1, setActiveTab1] = useState<string>("data-mpcgwas");
   const [activeTab2, setActiveTab2] = useState<string>("auto");
+  const sfkit = <i>sfkit</i>;
 
   return (
     <section className="py-5">
@@ -29,25 +30,25 @@ const Instructions: React.FC = () => {
           { onTerra ? (
             <>
               <p>
-                1. You can upload data to your Terra workspace through Terra or <b>sfkit</b> portal, and then
-                let <b>sfkit</b> automatically launch an analysis workflow in that workspace.
+                1. You can upload data to your Terra workspace through Terra or {sfkit} portal, and then
+                let {sfkit} automatically launch an analysis workflow in that workspace.
               </p>
 
               <p>
                 2. You can launch the protocol manually either inside a Terra interactive analysis machine,
-                or on your own machine outside of Terra, using the <b>sfkit</b> command-line interface (CLI).
+                or on your own machine outside of Terra, using the {sfkit} command-line interface (CLI).
               </p>
             </>
           ) : (
             <>
               <p>
-                1. You can let <b>sfkit</b> automatically create the computing environment and deploy the joint
-                analysis protocol on the Google Cloud Platform (GCP). To allow this automation, <b>sfkit</b> will ask for a minimal
+                1. You can let {sfkit} automatically create the computing environment and deploy the joint
+                analysis protocol on the Google Cloud Platform (GCP). To allow this automation, {sfkit} will ask for a minimal
                 set of permissions in your GCP project.
               </p>
 
               <p>
-                2. You can easily launch the protocol on your own machine (and your collaborators on their machines) using the <b>sfkit</b>
+                2. You can easily launch the protocol on your own machine (and your collaborators on their machines) using the {sfkit}
                 command-line interface (CLI).
               </p>
             </>
@@ -137,7 +138,7 @@ const Instructions: React.FC = () => {
                 Edit your study parameters.
               </li>
               <li>
-                Either let <b>sfkit</b> portal automatically launch the protocol in your{" "}
+                Either let {sfkit} portal automatically launch the protocol in your{" "}
                 { onTerra ? "Terra workspace" : "GCP project"}, <b>OR</b>
               </li>
               <li>
