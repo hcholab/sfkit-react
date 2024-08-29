@@ -553,9 +553,6 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
               <Button variant="success" onClick={() => setActiveKey("2")}>
                 Previous
               </Button>{" "}
-              <Button variant="success" onClick={() => window.location.reload()}>
-                Done
-              </Button>
             </div>
           </Card.Body>
         </Accordion.Collapse>
