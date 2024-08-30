@@ -6,21 +6,21 @@ import { useTerra } from "./useTerra";
 const useGenerateAuthHeaders = (): Record<string, string> => {
   const { auth_key } = useParams();
   const auth = useAuth();
-  const token = auth.user?.access_token || "";
+  const accessToken = auth.user?.access_token || "";
   const { onTerra } = useTerra();
 
   return useMemo(() => {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
+    if (accessToken) {
+      headers.Authorization = `Bearer ${accessToken}`;
     } else if (auth_key && !onTerra) {
       headers.Authorization = auth_key;
     }
 
     return headers;
-  }, [auth_key, token, onTerra]);
+  }, [auth_key, accessToken, onTerra]);
 };
 
 export default useGenerateAuthHeaders;
