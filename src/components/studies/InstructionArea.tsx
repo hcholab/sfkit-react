@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
-import { AppContext } from "../../App";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
+import { useTerra } from "../../hooks/useTerra";
 import { ParameterGroup } from "../../types/study";
 import ConfigureComputeEnvModal from "./ConfigureStudyModal";
 import SubTaskContainer from "./SubTaskContainer";
@@ -43,7 +43,7 @@ const InstructionArea: React.FC<Props> = ({
   handleStartWorkflow,
   handleDownloadAuthKey,
 }) => {
-  const { apiBaseUrl } = useContext(AppContext);
+  const { apiBaseUrl, onTerra } = useTerra();
   const { auth_key = "" } = useParams();
   const [showModal, setShowModal] = React.useState(false);
   const handleShow = () => setShowModal(true);
@@ -189,11 +189,13 @@ const InstructionArea: React.FC<Props> = ({
             on your machine.
           </p>
           <div>
-            Click below to download <code>auth_key.txt</code> which you will need on your machine to authenticate with
-            the sfkit command-line interface.
+            Click below to download <code>
+            { onTerra ? "service_account_key.json" : "auth_key.txt" }
+            </code>, which you will need on your machine to authenticate
+            the <i>sfkit</i> command-line interface.
             <div className="text-center mt-2">
               <button className="btn btn-primary btn-sm" onClick={handleDownloadAuthKey}>
-                Download Auth Key
+                Download { onTerra ? "Service Account Key" : "Auth Key" }
               </button>
             </div>
           </div>

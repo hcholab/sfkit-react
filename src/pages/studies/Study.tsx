@@ -1,5 +1,5 @@
 import { doc, onSnapshot } from "firebase/firestore";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, Col, Container, Row, Tab, Tabs } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import StudyParticipants from "../../components/studies/StudyParticipants";
@@ -7,15 +7,15 @@ import useFirestore from "../../hooks/useFirestore";
 import { ParameterGroup, Study as StudyType } from "../../types/study";
 
 import { useAuth } from "react-oidc-context";
-import { AppContext } from "../../App";
 import ChatStudyTab from "../../components/studies/ChatStudyTab";
 import InstructionArea from "../../components/studies/InstructionArea";
 import StudyActionButtons from "../../components/studies/StudyActionButtons";
 import StudyHeader from "../../components/studies/StudyHeader";
 import { getDb } from "../../hooks/firebase";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
+import { useTerra } from "../../hooks/useTerra";
 
-const fetchStudy = async (apiBaseUrl: string, study_id: string, headers: Record<string, string>) => {
+const fetchStudy = async (apiBaseUrl: string | URL, study_id: string, headers: Record<string, string>) => {
   try {
     const response = await fetch(`${apiBaseUrl}/api/study?study_id=${study_id}`, {
       method: "GET",
@@ -35,7 +35,7 @@ const fetchStudy = async (apiBaseUrl: string, study_id: string, headers: Record<
 };
 
 const Study: React.FC = () => {
-  const { apiBaseUrl } = useContext(AppContext);
+  const { apiBaseUrl, onTerra } = useTerra();
   const navigate = useNavigate();
   const { study_id, auth_key = "" } = useParams();
   const headers = useGenerateAuthHeaders();
@@ -91,29 +91,33 @@ const Study: React.FC = () => {
     }
   };
 
-  const handleDownloadAuthKey = async () => {
+  const handleDownloadFile = async (url: string, fileName: string) => {
     try {
-      const response = await fetch(`${apiBaseUrl}/api/download_auth_key?study_id=${study_id}`, {
-        method: "GET",
-        headers,
-      });
-
-      if (!response.ok) {
-        throw new Error((await response.json()).error || "Unexpected error");
+      const res = await fetch(url, { headers });
+      if (!res.ok) {
+        throw new Error(await res.text());
       }
-
-      const data = await response.blob();
-      const url = window.URL.createObjectURL(data);
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = "auth_key.txt";
+      const blob = await res.blob();
+      const objUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = objUrl;
+      a.download = fileName;
       document.body.appendChild(a);
       a.click();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Failed to download auth key:", error);
+      document.body.removeChild(a);
+      URL.revokeObjectURL(objUrl);
+    } catch (err) {
+      console.error(`Failed to download ${fileName}:`, err);
     }
+  };
+
+  const handleDownloadSAKey = async () => {
+    const samApiUrl = `https://${apiBaseUrl.hostname.replace(/^sfkit\./, "sam.")}`;
+    await handleDownloadFile(`${samApiUrl}/api/google/v1/user/petServiceAccount/key`, "service_account_key.json");
+  };
+
+  const handleDownloadAuthKey = async () => {
+    await handleDownloadFile(`${apiBaseUrl}/api/download_auth_key?study_id=${study_id}`, "auth_key.txt");
   };
 
   const handleDeleteStudy = async () => {
@@ -246,7 +250,7 @@ const Study: React.FC = () => {
                     imageLabel={imageLabel}
                     showFailStatus={showFailStatus}
                     handleStartWorkflow={handleStartWorkflow}
-                    handleDownloadAuthKey={handleDownloadAuthKey}
+                    handleDownloadAuthKey={onTerra ? handleDownloadSAKey : handleDownloadAuthKey}
                   />
                 </Container>
               </Tab>
