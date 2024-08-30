@@ -188,17 +188,40 @@ const InstructionArea: React.FC<Props> = ({
             </a>
             on your machine.
           </p>
-          <div>
-            Click below to download <code>
+          <p>
+            { onTerra ? (
+              <>
+                If you are running the study on a machine <b><i>outside of Terra</i></b>, you
+              </>
+            ) : (
+              <>
+                On your machine, you
+              </>
+            )} will also need to download <code>
             { onTerra ? "service_account_key.json" : "auth_key.txt" }
-            </code>, which you will need on your machine to authenticate
-            the <i>sfkit</i> command-line interface.
-            <div className="text-center mt-2">
-              <button className="btn btn-primary btn-sm" onClick={handleDownloadAuthKey}>
-                Download { onTerra ? "Service Account Key" : "Auth Key" }
-              </button>
-            </div>
-          </div>
+            </code> { onTerra && "and run the following command " }
+            to authenticate the <i>sfkit</i> command-line interface:
+          </p>
+          { onTerra && (
+            <p className="p-2 rounded" style={{ backgroundColor: "#f0f0f0" }}>
+              <code>
+                export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service_account_key.json
+              </code>
+            </p>
+          )}
+          <p className="text-center mt-2">
+            <button className="btn btn-primary btn-sm" onClick={handleDownloadAuthKey}>
+              Download { onTerra ? "Service Account Key" : "Auth Key" }
+            </button>
+          </p>
+          <p>
+            Finally, run the following command to start your side of the computational protocol:
+          </p>
+          <p className="p-2 rounded" style={{ backgroundColor: "#f0f0f0", fontSize: "88%" }}>
+            <code>
+              sfkit all --study-id {study_id} --data_path /path/to/data_dir
+            </code>
+          </p>
         </div>
       ) : null}
       {status !== "" ? (
