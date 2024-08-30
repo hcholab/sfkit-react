@@ -9,10 +9,13 @@ export const useTerra = () => {
     return useMemo(() => {
         const url = new URL(apiBaseUrl);
         const dev = process.env.NODE_ENV === "development";
+        const hostname = dev ? "sfkit.dsde-dev.broadinstitute.org" : url.hostname;
 
         return {
             onTerra: dev || terraRe.test(url.hostname),
             apiBaseUrl: url,
+            rawlsApiUrl: `https://${hostname.replace(/^sfkit\./, "rawls.")}/api`,
+            samApiUrl: `https://${hostname.replace(/^sfkit\./, "sam.")}/api`,
             dev,
         };
     }, [apiBaseUrl]);

@@ -31,7 +31,7 @@ type Workspace = {
 };
 
 const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, studyType, parameters, handleStartWorkflow }) => {
-  const { onTerra, dev, apiBaseUrl } = useTerra();
+  const { onTerra, dev, apiBaseUrl, rawlsApiUrl, samApiUrl } = useTerra();
   const [activeKey, setActiveKey] = useState("0");
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [selectedWorkspace, setSelectedWorkspace] = useState<string>();
@@ -41,9 +41,6 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
   const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
   const [submitFeedback, setSubmitFeedback] = useState<string | null>(null);
   const headers = useGenerateAuthHeaders();
-  const rawlsApiURL = dev
-    ? "https://sfkit.dsde-dev.broadinstitute.org/api"
-    : `https://${apiBaseUrl.hostname.replace(/^sfkit\./, "rawls.")}/api`;
 
   useEffect(() => {
     setSubmitFeedback(null);
@@ -54,7 +51,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
 
     const listWorkspaces = async () => {
       try {
-        const url = `${rawlsApiURL}/workspaces?fields=accessLevel,workspace.namespace,workspace.name,workspace.cloudPlatform,workspace.bucketName`;
+        const url = `${rawlsApiUrl}/workspaces?fields=accessLevel,workspace.namespace,workspace.name,workspace.cloudPlatform,workspace.bucketName`;
         const res = dev
           ? { ok: true, json: async () => (await import("./workspaces.json")).default }
           : await fetch(url, { headers });
@@ -75,7 +72,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     };
 
     listWorkspaces();
-  }, [onTerra, dev, rawlsApiURL, headers]);
+  }, [onTerra, dev, rawlsApiUrl, headers]);
 
   const handleSubmitParameters = (event: React.FormEvent<HTMLFormElement>) => {
     submitStudyParameters(event, apiBaseUrl, studyId, headers, setSubmitFeedback);
@@ -91,8 +88,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     );
     if (!files || !ws) return;
 
-    const samApiUrl = `${rawlsApiURL.replace(/rawls\./, "sam.")}/google/v1/user/petServiceAccount/${ws.googleProject}/token`;
-    const samRes = await fetch(samApiUrl, {
+    const samRes = await fetch(`${samApiUrl}/google/v1/user/petServiceAccount/${ws.googleProject}/token`, {
       method: "POST",
       headers,
       body: JSON.stringify([
@@ -144,7 +140,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
 
   const handleStartTerraWorkflow = async () => {
     // Create entity
-    const rawlsBaseUrl = `${rawlsApiURL}/workspaces/${selectedWorkspace}`;
+    const rawlsBaseUrl = `${rawlsApiUrl}/workspaces/${selectedWorkspace}`;
     const post = {
       method: "POST",
       headers,

@@ -35,7 +35,7 @@ const fetchStudy = async (apiBaseUrl: string | URL, study_id: string, headers: R
 };
 
 const Study: React.FC = () => {
-  const { apiBaseUrl, onTerra } = useTerra();
+  const { onTerra, apiBaseUrl, samApiUrl } = useTerra();
   const navigate = useNavigate();
   const { study_id, auth_key = "" } = useParams();
   const headers = useGenerateAuthHeaders();
@@ -111,14 +111,11 @@ const Study: React.FC = () => {
     }
   };
 
-  const handleDownloadSAKey = async () => {
-    const samApiUrl = `https://${apiBaseUrl.hostname.replace(/^sfkit\./, "sam.")}`;
-    await handleDownloadFile(`${samApiUrl}/api/google/v1/user/petServiceAccount/key`, "service_account_key.json");
-  };
+  const handleDownloadSAKey = () =>
+    handleDownloadFile(`${samApiUrl}/google/v1/user/petServiceAccount/key`, "service_account_key.json");
 
-  const handleDownloadAuthKey = async () => {
-    await handleDownloadFile(`${apiBaseUrl}/api/download_auth_key?study_id=${study_id}`, "auth_key.txt");
-  };
+  const handleDownloadAuthKey = () =>
+    handleDownloadFile(`${apiBaseUrl}/api/download_auth_key?study_id=${study_id}`, "auth_key.txt");
 
   const handleDeleteStudy = async () => {
     const isConfirmed = window.confirm("Are you sure you want to delete this study?");
