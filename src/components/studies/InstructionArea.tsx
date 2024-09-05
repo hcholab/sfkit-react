@@ -97,21 +97,20 @@ const InstructionArea: React.FC<Props> = ({
       if (!response.ok) {
         throw new Error((await response.json()).error || "Unexpected error");
       }
-      console.log(title);
 
-      // const blob = await response.blob();
-      // const url = URL.createObjectURL(blob);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
 
-      // const a = document.createElement("a");
-      // a.style.display = "none";
-      // a.href = url;
-      // a.download = `${title}_results.zip`;
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = url;
+      a.download = `${title}_results.zip`;
 
-      // document.body.appendChild(a);
-      // a.click();
+      document.body.appendChild(a);
+      a.click();
 
-      // URL.revokeObjectURL(url);
-      // document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      document.body.removeChild(a);
     } catch (error) {
       console.error("Failed to download results:", error);
     } finally {
