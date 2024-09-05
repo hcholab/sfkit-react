@@ -243,6 +243,10 @@ const InstructionArea: React.FC<Props> = ({
                 the <code>~/.config/gcloud/</code> directory.
                 Never share this key or commit it to version control.
               </div>
+              <p>
+                <b>Note:</b> Replace <code>/path/to/service_account_key.json</code> with
+                the <b><i>absolute path</i></b> to the service account key downloaded to your machine.
+              </p>
             </>
           )}
           <p className="text-center mt-2">
