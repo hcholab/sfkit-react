@@ -293,7 +293,7 @@ const InstructionArea: React.FC<Props> = ({
               <p>
                 Then, run this command to start the protocol:
               </p>
-              {renderCode(`sfkit all  --data_path "\${SFKIT_DATA_PATH}" --study_id "\${SFKIT_STUDY_ID}"`)}
+              {renderCode(`sfkit all --data_path "\${SFKIT_DATA_PATH}" --study_id "\${SFKIT_STUDY_ID}"`)}
             </li>
           </ol>
         </div>
