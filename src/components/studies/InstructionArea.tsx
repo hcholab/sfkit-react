@@ -232,7 +232,7 @@ const InstructionArea: React.FC<Props> = ({
               </p>
               <p className="p-2 rounded" style={{ backgroundColor: "#f0f0f0", fontSize: "85%" }}>
                 <code>
-                  docker run --rm -it -v /path/to/data_dir:/data \<br/>
+                  docker run --rm -it --pull always -v /path/to/data_dir:/data \<br/>
                   &nbsp;&nbsp;-v "$GOOGLE_APPLICATION_CREDENTIALS":/key.json:ro \<br/>
                   &nbsp;&nbsp;-e GOOGLE_APPLICATION_CREDENTIALS=/key.json \<br/>
                   &nbsp;&nbsp;us-central1-docker.pkg.dev/dsp-artifact-registry/sfkit/sfkit all \<br/>
