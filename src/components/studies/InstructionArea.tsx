@@ -291,7 +291,7 @@ const InstructionArea: React.FC<Props> = ({
               {renderCode("curl -sL https://github.com/hcholab/sfkit/releases/latest/download/install.sh | bash", "87%")}
               <p>
                 <b>Note:</b> This script might not work on some machines.
-                If you are unable to install the CLI, please contact us
+                If you are unable to install the CLI with this method, please contact us
                 at <a href="mailto:support@sfkit.org">support@sfkit.org</a>.
               </p>
               <p>
