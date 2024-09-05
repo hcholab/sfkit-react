@@ -164,23 +164,30 @@ const InstructionArea: React.FC<Props> = ({
   };
 
   const renderCode = (text: string) => (
-    <p className="p-2 rounded position-relative" style={{ backgroundColor: "#f0f0f0", fontSize: "85%" }}>
+    <p className="p-2 rounded position-relative" style={{ backgroundColor: "#f0f0f0", fontSize: "82%" }}>
       <code>
         {text.split('\\').map((line, index) => (
           <React.Fragment key={index}>
-            {line.trim()}
-            {index < text.split('\\').length - 1 && (
-              <>
-                &nbsp;\<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;
-              </>
-            )}
+            {line.split('\n').map((l, i) => (
+              <React.Fragment key={100 * i}>
+                {l.trim()}
+                {index < text.split('\\').length - 1 ? (
+                  <>
+                    &nbsp;\ <br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                  </>
+                ) : <br />}
+              </React.Fragment>
+            ))}
           </React.Fragment>
         ))}
       </code>
       <button
         className="btn btn-sm btn-light position-absolute top-0 end-0 m-1"
-        onClick={() => navigator.clipboard.writeText(text)}
+        onClick={() => navigator.clipboard.writeText(
+          text.split('\n').map(line => line.trim()
+            .replace(/\\/g, '\\\n    ')).join('\n')
+        )}
         onMouseEnter={() => setHoveredButton(text)}
         onMouseLeave={() => setHoveredButton(null)}
         style={{
@@ -252,23 +259,34 @@ const InstructionArea: React.FC<Props> = ({
             </button>
           </p>
           <p>
-            To start <i>sfkit</i> protocol on your machine, you can either:
+            To start <i>sfkit</i> protocol on your machine, first some environment variables:
+          </p>
+          {renderCode(
+            `export SFKIT_API_URL=${apiBaseUrl}
+            export SFKIT_STUDY_ID=${study_id}
+            export SFKIT_DATA_PATH=/path/to/data_dir`
+          )}
+          <p>
+            <b>Note:</b> Replace <code>/path/to/data_dir</code> with
+            the <b><i>absolute path</i></b> to the input data directory on your machine.
+          </p>
+          <p>
+            Then, either:
           </p>
           <ol>
             <li>
               <p>
                 <b>(Recommended)</b> Use a container, if your environment can run arbitrary Docker images:
               </p>
-              {renderCode(`docker run --rm -it --pull always --platform linux/amd64 \\
-    -v /path/to/data_dir:/data \\
-    -v "$GOOGLE_APPLICATION_CREDENTIALS":/key.json:ro \\
-    -e GOOGLE_APPLICATION_CREDENTIALS=/key.json \\
-    -e SFKIT_API_URL=${apiBaseUrl} \\
-    us-central1-docker.pkg.dev/dsp-artifact-registry/sfkit/sfkit all \\
-    --data_path /data --study_id ${study_id}`)}
-              <p>
-                (replace <code>/path/to/data_dir</code> with the input data directory path on your machine)
-              </p>
+              {renderCode(
+                "docker run --rm -it --pull always --platform linux/amd64 \\" +
+                  `-v "\${SFKIT_DATA_PATH}":/data \\` +
+                  `-v "\${GOOGLE_APPLICATION_CREDENTIALS}":/key.json:ro \\` +
+                  `-e GOOGLE_APPLICATION_CREDENTIALS=/key.json \\` +
+                  `-e SFKIT_API_URL \\` +
+                  `us-central1-docker.pkg.dev/dsp-artifact-registry/sfkit/sfkit all \\` +
+                  `--data_path /data --study_id ${study_id}`
+              )}
             </li>
             <li>
               <p>
@@ -283,10 +301,7 @@ const InstructionArea: React.FC<Props> = ({
               <p>
                 Then, run this command to start the protocol:
               </p>
-              {renderCode(`sfkit all --study_id ${study_id} --data_path /path/to/data_dir`)}
-              <p>
-                (replace <code>/path/to/data_dir</code> with the input data directory path on your machine)
-              </p>
+              {renderCode(`sfkit all --study_id ${study_id} --data_path "\${SFKIT_DATA_PATH}"`)}
             </li>
           </ol>
         </div>
