@@ -211,7 +211,7 @@ const InstructionArea: React.FC<Props> = ({
               </p>
               <div className="alert alert-warning mt-2">
                 <strong>Warning:</strong> This key contains sensitive credentials.
-                Store it in a secure location on your computer, such as
+                Store it in a secure out-of-the-way location on your computer, such as
                 the <code>~/.config/gcloud/</code> directory.
                 Never share this key or commit it to version control.
               </div>
