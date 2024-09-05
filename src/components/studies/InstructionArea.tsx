@@ -161,8 +161,8 @@ const InstructionArea: React.FC<Props> = ({
     );
   };
 
-  const renderCode = (text: string) => (
-    <p className="p-2 rounded position-relative" style={{ backgroundColor: "#f0f0f0", fontSize: "82%" }}>
+  const renderCode = (text: string, fontSize: string = "100%") => (
+    <p className="p-2 rounded position-relative" style={{ backgroundColor: "#f0f0f0", fontSize }}>
       <code>
         {text.split('\n').map((line, i, arr) => (
           <React.Fragment key={i}>
@@ -277,14 +277,14 @@ const InstructionArea: React.FC<Props> = ({
                   -e GOOGLE_APPLICATION_CREDENTIALS=/key.json \\
                   -e SFKIT_API_URL \\
                   us-central1-docker.pkg.dev/dsp-artifact-registry/sfkit/sfkit all \\
-                  --data_path /data --study_id ${study_id}`
+                  --data_path /data --study_id "\${SFKIT_STUDY_ID}"`
               )}
             </li>
             <li>
               <p>
                 Install sfkit CLI manually using the following script:
               </p>
-              {renderCode("bash <(curl -sL https://github.com/hcholab/sfkit/releases/latest/download/install.sh)")}
+              {renderCode("curl -sL https://github.com/hcholab/sfkit/releases/latest/download/install.sh | bash", "87%")}
               <p>
                 <b>Note:</b> This script might not work on some machines.
                 If you are unable to install the CLI, please contact us
@@ -293,7 +293,7 @@ const InstructionArea: React.FC<Props> = ({
               <p>
                 Then, run this command to start the protocol:
               </p>
-              {renderCode(`sfkit all --study_id ${study_id} --data_path "\${SFKIT_DATA_PATH}"`)}
+              {renderCode(`sfkit all  --data_path "\${SFKIT_DATA_PATH}" --study_id "\${SFKIT_STUDY_ID}"`)}
             </li>
           </ol>
         </div>
