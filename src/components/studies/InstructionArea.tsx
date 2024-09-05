@@ -223,13 +223,53 @@ const InstructionArea: React.FC<Props> = ({
             </button>
           </p>
           <p>
-            Finally, run the following command to start your side of the computational protocol:
+            To start <i>sfkit</i> protocol on your machine, you can either:
           </p>
-          <p className="p-2 rounded" style={{ backgroundColor: "#f0f0f0", fontSize: "88%" }}>
-            <code>
-              sfkit all --study-id {study_id} --data_path /path/to/data_dir
-            </code>
-          </p>
+          <ol>
+            <li>
+              <p>
+                <b>(Recommended)</b> Use a container, if your environment can run arbitrary Docker images:
+              </p>
+              <p className="p-2 rounded" style={{ backgroundColor: "#f0f0f0", fontSize: "85%" }}>
+                <code>
+                  docker run --rm -it -v /path/to/data_dir:/data \<br/>
+                  &nbsp;&nbsp;-v "$GOOGLE_APPLICATION_CREDENTIALS":/key.json:ro \<br/>
+                  &nbsp;&nbsp;-e GOOGLE_APPLICATION_CREDENTIALS=/key.json \<br/>
+                  &nbsp;&nbsp;us-central1-docker.pkg.dev/dsp-artifact-registry/sfkit/sfkit all \<br/>
+                  &nbsp;&nbsp;--data_path /data --study-id {study_id}
+                </code>
+              </p>
+              <p>
+                (replace <code>/path/to/data_dir</code> with the input data directory path on your machine)
+              </p>
+            </li>
+            <li>
+              <p>
+                Install sfkit CLI manually using the following script:
+              </p>
+              <p className="p-2 rounded" style={{ backgroundColor: "#f0f0f0", fontSize: "85%" }}>
+                <code>
+                {"bash <(curl -sL https://github.com/hcholab/sfkit/releases/latest/download/install.sh)"}
+                </code>
+              </p>
+              <p>
+                <b>Note:</b> This script might not work on some machines.
+                If you are unable to install the CLI, please contact us
+                at <a href="mailto:support@sfkit.org">support@sfkit.org</a>.
+              </p>
+              <p>
+                Then, run this command to start the protocol:
+              </p>
+              <p className="p-2 rounded" style={{ backgroundColor: "#f0f0f0", fontSize: "85%" }}>
+                <code>
+                  sfkit all --study-id {study_id} --data_path /path/to/data_dir
+                </code>
+              </p>
+              <p>
+                (replace <code>/path/to/data_dir</code> with the input data directory path on your machine)
+              </p>
+            </li>
+          </ol>
         </div>
       ) : null}
       {status !== "" ? (
