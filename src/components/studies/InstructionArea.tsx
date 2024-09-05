@@ -237,16 +237,16 @@ const InstructionArea: React.FC<Props> = ({
           { onTerra && (
             <>
               {renderCode("export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service_account_key.json")}
+              <p>
+                <b>Note:</b> Replace <code>/path/to/service_account_key.json</code> with
+                the <b><i>absolute path</i></b> to the service account key downloaded to your machine.
+              </p>
               <div className="alert alert-warning mt-2">
                 <strong>Warning:</strong> This key contains sensitive credentials.
                 Store it in a secure out-of-the-way location on your computer, such as
                 the <code>~/.config/gcloud/</code> directory.
                 Never share this key or commit it to version control.
               </div>
-              <p>
-                <b>Note:</b> Replace <code>/path/to/service_account_key.json</code> with
-                the <b><i>absolute path</i></b> to the service account key downloaded to your machine.
-              </p>
             </>
           )}
           <p className="text-center mt-2">
