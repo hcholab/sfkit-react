@@ -1,4 +1,6 @@
-import React from "react";
+import { faCopy } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { useTerra } from "../../hooks/useTerra";
@@ -45,16 +47,17 @@ const InstructionArea: React.FC<Props> = ({
 }) => {
   const { apiBaseUrl, onTerra } = useTerra();
   const { auth_key = "" } = useParams();
-  const [showModal, setShowModal] = React.useState(false);
+  const [showModal, setShowModal] = useState(false);
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
-  const [isDownloading, setIsDownloading] = React.useState(false);
-  const [plotSrc, setPlotSrc] = React.useState("");
-  const [isFetchingPlot, setIsFetchingPlot] = React.useState(false);
-  const plotSrcRef = React.useRef("");
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [plotSrc, setPlotSrc] = useState("");
+  const [isFetchingPlot, setIsFetchingPlot] = useState(false);
+  const [hoveredButton, setHoveredButton] = useState<string | null>(null);
+  const plotSrcRef = useRef("");
   const headers = useGenerateAuthHeaders();
 
-  const fetchPlotFile = React.useCallback(async () => {
+  const fetchPlotFile = useCallback(async () => {
     try {
       setIsFetchingPlot(true);
 
@@ -78,7 +81,7 @@ const InstructionArea: React.FC<Props> = ({
     }
   }, [apiBaseUrl, study_id, headers]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if ((idToken || auth_key) && showManhattanDiv && !plotSrcRef.current) {
       fetchPlotFile();
     }
@@ -139,10 +142,10 @@ const InstructionArea: React.FC<Props> = ({
           const subTasks = subTaskElements;
           subTaskElements = [];
           return (
-            <React.Fragment key={index}>
+            <Fragment key={index}>
               <TaskElement task={task} showCheck={showCheck} />
               <SubTaskContainer taskDescription={task}>{subTasks}</SubTaskContainer>
-            </React.Fragment>
+            </Fragment>
           );
         } else {
           return <TaskElement key={index} task={task} showCheck={showCheck} />;
@@ -159,6 +162,36 @@ const InstructionArea: React.FC<Props> = ({
       </>
     );
   };
+
+  const renderCode = (text: string) => (
+    <p className="p-2 rounded position-relative" style={{ backgroundColor: "#f0f0f0", fontSize: "85%" }}>
+      <code>
+        {text.split('\\').map((line, index) => (
+          <React.Fragment key={index}>
+            {line.trim()}
+            {index < text.split('\\').length - 1 && (
+              <>
+                &nbsp;\<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;
+              </>
+            )}
+          </React.Fragment>
+        ))}
+      </code>
+      <button
+        className="btn btn-sm btn-light position-absolute top-0 end-0 m-1"
+        onClick={() => navigator.clipboard.writeText(text)}
+        onMouseEnter={() => setHoveredButton(text)}
+        onMouseLeave={() => setHoveredButton(null)}
+        style={{
+          opacity: hoveredButton === text ? 1 : 0.1,
+          transition: 'opacity 0.3s ease',
+        }}
+      >
+        <FontAwesomeIcon icon={faCopy} />
+      </button>
+    </p>
+  );
 
   return (
     <div className="mt-3" id="instructions">
@@ -204,11 +237,7 @@ const InstructionArea: React.FC<Props> = ({
           </p>
           { onTerra && (
             <>
-              <p className="p-2 rounded" style={{ backgroundColor: "#f0f0f0" }}>
-                <code>
-                  export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service_account_key.json
-                </code>
-              </p>
+              {renderCode("export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service_account_key.json")}
               <div className="alert alert-warning mt-2">
                 <strong>Warning:</strong> This key contains sensitive credentials.
                 Store it in a secure out-of-the-way location on your computer, such as
@@ -230,15 +259,13 @@ const InstructionArea: React.FC<Props> = ({
               <p>
                 <b>(Recommended)</b> Use a container, if your environment can run arbitrary Docker images:
               </p>
-              <p className="p-2 rounded" style={{ backgroundColor: "#f0f0f0", fontSize: "85%" }}>
-                <code>
-                  docker run --rm -it --pull always -v /path/to/data_dir:/data \<br/>
-                  &nbsp;&nbsp;-v "$GOOGLE_APPLICATION_CREDENTIALS":/key.json:ro \<br/>
-                  &nbsp;&nbsp;-e GOOGLE_APPLICATION_CREDENTIALS=/key.json \<br/>
-                  &nbsp;&nbsp;us-central1-docker.pkg.dev/dsp-artifact-registry/sfkit/sfkit all \<br/>
-                  &nbsp;&nbsp;--data_path /data --study-id {study_id}
-                </code>
-              </p>
+              {renderCode(`docker run --rm -it --pull always --platform linux/amd64 \\
+    -v /path/to/data_dir:/data \\
+    -v "$GOOGLE_APPLICATION_CREDENTIALS":/key.json:ro \\
+    -e GOOGLE_APPLICATION_CREDENTIALS=/key.json \\
+    -e SFKIT_API_URL=${apiBaseUrl} \\
+    us-central1-docker.pkg.dev/dsp-artifact-registry/sfkit/sfkit all \\
+    --data_path /data --study_id ${study_id}`)}
               <p>
                 (replace <code>/path/to/data_dir</code> with the input data directory path on your machine)
               </p>
@@ -247,11 +274,7 @@ const InstructionArea: React.FC<Props> = ({
               <p>
                 Install sfkit CLI manually using the following script:
               </p>
-              <p className="p-2 rounded" style={{ backgroundColor: "#f0f0f0", fontSize: "85%" }}>
-                <code>
-                {"bash <(curl -sL https://github.com/hcholab/sfkit/releases/latest/download/install.sh)"}
-                </code>
-              </p>
+              {renderCode("bash <(curl -sL https://github.com/hcholab/sfkit/releases/latest/download/install.sh)")}
               <p>
                 <b>Note:</b> This script might not work on some machines.
                 If you are unable to install the CLI, please contact us
@@ -260,11 +283,7 @@ const InstructionArea: React.FC<Props> = ({
               <p>
                 Then, run this command to start the protocol:
               </p>
-              <p className="p-2 rounded" style={{ backgroundColor: "#f0f0f0", fontSize: "85%" }}>
-                <code>
-                  sfkit all --study-id {study_id} --data_path /path/to/data_dir
-                </code>
-              </p>
+              {renderCode(`sfkit all --study_id ${study_id} --data_path /path/to/data_dir`)}
               <p>
                 (replace <code>/path/to/data_dir</code> with the input data directory path on your machine)
               </p>
