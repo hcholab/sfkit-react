@@ -259,7 +259,7 @@ const InstructionArea: React.FC<Props> = ({
             </button>
           </p>
           <p>
-            To start <i>sfkit</i> protocol on your machine, first some environment variables:
+            To start <i>sfkit</i> protocol on your machine, first set some environment variables:
           </p>
           {renderCode(
             `export SFKIT_API_URL=${apiBaseUrl}
