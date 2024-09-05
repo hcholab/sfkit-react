@@ -203,11 +203,19 @@ const InstructionArea: React.FC<Props> = ({
             to authenticate the <i>sfkit</i> command-line interface:
           </p>
           { onTerra && (
-            <p className="p-2 rounded" style={{ backgroundColor: "#f0f0f0" }}>
-              <code>
-                export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service_account_key.json
-              </code>
-            </p>
+            <>
+              <p className="p-2 rounded" style={{ backgroundColor: "#f0f0f0" }}>
+                <code>
+                  export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service_account_key.json
+                </code>
+              </p>
+              <div className="alert alert-warning mt-2">
+                <strong>Warning:</strong> This key contains sensitive credentials.
+                Store it in a secure location on your computer, such as
+                the <code>~/.config/gcloud/</code> directory.
+                Never share this key or commit it to version control.
+              </div>
+            </>
           )}
           <p className="text-center mt-2">
             <button className="btn btn-primary btn-sm" onClick={handleDownloadAuthKey}>
