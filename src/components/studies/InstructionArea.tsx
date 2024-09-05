@@ -1,5 +1,3 @@
-import { faCopy } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
@@ -186,9 +184,10 @@ const InstructionArea: React.FC<Props> = ({
         style={{
           opacity: hoveredButton === text ? 1 : 0.1,
           transition: 'opacity 0.3s ease',
+          fontSize: "100%",
         }}
       >
-        <FontAwesomeIcon icon={faCopy} />
+        ⧉
       </button>
     </p>
   );
