@@ -166,27 +166,20 @@ const InstructionArea: React.FC<Props> = ({
   const renderCode = (text: string) => (
     <p className="p-2 rounded position-relative" style={{ backgroundColor: "#f0f0f0", fontSize: "82%" }}>
       <code>
-        {text.split('\\').map((line, index) => (
-          <React.Fragment key={index}>
-            {line.split('\n').map((l, i) => (
-              <React.Fragment key={100 * i}>
-                {l.trim()}
-                {index < text.split('\\').length - 1 ? (
-                  <>
-                    &nbsp;\ <br />
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                  </>
-                ) : <br />}
-              </React.Fragment>
-            ))}
+        {text.split('\n').map((line, i, arr) => (
+          <React.Fragment key={i}>
+            {i && arr[i - 1].endsWith('\\') ? <>&nbsp;&nbsp;&nbsp;&nbsp;</> : ""}
+            {line.trim()}
+            {i < arr.length - 1 ? <br /> : ""}
           </React.Fragment>
         ))}
       </code>
       <button
         className="btn btn-sm btn-light position-absolute top-0 end-0 m-1"
         onClick={() => navigator.clipboard.writeText(
-          text.split('\n').map(line => line.trim()
-            .replace(/\\/g, '\\\n    ')).join('\n')
+          text.split('\n').map((line, i, arr) =>
+            line.replace(/^\s+/g, i && arr[i - 1].endsWith('\\') ? '    ' : '')
+          ).join('\n')
         )}
         onMouseEnter={() => setHoveredButton(text)}
         onMouseLeave={() => setHoveredButton(null)}
@@ -279,13 +272,13 @@ const InstructionArea: React.FC<Props> = ({
                 <b>(Recommended)</b> Use a container, if your environment can run arbitrary Docker images:
               </p>
               {renderCode(
-                "docker run --rm -it --pull always --platform linux/amd64 \\" +
-                  `-v "\${SFKIT_DATA_PATH}":/data \\` +
-                  `-v "\${GOOGLE_APPLICATION_CREDENTIALS}":/key.json:ro \\` +
-                  `-e GOOGLE_APPLICATION_CREDENTIALS=/key.json \\` +
-                  `-e SFKIT_API_URL \\` +
-                  `us-central1-docker.pkg.dev/dsp-artifact-registry/sfkit/sfkit all \\` +
-                  `--data_path /data --study_id ${study_id}`
+                `docker run --rm -it --pull always --platform linux/amd64 \\
+                  -v "\${SFKIT_DATA_PATH}":/data \\
+                  -v "\${GOOGLE_APPLICATION_CREDENTIALS}":/key.json:ro \\
+                  -e GOOGLE_APPLICATION_CREDENTIALS=/key.json \\
+                  -e SFKIT_API_URL \\
+                  us-central1-docker.pkg.dev/dsp-artifact-registry/sfkit/sfkit all \\
+                  --data_path /data --study_id ${study_id}`
               )}
             </li>
             <li>
