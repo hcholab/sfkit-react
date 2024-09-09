@@ -1,16 +1,16 @@
 import React, { useContext, useState } from "react";
 import { Alert, Button, Col, Container, Form, Row } from "react-bootstrap";
+import { useAuth } from "react-oidc-context";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../../App";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
-import { useAuth } from "react-oidc-context";
 
 const CreateStudy: React.FC = () => {
   const { apiBaseUrl } = useContext(AppContext);
   const idToken = useAuth().user?.id_token || "";
   const headers = useGenerateAuthHeaders();
   const location = useLocation();
-  const { studyType, setupConfig } = location.state as { studyType: string; setupConfig: string };
+  const { studyType } = location.state as { studyType: string };
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
@@ -45,7 +45,6 @@ const CreateStudy: React.FC = () => {
     const requestData = {
       ...formData,
       study_type: studyType,
-      setup_configuration: setupConfig,
     };
 
     try {

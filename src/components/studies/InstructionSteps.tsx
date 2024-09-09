@@ -1,42 +1,256 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Accordion, Button, Card } from "react-bootstrap";
-import { AppContext } from "../../App";
+import React, { useEffect, useState } from "react";
+import { Accordion, Button, Card, Dropdown, Form, ProgressBar } from "react-bootstrap";
+import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
+import { useTerra } from "../../hooks/useTerra";
 import info_square from "../../static/images/info-square.svg";
 import { ParameterGroup } from "../../types/study";
-import GivePermissions from "./GivePermissions";
-import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { submitStudyParameters } from "../../utils/formUtils";
+import GivePermissions from "./GivePermissions";
+
+declare module 'react' {
+  interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
+    webkitdirectory?: boolean | string;
+  }
+}
 
 interface InstructionStepsProps {
   demo: boolean;
-  study_id: string;
+  studyId: string;
+  studyType: string;
   parameters: ParameterGroup;
+  handleStartWorkflow: () => void;
 }
 
-const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, parameters }) => {
-  const { apiBaseUrl } = useContext(AppContext);
-  const [activeKey, setActiveKey] = useState(localStorage.getItem("activeKey") || "0");
-  const headers = useGenerateAuthHeaders();
-  useEffect(() => {
-    localStorage.setItem("activeKey", activeKey);
-  }, [activeKey]);
+type Workspace = {
+  bucketName: string;
+  name: string;
+  namespace: string;
+  cloudPlatform: string;
+  googleProject: string;
+  accessLevel: string;
+};
 
+const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, studyType, parameters, handleStartWorkflow }) => {
+  const { onTerra, dev, apiBaseUrl, rawlsApiUrl, samApiUrl } = useTerra();
+  const [activeKey, setActiveKey] = useState("0");
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
+  const [selectedWorkspace, setSelectedWorkspace] = useState<string>();
+  const [workspaceSearchTerm, setWorkspaceSearchTerm] = useState("");
+  const [workspaceSearchDropdownOpen, setWorkspaceSearchDropdownOpen] = useState(false);
+  const [workspaceBucketUrl, setWorkspaceBucketUrl] = useState<string>("");
+  const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
   const [submitFeedback, setSubmitFeedback] = useState<string | null>(null);
+  const headers = useGenerateAuthHeaders();
 
   useEffect(() => {
     setSubmitFeedback(null);
   }, [activeKey]);
 
+  useEffect(() => {
+    if (!onTerra || !headers.Authorization) return;
+
+    const listWorkspaces = async () => {
+      try {
+        const url = `${rawlsApiUrl}/workspaces?fields=accessLevel,workspace.namespace,workspace.name,workspace.cloudPlatform,workspace.bucketName`;
+        const res = dev
+          ? { ok: true, json: async () => (await import("./workspaces.json")).default }
+          : await fetch(url, { headers });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "");
+        }
+        setWorkspaces(data
+          .map(({ workspace, accessLevel }: { workspace: Workspace, accessLevel: string }) => ({
+            ...workspace,
+            accessLevel
+          }))
+          .filter((ws: Workspace) => ws.cloudPlatform === "Gcp" && ws.accessLevel !== "READER")
+        );
+      } catch (err) {
+        console.error("Error fetching workspaces:", err);
+      }
+    };
+
+    listWorkspaces();
+  }, [onTerra, dev, rawlsApiUrl, headers]);
+
   const handleSubmitParameters = (event: React.FormEvent<HTMLFormElement>) => {
-    submitStudyParameters(event, apiBaseUrl, study_id, headers, setSubmitFeedback);
+    submitStudyParameters(event, apiBaseUrl, studyId, headers, setSubmitFeedback);
+  };
+
+  const filteredOptions = workspaces.filter(ws =>
+    `${ws.namespace}/${ws.name}`.toLowerCase().includes(workspaceSearchTerm.toLowerCase())
+  );
+
+  const handleUploadData = async (files: FileList | null) => {
+    const ws = workspaces.find(ws =>
+      `${ws.namespace}/${ws.name}` == selectedWorkspace
+    );
+    if (!files || !ws) return;
+
+    const samRes = await fetch(`${samApiUrl}/google/v1/user/petServiceAccount/${ws.googleProject}/token`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify([
+        "https://www.googleapis.com/auth/devstorage.read_write",
+      ]),
+    });
+    if (!samRes.ok) {
+      console.error("Error fetching SAM token:", await samRes.text());
+      return;
+    }
+    const gcsToken = (await samRes.text()).replace(/"/g, "");
+
+    const dataPath = `_sfkit/${studyId}/data`;
+    await Promise.all(Array.from(files).map(async f => {
+      const filePath = f.webkitRelativePath.split('/').slice(1).join('/');
+      const objPath = encodeURIComponent(`${dataPath}/${filePath}`);
+      setUploadProgress(p => ({ ...p, [filePath]: 0 }));
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", `https://storage.googleapis.com/upload/storage/v1/b/${ws.bucketName}/o?uploadType=media&name=${objPath}`);
+      xhr.setRequestHeader("Authorization", `Bearer ${gcsToken}`);
+
+      xhr.upload.onprogress = e => {
+        if (e.lengthComputable) {
+          setUploadProgress(p => ({
+            ...p,
+            [filePath]: (e.loaded / e.total) * 100,
+          }));
+        }
+      };
+
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          setUploadProgress(({ [filePath]: _, ...p }) => p);
+        } else {
+          console.error(`Error uploading file ${filePath}: ${xhr.status} ${xhr.statusText}`);
+        }
+      };
+
+      xhr.onerror = () => {
+        console.error(`Network error uploading ${filePath}`);
+      };
+
+      xhr.send(f);
+    }));
+
+    setWorkspaceBucketUrl(`gs://${ws.bucketName}/${dataPath}`);
+  };
+
+  const handleStartTerraWorkflow = async () => {
+    // Create entity
+    const rawlsBaseUrl = `${rawlsApiUrl}/workspaces/${selectedWorkspace}`;
+    const post = {
+      method: "POST",
+      headers,
+    };
+    const entityRes = await fetch(`${rawlsBaseUrl}/entities`, {
+      ...post,
+      body: JSON.stringify({
+        name: studyId,
+        entityType: "study",
+        attributes: {
+          data: workspaceBucketUrl,
+        },
+      }),
+    });
+    if (!entityRes.ok && entityRes.status !== 409) {
+      console.error("Error creating entity:", await entityRes.text());
+      return;
+    }
+
+    // Create method config
+    const namespace = selectedWorkspace?.split("/")[0];
+    const methodConfigurationName = "sfkit";
+    const methodConfRes = await fetch(`${rawlsBaseUrl}/methodconfigs`, {
+      ...post,
+      body: JSON.stringify({
+        namespace,
+        name: methodConfigurationName,
+        rootEntityType: "study",
+        inputs: {
+          "sfkit.study_id": "this.study_id",
+          "sfkit.data": "this.data",
+          "sfkit.api_url": `\"${apiBaseUrl}\"`,
+        },
+        outputs: {},
+        methodConfigVersion: 1,
+        methodRepoMethod: {
+          methodUri: "dockstore://github.com%2Fhcholab%2Fsfkit/main",
+        },
+        deleted: false,
+      }),
+    });
+    if (!methodConfRes.ok && methodConfRes.status !== 409) {
+      console.error("Error creating method config:", await methodConfRes.text());
+      return;
+    }
+
+    // Submit Terra workflow
+    const submissionRes = await fetch(`${rawlsBaseUrl}/submissions`, {
+      ...post,
+      body: JSON.stringify({
+        entityType: "study",
+        entityName: studyId,
+        methodConfigurationNamespace: namespace,
+        methodConfigurationName: "sfkit",
+        useCallCache: false,
+      }),
+    });
+    if (!submissionRes.ok) {
+      console.error("Error submitting workflow:", await submissionRes.text());
+      return;
+    }
   };
 
   return (
     <Accordion activeKey={activeKey}>
       <Card>
-        <Card.Header>1. Prepare Project</Card.Header>
+        <Card.Header>1. {onTerra ? "Select Terra Workspace" : "Prepare Project"}</Card.Header>
         <Accordion.Collapse eventKey="0">
           <Card.Body>
+            { onTerra ? (
+            <div>
+              <p>
+                1. Please select a Terra workspace to host the input dataset and run privacy-preserving computation on it.
+              </p>
+              <div className="mb-2">
+                <Dropdown
+                  onSelect={key => key && setSelectedWorkspace(key)}
+                  onToggle={setWorkspaceSearchDropdownOpen}
+                  show={workspaceSearchDropdownOpen}
+                >
+                  <Dropdown.Toggle as="div" className="form-select">
+                    <Form.Control
+                      type="text"
+                      placeholder="Search or Select Workspace..."
+                      value={workspaceSearchTerm}
+                      onChange={e => {
+                        setWorkspaceSearchTerm(e.target.value);
+                        if (filteredOptions.length && !workspaceSearchDropdownOpen) {
+                          setWorkspaceSearchDropdownOpen(true);
+                        }
+                      }}
+                      autoFocus
+                    />
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu>
+                    {filteredOptions.map((option, index) => (
+                      <Dropdown.Item
+                        key={index}
+                        eventKey={`${option.namespace}/${option.name}`}
+                        onClick={() => setWorkspaceSearchTerm(`${option.namespace}/${option.name}`)}
+                      >
+                        {option.namespace}/{option.name}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
+            </div>
+            ) : (
             <div>
               <p>
                 1. You should create a GCP (Google Cloud Platform) project that is dedicated to this study. If you are
@@ -80,9 +294,13 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
                 </a>
                 .
               </p>
+              <p className="px-2">
+                1c. <GivePermissions demo={demo} />
+              </p>
             </div>
+            )}
             <div className="text-end">
-              <Button variant="success" onClick={() => setActiveKey("1")}>
+              <Button variant="success" onClick={() => setActiveKey("1")} disabled={onTerra && !selectedWorkspace}>
                 Next
               </Button>
             </div>
@@ -94,6 +312,50 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
         <Card.Header>2. Upload Data</Card.Header>
         <Accordion.Collapse eventKey="1">
           <Card.Body>
+            { onTerra ? (
+              <div>
+                <p>
+                  Upload a folder with your data (unzipped) to the workspace bucket using the button below:
+                </p>
+                <p>
+                  <label htmlFor="upload-data-input" className="btn btn-success">
+                    Upload Data
+                  </label>
+                  <input
+                    type="file"
+                    onChange={e => handleUploadData(e.target.files)}
+                    style={{ display: 'none' }}
+                    id="upload-data-input"
+                    autoFocus
+                    webkitdirectory=""
+                  />
+                </p>
+                {Object.entries(uploadProgress).map(([fileName, progress]) => (
+                  <div key={fileName} className="mb-2">
+                    <p className="mb-1">{fileName}</p>
+                    <ProgressBar variant="success" now={progress} />
+                  </div>
+                ))}
+                <p>
+                  Alternatively, you can upload it manually or via Terra portal, and paste the bucket <i>folder</i> URL here:
+                </p>
+                <p>
+                  <Form.Control
+                    type="text"
+                    placeholder="Paste bucket URL starting with gs://..."
+                    value={workspaceBucketUrl}
+                    onChange={e => {
+                      const url = e.target.value;
+                      console.log("url", url);
+                      if (!url || /^gs:\/(\/[-\w]+)+\/?$/.test(url)) {
+                        setWorkspaceBucketUrl(url.replace(/\/$/, ""))
+                      }
+                    }}
+                    autoFocus
+                  />
+                </p>
+              </div>
+            ) : (
             <div>
               <p>
                 1. Upload a folder with your data (unzipped) to a Google cloud storage bucket in your GCP (Google Cloud
@@ -136,11 +398,12 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
                 </div>
               </form>
             </div>
+            )}
             <div className="text-end">
               <Button variant="success" onClick={() => setActiveKey("0")}>
                 Previous
               </Button>{" "}
-              <Button variant="success" onClick={() => setActiveKey("2")}>
+              <Button variant="success" onClick={() => setActiveKey("2")} disabled={onTerra && !workspaceBucketUrl}>
                 Next
               </Button>
             </div>
@@ -149,32 +412,15 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
       </Card>
 
       <Card>
-        <Card.Header>3. Give Permissions</Card.Header>
+        <Card.Header>3. Choose VM Size</Card.Header>
         <Accordion.Collapse eventKey="2">
-          <Card.Body>
-            <GivePermissions demo={demo} />
-            <div className="text-end">
-              <Button variant="success" onClick={() => setActiveKey("1")}>
-                Previous
-              </Button>{" "}
-              <Button variant="success" onClick={() => setActiveKey("3")}>
-                Next
-              </Button>
-            </div>
-          </Card.Body>
-        </Accordion.Collapse>
-      </Card>
-
-      <Card>
-        <Card.Header>4. Choose VM Size</Card.Header>
-        <Accordion.Collapse eventKey="3">
           <Card.Body>
             <div>
               <p>
                 Choose the Virtual Machine (VM) size that you would like to use for your study. The VM size determines
                 the amount of memory and CPU cores that will be available to your study. The VM size also determines the
-                cost of your study. If you would like guidance on what size machine to use, see the
-                <a className="text-decoration-none" href="#machine_recommendations">
+                cost of your study. If you would like guidance on what size machine to use, see the{" "}
+                <a className="text-decoration-none" href="/instructions#machine_recommendations">
                   Machine Recommendations
                 </a>{" "}
                 section in the instructions page.
@@ -228,10 +474,10 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
               </form>
             </div>
             <div className="text-end">
-              <Button variant="success" onClick={() => setActiveKey("2")}>
+              <Button variant="success" onClick={() => setActiveKey("1")}>
                 Previous
               </Button>{" "}
-              <Button variant="success" onClick={() => setActiveKey("4")}>
+              <Button variant="success" onClick={() => setActiveKey("3")}>
                 Next
               </Button>
             </div>
@@ -240,8 +486,8 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
       </Card>
 
       <Card>
-        <Card.Header>5. Post-Processing</Card.Header>
-        <Accordion.Collapse eventKey="4">
+        <Card.Header>4. Post-Processing</Card.Header>
+        <Accordion.Collapse eventKey="3">
           <Card.Body>
             {demo && (
               <div className="alert alert-info" role="alert">
@@ -255,7 +501,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
               <p>Options for what happens on protocol completion:</p>
             </div>
             <form onSubmit={handleSubmitParameters}>
-              {["DELETE_VM", "SEND_RESULTS"].map((key) => (
+              { (onTerra ? ["SEND_RESULTS"] : ["DELETE_VM", "SEND_RESULTS"]).map((key) => (
                 <div className="text-start row" key={key}>
                   <label htmlFor={key} className="col-sm-3 col-form-label text-start">
                     {parameters[key]?.name}
@@ -270,40 +516,49 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, study_id, par
                 </div>
               ))}
 
-              <div className="text-start row">
-                <label htmlFor="RESULTS_PATH" className="col-sm-3 col-form-label text-start">
-                  {parameters.RESULTS_PATH.name}
-                </label>
-                <div className="col-sm-9">
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="RESULTS_PATH"
-                    id="RESULTS_PATH"
-                    defaultValue={parameters.RESULTS_PATH.value}
-                  />
-                </div>
-                <p className="mt-3 text-start text-muted">{parameters.RESULTS_PATH.description}</p>
-              </div>
+              { !onTerra && (
+                <>
+                  <div className="text-start row">
+                    <label htmlFor="RESULTS_PATH" className="col-sm-3 col-form-label text-start">
+                      {parameters.RESULTS_PATH.name}
+                    </label>
+                    <div className="col-sm-9">
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="RESULTS_PATH"
+                        id="RESULTS_PATH"
+                        defaultValue={parameters.RESULTS_PATH.value}
+                      />
+                    </div>
+                    <p className="mt-3 text-start text-muted">{parameters.RESULTS_PATH.description}</p>
+                  </div>
 
-              <div className="text-center">
-                <div>{submitFeedback}</div>
-                <button className="btn btn-primary" type="submit">
-                  Confirm Post-Processing Configuration
-                </button>
-              </div>
+                  <div className="text-center">
+                    <div>{submitFeedback}</div>
+                    <button className="btn btn-primary" type="submit">
+                      Confirm Post-Processing Configuration
+                    </button>
+                  </div>
+                </>
+              )}
             </form>
             <div className="text-end">
-              <Button variant="success" onClick={() => setActiveKey("3")}>
+              <Button variant="success" onClick={() => setActiveKey("2")}>
                 Previous
               </Button>{" "}
-              <Button variant="success" onClick={() => window.location.reload()}>
-                Done
-              </Button>
             </div>
           </Card.Body>
         </Accordion.Collapse>
       </Card>
+      <div className="d-flex justify-content-center mt-3">
+        <Button variant="success" onClick={async () => {
+          onTerra ? await handleStartTerraWorkflow() : handleStartWorkflow();
+          location.reload();
+        }}>
+          Begin {studyType} Workflow
+        </Button>
+      </div>
     </Accordion>
   );
 };
