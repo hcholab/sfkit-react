@@ -293,7 +293,7 @@ const InstructionArea: React.FC<Props> = ({
                   </>
                 ) : (
                   <>
-                    <b>Warning:</b> We were unable to determine the type of your NAT.
+                    <b>Warning:</b> We were unable to determine your NAT type.
                     Please run <i>sfkit</i> CLI as explained below, which will check it automatically.
                   </>
                 ))}
