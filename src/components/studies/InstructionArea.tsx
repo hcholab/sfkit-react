@@ -261,7 +261,7 @@ const InstructionArea: React.FC<Props> = ({
           <div>
             <p>
               You will also need to check the type of Network Address Translation (NAT) on your machine.
-              This is done automatically by the sfkit CLI. However, if you use it on the same machine,
+              This is done automatically by the <i>sfkit</i> CLI. However, if you use it on the same machine,
               you can also click the following button:
             </p>
             <p className="text-center mt-3">
@@ -285,7 +285,7 @@ const InstructionArea: React.FC<Props> = ({
                   </>
                 ) : (
                   <>
-                    Your NAT is compatible with the sfkit CLI.
+                    Your NAT is compatible with the <i>sfkit</i> CLI.
                   </>
                 )}
               </div>
@@ -325,7 +325,7 @@ const InstructionArea: React.FC<Props> = ({
             </li>
             <li>
               <p>
-                Install sfkit CLI manually using the following script:
+                Install <i>sfkit</i> CLI manually using the following script:
               </p>
               {renderCode("curl -sL https://github.com/hcholab/sfkit/releases/latest/download/install.sh | bash", "87%")}
               <p>
