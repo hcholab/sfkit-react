@@ -6,6 +6,7 @@ import { ParameterGroup } from "../../types/study";
 import ConfigureComputeEnvModal from "./ConfigureStudyModal";
 import SubTaskContainer from "./SubTaskContainer";
 import TaskElement from "./TaskElement";
+import { useCheckNatType } from "../../hooks/useCheckNatType";
 
 interface Props {
   personalParameters: ParameterGroup;
@@ -52,8 +53,9 @@ const InstructionArea: React.FC<Props> = ({
   const [plotSrc, setPlotSrc] = useState("");
   const [isFetchingPlot, setIsFetchingPlot] = useState(false);
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
-  const plotSrcRef = useRef("");
+  const { checkNatType, isSymmetricNat, isCheckingNatType } = useCheckNatType();
   const headers = useGenerateAuthHeaders();
+  const plotSrcRef = useRef("");
 
   const fetchPlotFile = useCallback(async () => {
     try {
@@ -220,6 +222,7 @@ const InstructionArea: React.FC<Props> = ({
             </a>
             on your machine.
           </p>
+          <div className="my-2" style={{ borderTop: 'dashed #ccc' }}/>
           <p>
             { onTerra ? (
               <>
@@ -242,7 +245,7 @@ const InstructionArea: React.FC<Props> = ({
                 the <b><i>absolute path</i></b> to the service account key downloaded to your machine.
               </p>
               <div className="alert alert-warning mt-2">
-                <strong>Warning:</strong> This key contains sensitive credentials.
+                <b>Warning:</b> This key contains sensitive credentials.
                 Store it in a secure out-of-the-way location on your computer, such as
                 the <code>~/.config/gcloud/</code> directory.
                 Never share this key or commit it to version control.
@@ -254,6 +257,42 @@ const InstructionArea: React.FC<Props> = ({
               Download { onTerra ? "Service Account Key" : "Auth Key" }
             </button>
           </p>
+
+          <div>
+            <p>
+              You will also need to check the type of Network Address Translation (NAT) on your machine.
+              This is done automatically by the sfkit CLI. However, if you use it on the same machine,
+              you can also click the following button:
+            </p>
+            <p className="text-center mt-3">
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={checkNatType}
+                disabled={isCheckingNatType}
+              >
+                {isCheckingNatType ? 'Checking NAT Type...' : 'Check NAT Type'}
+              </button>
+
+            </p>
+            {isSymmetricNat !== null && (
+              <div className={ "alert mt-2 alert-" + (isSymmetricNat ? "danger" : "info") }>
+                { isSymmetricNat ? (
+                  <>
+                    <b>Error:</b> Your NAT is <i>symmetric</i>.
+                    This means the CLI won't be able to establish peer-to-peer connections
+                    with other participant machines. You will need to either set up port forwarding,
+                    use a different network, or configure your network to use a different NAT type.
+                  </>
+                ) : (
+                  <>
+                    Your NAT is compatible with the sfkit CLI.
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="my-2" style={{ borderTop: 'dashed #ccc' }}/>
           <p>
             To start <i>sfkit</i> protocol on your machine, first set some environment variables:
           </p>
