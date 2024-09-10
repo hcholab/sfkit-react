@@ -282,10 +282,21 @@ const InstructionArea: React.FC<Props> = ({
               )}>
                 { isSymmetricNat === true ? (
                   <>
-                    <b>Error:</b> Your NAT is <i>symmetric</i>.
-                    This means the CLI won't be able to establish peer-to-peer connections
-                    with other participant machines. You will need to either set up port forwarding,
-                    use a different network, or configure your network to use a different NAT type.
+                    <p>
+                      <b>Error:</b> Your NAT is <i>symmetric</i>.
+                      This means the CLI won't be able to establish peer-to-peer connections
+                      with other participant machines. You will need to either set up port forwarding,
+                      use a different network, or configure your network to use a different NAT type.
+                    </p>
+                    <p>
+                      For more information on why that is, please refer to this article explaining
+                      the nitty-gritty details: <a
+                        href="https://tailscale.com/blog/how-nat-traversal-works"
+                        className="text-decoration-none"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >How NAT Traversal Works</a>
+                    </p>
                   </>
                 ) : (isSymmetricNat === false ? (
                   <>
