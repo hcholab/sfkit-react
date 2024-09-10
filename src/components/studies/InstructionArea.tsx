@@ -232,7 +232,7 @@ const InstructionArea: React.FC<Props> = ({
               <>
                 On your machine, you
               </>
-            )} will also need to download <code>
+            )} will need to download <code>
             { onTerra ? "service_account_key.json" : "auth_key.txt" }
             </code> { onTerra && "and run the following command " }
             to authenticate the <i>sfkit</i> command-line interface:
