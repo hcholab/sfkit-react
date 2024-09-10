@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 export const useCheckNatType = () => {
   const [isSymmetricNat, setIsSymmetricNat] = useState<boolean | null>(null);
-  const [isCheckingNatType, setIsCheckingNatType] = useState(false);
+  const [isCheckingNatType, setIsCheckingNatType] = useState<boolean | null>(null);
 
   const checkNatType = useCallback(async () => {
     setIsCheckingNatType(true);

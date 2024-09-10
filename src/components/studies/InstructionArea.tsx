@@ -268,26 +268,35 @@ const InstructionArea: React.FC<Props> = ({
               <button
                 className="btn btn-primary btn-sm"
                 onClick={checkNatType}
-                disabled={isCheckingNatType}
+                disabled={isCheckingNatType === true}
               >
                 {isCheckingNatType ? 'Checking NAT Type...' : 'Check NAT Type'}
               </button>
 
             </p>
-            {isSymmetricNat !== null && (
-              <div className={ "alert mt-2 alert-" + (isSymmetricNat ? "danger" : "info") }>
-                { isSymmetricNat ? (
+            {isCheckingNatType === false && (
+              <div className={ "alert mt-2 alert-" + (
+                isSymmetricNat === true ? "danger" : (
+                  isSymmetricNat === false ? "info" : "warning"
+                )
+              )}>
+                { isSymmetricNat === true ? (
                   <>
                     <b>Error:</b> Your NAT is <i>symmetric</i>.
                     This means the CLI won't be able to establish peer-to-peer connections
                     with other participant machines. You will need to either set up port forwarding,
                     use a different network, or configure your network to use a different NAT type.
                   </>
-                ) : (
+                ) : (isSymmetricNat === false ? (
                   <>
                     Your NAT is compatible with the <i>sfkit</i> CLI.
                   </>
-                )}
+                ) : (
+                  <>
+                    <b>Warning:</b> We were unable to determine the type of your NAT.
+                    Please run <i>sfkit</i> CLI as explained below, which will check it automatically.
+                  </>
+                ))}
               </div>
             )}
           </div>
