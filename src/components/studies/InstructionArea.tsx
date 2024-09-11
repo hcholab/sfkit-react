@@ -317,7 +317,7 @@ const InstructionArea: React.FC<Props> = ({
             To start <i>sfkit</i> protocol on your machine, first set some environment variables:
           </p>
           {renderCode(
-            `export SFKIT_API_URL=${apiBaseUrl}
+            `export SFKIT_API_URL=${apiBaseUrl}/api
             export SFKIT_STUDY_ID=${study_id}
             export SFKIT_DATA_PATH=/path/to/data_dir`
           )}
