@@ -134,12 +134,12 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
             setUploadProgress(({ [filePath]: _, ...p }) => p);
             resolve();
           } else {
-            setUploadError(`Error uploading file ${filePath}: ${xhr.status} ${xhr.statusText} ${xhr.responseText.trim()}`);
+            setUploadError(`Error uploading file '${filePath}': ${xhr.status} ${xhr.statusText} ${xhr.responseText.trim()}`);
           }
         };
 
         xhr.onerror = () => {
-          setUploadError(`Network error uploading file ${filePath}`);
+          setUploadError(`Network error uploading file '${filePath}'`);
         };
 
         xhr.send(f);
