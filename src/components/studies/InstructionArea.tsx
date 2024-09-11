@@ -208,9 +208,9 @@ const InstructionArea: React.FC<Props> = ({
             studyType={studyType}
             personalParameters={personalParameters}
           />
+          <hr/>OR<hr/>
         </>
       ) : null}
-      <hr/>OR<hr/>
       {status === "" ? (
         <div className="text-start">
           <p>
