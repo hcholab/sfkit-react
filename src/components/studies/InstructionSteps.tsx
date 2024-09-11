@@ -102,6 +102,8 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     const gcsToken = (await samRes.text()).replace(/"/g, "");
 
     const dataPath = `_sfkit/${studyId}/data`;
+    const uploads: Promise<void>[] = [];
+
     await Promise.all(Array.from(files).map(async f => {
       const filePath = f.webkitRelativePath.split('/').slice(1).join('/');
       const objPath = encodeURIComponent(`${dataPath}/${filePath}`);
@@ -120,22 +122,30 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
         }
       };
 
-      xhr.onload = () => {
-        if (xhr.status === 200) {
-          setUploadProgress(({ [filePath]: _, ...p }) => p);
-        } else {
-          console.error(`Error uploading file ${filePath}: ${xhr.status} ${xhr.statusText}`);
-        }
-      };
+      uploads.push(new Promise<void>((resolve, reject) => {
+        xhr.onload = () => {
+          if (xhr.status === 200) {
+            setUploadProgress(({ [filePath]: _, ...p }) => p);
+            resolve();
+          } else {
+            reject(new Error(`Error uploading file ${filePath}: ${xhr.status} ${xhr.statusText}`));
+          }
+        };
 
-      xhr.onerror = () => {
-        console.error(`Network error uploading ${filePath}`);
-      };
+        xhr.onerror = () => {
+          reject(new Error(`Network error uploading ${filePath}`));
+        };
 
-      xhr.send(f);
+        xhr.send(f);
+      }));
     }));
 
-    setWorkspaceBucketUrl(`gs://${ws.bucketName}/${dataPath}`);
+    try {
+      await Promise.all(uploads);
+      setWorkspaceBucketUrl(`gs://${ws.bucketName}/${dataPath}`);
+    } catch (error) {
+      console.error("Error uploading files:", error);
+    }
   };
 
   const handleStartTerraWorkflow = async () => {
@@ -555,7 +565,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
         <Button variant="success" onClick={async () => {
           onTerra ? await handleStartTerraWorkflow() : handleStartWorkflow();
           location.reload();
-        }}>
+        }} disabled={onTerra && !workspaceBucketUrl}>
           Begin {studyType} Workflow
         </Button>
       </div>
