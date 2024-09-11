@@ -1,12 +1,12 @@
 import React, { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useCheckNatType } from "../../hooks/useCheckNatType";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { useTerra } from "../../hooks/useTerra";
 import { ParameterGroup } from "../../types/study";
 import ConfigureComputeEnvModal from "./ConfigureStudyModal";
 import SubTaskContainer from "./SubTaskContainer";
 import TaskElement from "./TaskElement";
-import { useCheckNatType } from "../../hooks/useCheckNatType";
 
 interface Props {
   personalParameters: ParameterGroup;

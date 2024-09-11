@@ -172,7 +172,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
         inputs: {
           "sfkit.study_id": "this.study_id",
           "sfkit.data": "this.data",
-          "sfkit.api_url": `\"${apiBaseUrl}\"`,
+          "sfkit.api_url": `\"${apiBaseUrl}/api\"`,
         },
         outputs: {},
         methodConfigVersion: 1,
