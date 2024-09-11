@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Accordion, Button, Card, Dropdown, Form, ProgressBar } from "react-bootstrap";
+import { Accordion, Alert, Button, Card, Dropdown, Form, ProgressBar } from "react-bootstrap";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { useTerra } from "../../hooks/useTerra";
 import info_square from "../../static/images/info-square.svg";
@@ -39,6 +39,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
   const [workspaceSearchDropdownOpen, setWorkspaceSearchDropdownOpen] = useState(false);
   const [workspaceBucketUrl, setWorkspaceBucketUrl] = useState<string>("");
   const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
+  const [uploadErrors, setUploadErrors] = useState<{ [key: string]: string }>({});
   const [submitFeedback, setSubmitFeedback] = useState<string | null>(null);
   const headers = useGenerateAuthHeaders();
 
@@ -123,17 +124,22 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
       };
 
       uploads.push(new Promise<void>((resolve, reject) => {
+        const setUploadError = (errorMessage: string) => {
+          setUploadErrors(e => ({ ...e, [filePath]: errorMessage }));
+          reject(new Error(errorMessage));
+        };
+
         xhr.onload = () => {
           if (xhr.status === 200) {
             setUploadProgress(({ [filePath]: _, ...p }) => p);
             resolve();
           } else {
-            reject(new Error(`Error uploading file ${filePath}: ${xhr.status} ${xhr.statusText}`));
+            setUploadError(`Error uploading file ${filePath}: ${xhr.status} ${xhr.statusText} ${xhr.responseText.trim()}`);
           }
         };
 
         xhr.onerror = () => {
-          reject(new Error(`Network error uploading ${filePath}`));
+          setUploadError(`Network error uploading file ${filePath}`);
         };
 
         xhr.send(f);
@@ -343,7 +349,15 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
                 {Object.entries(uploadProgress).map(([fileName, progress]) => (
                   <div key={fileName} className="mb-2">
                     <p className="mb-1">{fileName}</p>
-                    <ProgressBar variant="success" now={progress} />
+                    <ProgressBar
+                      variant={uploadErrors[fileName] ? "danger" : "success"}
+                      now={progress}
+                    />
+                    {uploadErrors[fileName] && (
+                      <Alert variant="danger" className="mt-1 p-1 small">
+                        {uploadErrors[fileName]}
+                      </Alert>
+                    )}
                   </div>
                 ))}
                 <p>
