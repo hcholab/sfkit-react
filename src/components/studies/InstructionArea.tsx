@@ -301,9 +301,9 @@ const InstructionArea: React.FC<Props> = ({
                     </p>
                   </>
                 ) : (isSymmetricNat === false ? (
-                  <>
+                  <div className="text-center">
                     ✔ Your NAT is compatible with the <i>sfkit</i> CLI.
-                  </>
+                  </div>
                 ) : (
                   <>
                     <b>Warning:</b> We were unable to determine your NAT type.
