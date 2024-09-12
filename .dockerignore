@@ -4,7 +4,7 @@
 !*.html
 !*.json
 !*.ts
+!eslint.config.js
 !src/
 !public/
 !nginx.conf
-
