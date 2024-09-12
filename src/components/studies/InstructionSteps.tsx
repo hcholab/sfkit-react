@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Accordion, Button, Card, Dropdown, Form, ProgressBar } from "react-bootstrap";
+import { Accordion, Alert, Button, Card, Dropdown, Form, ProgressBar } from "react-bootstrap";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { useTerra } from "../../hooks/useTerra";
 import info_square from "../../static/images/info-square.svg";
@@ -39,6 +39,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
   const [workspaceSearchDropdownOpen, setWorkspaceSearchDropdownOpen] = useState(false);
   const [workspaceBucketUrl, setWorkspaceBucketUrl] = useState<string>("");
   const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
+  const [uploadErrors, setUploadErrors] = useState<{ [key: string]: string }>({});
   const [submitFeedback, setSubmitFeedback] = useState<string | null>(null);
   const headers = useGenerateAuthHeaders();
 
@@ -51,7 +52,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
 
     const listWorkspaces = async () => {
       try {
-        const url = `${rawlsApiUrl}/workspaces?fields=accessLevel,workspace.namespace,workspace.name,workspace.cloudPlatform,workspace.bucketName`;
+        const url = `${rawlsApiUrl}/workspaces?fields=accessLevel,workspace.namespace,workspace.name,workspace.cloudPlatform,workspace.googleProject,workspace.bucketName`;
         const res = dev
           ? { ok: true, json: async () => (await import("./workspaces.json")).default }
           : await fetch(url, { headers });
@@ -102,6 +103,8 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     const gcsToken = (await samRes.text()).replace(/"/g, "");
 
     const dataPath = `_sfkit/${studyId}/data`;
+    const uploads: Promise<void>[] = [];
+
     await Promise.all(Array.from(files).map(async f => {
       const filePath = f.webkitRelativePath.split('/').slice(1).join('/');
       const objPath = encodeURIComponent(`${dataPath}/${filePath}`);
@@ -120,22 +123,35 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
         }
       };
 
-      xhr.onload = () => {
-        if (xhr.status === 200) {
-          setUploadProgress(({ [filePath]: _, ...p }) => p);
-        } else {
-          console.error(`Error uploading file ${filePath}: ${xhr.status} ${xhr.statusText}`);
-        }
-      };
+      uploads.push(new Promise<void>((resolve, reject) => {
+        const setUploadError = (errorMessage: string) => {
+          setUploadErrors(e => ({ ...e, [filePath]: errorMessage }));
+          reject(new Error(errorMessage));
+        };
 
-      xhr.onerror = () => {
-        console.error(`Network error uploading ${filePath}`);
-      };
+        xhr.onload = () => {
+          if (xhr.status === 200) {
+            setUploadProgress(({ [filePath]: _, ...p }) => p);
+            resolve();
+          } else {
+            setUploadError(`Error uploading file '${filePath}': ${xhr.status} ${xhr.statusText} ${xhr.responseText.trim()}`);
+          }
+        };
 
-      xhr.send(f);
+        xhr.onerror = () => {
+          setUploadError(`Network error uploading file '${filePath}'`);
+        };
+
+        xhr.send(f);
+      }));
     }));
 
-    setWorkspaceBucketUrl(`gs://${ws.bucketName}/${dataPath}`);
+    try {
+      await Promise.all(uploads);
+      setWorkspaceBucketUrl(`gs://${ws.bucketName}/${dataPath}`);
+    } catch (error) {
+      console.error("Error uploading files:", error);
+    }
   };
 
   const handleStartTerraWorkflow = async () => {
@@ -172,7 +188,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
         inputs: {
           "sfkit.study_id": "this.study_id",
           "sfkit.data": "this.data",
-          "sfkit.api_url": `\"${apiBaseUrl}\"`,
+          "sfkit.api_url": `\"${apiBaseUrl}/api\"`,
         },
         outputs: {},
         methodConfigVersion: 1,
@@ -333,7 +349,15 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
                 {Object.entries(uploadProgress).map(([fileName, progress]) => (
                   <div key={fileName} className="mb-2">
                     <p className="mb-1">{fileName}</p>
-                    <ProgressBar variant="success" now={progress} />
+                    <ProgressBar
+                      variant={uploadErrors[fileName] ? "danger" : "success"}
+                      now={progress}
+                    />
+                    {uploadErrors[fileName] && (
+                      <Alert variant="danger" className="mt-1 p-1 small">
+                        {uploadErrors[fileName]}
+                      </Alert>
+                    )}
                   </div>
                 ))}
                 <p>
@@ -555,7 +579,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
         <Button variant="success" onClick={async () => {
           onTerra ? await handleStartTerraWorkflow() : handleStartWorkflow();
           location.reload();
-        }}>
+        }} disabled={onTerra && !workspaceBucketUrl}>
           Begin {studyType} Workflow
         </Button>
       </div>

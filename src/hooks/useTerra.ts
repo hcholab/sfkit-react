@@ -13,7 +13,7 @@ export const useTerra = () => {
 
         return {
             onTerra: dev || terraRe.test(url.hostname),
-            apiBaseUrl: url,
+            apiBaseUrl,
             rawlsApiUrl: `https://${hostname.replace(/^sfkit\./, "rawls.")}/api`,
             samApiUrl: `https://${hostname.replace(/^sfkit\./, "sam.")}/api`,
             dev,

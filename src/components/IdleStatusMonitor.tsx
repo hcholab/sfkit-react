@@ -11,7 +11,7 @@ const idleEvents = ['click', 'keydown'];
 export const IdleStatusMonitor = () => {
   const auth = useAuth();
   const headers = useGenerateAuthHeaders();
-  const { onTerra, apiBaseUrl } = useTerra();
+  const { onTerra, samApiUrl } = useTerra();
   const timeoutId = useRef<number>();
   const navigate = useNavigate();
 
@@ -21,10 +21,7 @@ export const IdleStatusMonitor = () => {
     (async () => {
       if (!onTerra || !auth.isAuthenticated || timeoutId.current) return;
 
-      const samHostname = apiBaseUrl.hostname.replace(/^[^.]+/, 'sam');
-      const samGroupUrl = `https://${samHostname}/api/groups/v1`;
-
-      const res = await fetch(samGroupUrl, { headers });
+      const res = await fetch(`${samApiUrl}/groups/v1`, { headers });
       const groups = await res.json() as { groupName: string }[];
       const isTimeoutEnabled = groups.some(g => g.groupName === 'session_timeout');
       if (!isTimeoutEnabled) return;
@@ -59,7 +56,7 @@ export const IdleStatusMonitor = () => {
         timeoutId.current = undefined;
       };
     })().catch(console.error);
-  }, [auth.isAuthenticated, onTerra, apiBaseUrl, headers, navigate, signOut]);
+  }, [auth.isAuthenticated, onTerra, samApiUrl, headers, navigate, signOut]);
 
   return <div />;
 };

@@ -15,7 +15,7 @@ import { getDb } from "../../hooks/firebase";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { useTerra } from "../../hooks/useTerra";
 
-const fetchStudy = async (apiBaseUrl: string | URL, study_id: string, headers: Record<string, string>) => {
+const fetchStudy = async (apiBaseUrl: string, study_id: string, headers: Record<string, string>) => {
   try {
     const response = await fetch(`${apiBaseUrl}/api/study?study_id=${study_id}`, {
       method: "GET",
