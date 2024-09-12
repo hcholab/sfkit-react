@@ -24,7 +24,7 @@ interface Props {
   showManhattanDiv: boolean;
   imageSrc: string;
   imageLabel: string;
-  showFailStatus: boolean;
+  failStatus: string;
   handleStartWorkflow: DryRunFunc;
   handleDownloadAuthKey: () => void;
 }
@@ -41,7 +41,7 @@ const InstructionArea: React.FC<Props> = ({
   tasks,
   showDownloadDiv,
   showManhattanDiv,
-  showFailStatus,
+  failStatus,
   handleStartWorkflow,
   handleDownloadAuthKey,
 }) => {
@@ -279,7 +279,7 @@ const InstructionArea: React.FC<Props> = ({
             {isCheckingNatType === false && (
               <div className={ "alert mt-2 alert-" + (
                 isSymmetricNat === true ? "danger" : (
-                  isSymmetricNat === false ? "info" : "warning"
+                  isSymmetricNat === false ? "success" : "warning"
                 )
               )}>
                 { isSymmetricNat === true ? (
@@ -302,7 +302,7 @@ const InstructionArea: React.FC<Props> = ({
                   </>
                 ) : (isSymmetricNat === false ? (
                   <>
-                    Your NAT is compatible with the <i>sfkit</i> CLI.
+                    ✔ Your NAT is compatible with the <i>sfkit</i> CLI.
                   </>
                 ) : (
                   <>
@@ -322,6 +322,7 @@ const InstructionArea: React.FC<Props> = ({
             <button
               className="btn btn-primary btn-sm"
               onClick={() => {
+                setIsStudyValid(undefined);
                 handleStartWorkflow({ dryRun: true })
                   .then(() => setIsStudyValid(true))
                   .catch(() => setIsStudyValid(false))
@@ -329,13 +330,21 @@ const InstructionArea: React.FC<Props> = ({
             >
               Validate Study
             </button>
-            <span
-              className={"ms-2 " + (isStudyValid ? "text-success" : "text-danger")}
-              style={{ fontSize: '1.5em', verticalAlign: 'middle' }}
-            >
-              {isStudyValid === true ? "✓" : (isStudyValid === false ? "✗" : " ") }
-            </span>
           </p>
+          { isStudyValid === true ? (
+              <div className="alert alert-success text-center">
+                ✔ Study is valid.
+              </div>
+            ) : (
+              isStudyValid === false ? (
+                <div className="alert alert-danger">
+                  <b>Error:</b> {failStatus}
+                </div>
+              ) : (
+                <></>
+              )
+            )
+          }
           <p>
             Then, set some environment variables:
           </p>
@@ -426,7 +435,7 @@ const InstructionArea: React.FC<Props> = ({
               )}
             </>
           )}
-          {showFailStatus && <div className="text-start alert alert-danger">Study execution has failed.</div>}{" "}
+          {failStatus && <div className="text-start alert alert-danger">Study execution has failed: {failStatus}</div>}{" "}
         </div>
       ) : null}
     </div>

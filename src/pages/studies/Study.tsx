@@ -57,7 +57,7 @@ const Study: React.FC = () => {
   const [showManhattanDiv, setShowManhattanDiv] = useState<boolean>(false);
   const [imageSrc, setImageSrc] = useState<string>("");
   const [imageLabel, setImageLabel] = useState<string>("");
-  const [showFailStatus, setShowFailStatus] = useState<boolean>(false);
+  const [failStatus, setFailStatus] = useState<string>("");
   const [isRestarting, setIsRestarting] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
@@ -84,8 +84,7 @@ const Study: React.FC = () => {
 
       if (!response.ok) {
         const data = await response.json();
-        setErrorMessage(data.error || "Network response was not ok");
-        setShowFailStatus(true);
+        setFailStatus(data.error || "Network response was not ok");
         throw new Error("Network response was not ok");
       }
 
@@ -251,7 +250,7 @@ const Study: React.FC = () => {
                     showManhattanDiv={showManhattanDiv}
                     imageSrc={imageSrc}
                     imageLabel={imageLabel}
-                    showFailStatus={showFailStatus}
+                    failStatus={failStatus}
                     handleStartWorkflow={handleStartWorkflow}
                     handleDownloadAuthKey={onTerra ? handleDownloadSAKey : handleDownloadAuthKey}
                   />
