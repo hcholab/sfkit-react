@@ -75,18 +75,19 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     listWorkspaces();
   }, [onTerra, dev, rawlsApiUrl, headers]);
 
-  const handleSubmitParameters = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitParameters = (event: React.FormEvent<HTMLFormElement> | FormData) =>
     submitStudyParameters(event, apiBaseUrl, studyId, headers, setSubmitFeedback);
-  };
 
   const filteredOptions = workspaces.filter(ws =>
     `${ws.namespace}/${ws.name}`.toLowerCase().includes(workspaceSearchTerm.toLowerCase())
   );
 
+  const getSelectedWorkspace = () => workspaces.find(ws =>
+    `${ws.namespace}/${ws.name}` == selectedWorkspace
+  );
+
   const handleUploadData = async (files: FileList | null) => {
-    const ws = workspaces.find(ws =>
-      `${ws.namespace}/${ws.name}` == selectedWorkspace
-    );
+    const ws = getSelectedWorkspace();
     if (!files || !ws) return;
 
     const samRes = await fetch(`${samApiUrl}/google/v1/user/petServiceAccount/${ws.googleProject}/token`, {
@@ -155,6 +156,16 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
   };
 
   const handleStartTerraWorkflow = async () => {
+    const ws = getSelectedWorkspace();
+    if (!ws) return;
+
+    // Validate workflow
+    const formData = new FormData();
+    formData.set("DATA_PATH", workspaceBucketUrl);
+    formData.set("GCP_PROJECT", ws.googleProject);
+    await handleSubmitParameters(formData);
+    await handleStartWorkflow();
+
     // Create entity
     const rawlsBaseUrl = `${rawlsApiUrl}/workspaces/${selectedWorkspace}`;
     const post = {
@@ -541,31 +552,29 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
               ))}
 
               { !onTerra && (
-                <>
-                  <div className="text-start row">
-                    <label htmlFor="RESULTS_PATH" className="col-sm-3 col-form-label text-start">
-                      {parameters.RESULTS_PATH.name}
-                    </label>
-                    <div className="col-sm-9">
-                      <input
-                        type="text"
-                        className="form-control"
-                        name="RESULTS_PATH"
-                        id="RESULTS_PATH"
-                        defaultValue={parameters.RESULTS_PATH.value}
-                      />
-                    </div>
-                    <p className="mt-3 text-start text-muted">{parameters.RESULTS_PATH.description}</p>
+                <div className="text-start row">
+                  <label htmlFor="RESULTS_PATH" className="col-sm-3 col-form-label text-start">
+                    {parameters.RESULTS_PATH.name}
+                  </label>
+                  <div className="col-sm-9">
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="RESULTS_PATH"
+                      id="RESULTS_PATH"
+                      defaultValue={parameters.RESULTS_PATH.value}
+                    />
                   </div>
-
-                  <div className="text-center">
-                    <div>{submitFeedback}</div>
-                    <button className="btn btn-primary" type="submit">
-                      Confirm Post-Processing Configuration
-                    </button>
-                  </div>
-                </>
+                  <p className="mt-3 text-start text-muted">{parameters.RESULTS_PATH.description}</p>
+                </div>
               )}
+
+              <div className="text-center">
+                <div>{submitFeedback}</div>
+                <button className="btn btn-primary" type="submit">
+                  Confirm Post-Processing Configuration
+                </button>
+              </div>
             </form>
             <div className="text-end">
               <Button variant="success" onClick={() => setActiveKey("2")}>
