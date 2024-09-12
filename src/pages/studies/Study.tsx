@@ -39,7 +39,7 @@ export type DryRunFunc = (opts?: {dryRun?: boolean}) => Promise<void>;
 const Study: React.FC = () => {
   const { onTerra, apiBaseUrl, samApiUrl } = useTerra();
   const navigate = useNavigate();
-  const { study_id, auth_key = "" } = useParams();
+  const { study_id = "", auth_key = "" } = useParams();
   const headers = useGenerateAuthHeaders();
 
   const firestoreData = useFirestore();
@@ -74,8 +74,10 @@ const Study: React.FC = () => {
 
   const handleStartWorkflow: DryRunFunc = async ({ dryRun } = {}) => {
     try {
-      const url = `${apiBaseUrl}/api/start_protocol?study_id=${study_id}${dryRun ? "&dry_run" : ""}`;
-      const response = await fetch(url, {
+      const response = await fetch(`${apiBaseUrl}/api/start_protocol?${new URLSearchParams({
+        study_id,
+        ...(dryRun && { dry_run: 'true' })
+      })}`, {
         method: "POST",
         headers,
       });
