@@ -315,7 +315,15 @@ const InstructionArea: React.FC<Props> = ({
 
           <div className="my-2" style={{ borderTop: 'dashed #ccc' }}/>
           <p>
-            To start <i>sfkit</i> protocol on your machine, first set some environment variables:
+            To start <i>sfkit</i> protocol on your machine, first check that all protocol parameters are set correctly:
+          </p>
+          <p className="text-center">
+            <button className="btn btn-primary btn-sm" onClick={() => handleStartWorkflow({ dryRun: true })}>
+              Validate Study
+            </button>
+          </p>
+          <p>
+            Then, set some environment variables:
           </p>
           {renderCode(
             `export SFKIT_API_URL=${apiBaseUrl}/api
