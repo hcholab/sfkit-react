@@ -87,8 +87,8 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     listWorkspaces();
   }, [onTerra, dev, rawlsApiUrl, headers]);
 
-  const handleSubmitParameters = async (event: React.FormEvent<HTMLFormElement>) =>
-    submitStudyParameters(event, apiBaseUrl, studyId, headers, setSubmitFeedback, undefined, setParams);
+  const handleSubmitParameters = async (eventForm: React.FormEvent<HTMLFormElement> | FormData) =>
+    submitStudyParameters(eventForm, apiBaseUrl, studyId, headers, setSubmitFeedback, undefined, setParams);
 
   const filteredOptions = workspaces.filter(ws =>
     `${ws.namespace}/${ws.name}`.toLowerCase().includes(workspaceSearchTerm.toLowerCase())
@@ -163,6 +163,13 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     } catch (error) {
       console.error("Error uploading files:", error);
     }
+  };
+
+  const handleStartNonTerraWorkflow = async () => {
+    const formData = new FormData();
+    formData.set("CREATE_VM", "Yes");
+    await handleSubmitParameters(formData);
+    await handleStartWorkflow();
   };
 
   const handleStartTerraWorkflow = async () => {
@@ -591,7 +598,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
       </Card>
       <div className="d-flex justify-content-center mt-3">
         <Button variant="success" onClick={async () => {
-          onTerra ? await handleStartTerraWorkflow() : handleStartWorkflow();
+          onTerra ? await handleStartTerraWorkflow() : handleStartNonTerraWorkflow();
           location.reload();
         }} disabled={onTerra && !workspaceBucketUrl}>
           Begin {studyType} Workflow

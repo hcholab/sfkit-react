@@ -1,5 +1,5 @@
 export const submitStudyParameters = async (
-  event: React.FormEvent<HTMLFormElement>,
+  eventForm: React.FormEvent<HTMLFormElement> | FormData,
   apiBaseUrl: string,
   studyId: string,
   headers: HeadersInit,
@@ -7,9 +7,11 @@ export const submitStudyParameters = async (
   setErrorMessage?: (message: string) => void,
   setParams?: (params: Record<string, string | number>) => void,
 ) => {
-  event.preventDefault();
-
-  const formData = new FormData(event.currentTarget);
+  if (!(eventForm instanceof FormData)) {
+    eventForm.preventDefault();
+  }
+  const formData = eventForm instanceof FormData
+    ? eventForm : new FormData(eventForm.currentTarget);
   const parameters: Record<string, string | number> = {};
   formData.forEach((value, key) => {
     if (key === "BASE_P") {
