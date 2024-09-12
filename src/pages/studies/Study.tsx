@@ -93,6 +93,7 @@ const Study: React.FC = () => {
       console.log("Workflow started:", data);
     } catch (error) {
       console.error("Failed to start workflow:", error);
+      throw error;
     }
   };
 

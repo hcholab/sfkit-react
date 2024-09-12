@@ -54,6 +54,7 @@ const InstructionArea: React.FC<Props> = ({
   const [plotSrc, setPlotSrc] = useState("");
   const [isFetchingPlot, setIsFetchingPlot] = useState(false);
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
+  const [isStudyValid, setIsStudyValid] = useState<boolean>();
   const { checkNatType, isSymmetricNat, isCheckingNatType } = useCheckNatType();
   const headers = useGenerateAuthHeaders();
   const plotSrcRef = useRef("");
@@ -318,9 +319,22 @@ const InstructionArea: React.FC<Props> = ({
             To start <i>sfkit</i> protocol on your machine, first check that the study is set up correctly:
           </p>
           <p className="text-center">
-            <button className="btn btn-primary btn-sm" onClick={() => handleStartWorkflow({ dryRun: true })}>
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={() => {
+                handleStartWorkflow({ dryRun: true })
+                  .then(() => setIsStudyValid(true))
+                  .catch(() => setIsStudyValid(false))
+              }}
+            >
               Validate Study
             </button>
+            <span
+              className={"ms-2 " + (isStudyValid ? "text-success" : "text-danger")}
+              style={{ fontSize: '1.5em', verticalAlign: 'middle' }}
+            >
+              {isStudyValid === true ? "✓" : (isStudyValid === false ? "✗" : " ") }
+            </span>
           </p>
           <p>
             Then, set some environment variables:
