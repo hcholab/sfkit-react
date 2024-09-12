@@ -315,7 +315,7 @@ const InstructionArea: React.FC<Props> = ({
 
           <div className="my-2" style={{ borderTop: 'dashed #ccc' }}/>
           <p>
-            To start <i>sfkit</i> protocol on your machine, first check that all protocol parameters are set correctly:
+            To start <i>sfkit</i> protocol on your machine, first check that the study is set up correctly:
           </p>
           <p className="text-center">
             <button className="btn btn-primary btn-sm" onClick={() => handleStartWorkflow({ dryRun: true })}>
