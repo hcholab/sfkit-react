@@ -24,7 +24,7 @@ interface Props {
   imageSrc: string;
   imageLabel: string;
   showFailStatus: boolean;
-  handleStartWorkflow: () => void;
+  handleStartWorkflow: () => Promise<void>;
   handleDownloadAuthKey: () => void;
 }
 

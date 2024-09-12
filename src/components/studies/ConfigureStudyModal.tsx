@@ -6,7 +6,7 @@ import InstructionSteps from "./InstructionSteps";
 interface ConfigureStudyModalProps {
   handleShow: () => void;
   handleClose: () => void;
-  handleStartWorkflow: () => void;
+  handleStartWorkflow: () => Promise<void>;
   showModal: boolean;
   demo: boolean;
   studyId: string;

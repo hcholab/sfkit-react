@@ -18,7 +18,7 @@ interface InstructionStepsProps {
   studyId: string;
   studyType: string;
   parameters: ParameterGroup;
-  handleStartWorkflow: () => void;
+  handleStartWorkflow: () => Promise<void>;
 }
 
 type Workspace = {
