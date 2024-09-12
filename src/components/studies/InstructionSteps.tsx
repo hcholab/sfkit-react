@@ -161,8 +161,8 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
 
     // Validate workflow
     const formData = new FormData();
-    formData.set("DATA_PATH", workspaceBucketUrl);
     formData.set("GCP_PROJECT", ws.googleProject);
+    formData.set("DATA_PATH", workspaceBucketUrl);
     await handleSubmitParameters(formData);
     await handleStartWorkflow();
 
