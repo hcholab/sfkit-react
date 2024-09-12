@@ -34,6 +34,8 @@ const fetchStudy = async (apiBaseUrl: string, study_id: string, headers: Record<
   }
 };
 
+export type DryRunFunc = (opts?: {dryRun?: boolean}) => Promise<void>;
+
 const Study: React.FC = () => {
   const { onTerra, apiBaseUrl, samApiUrl } = useTerra();
   const navigate = useNavigate();
@@ -70,9 +72,10 @@ const Study: React.FC = () => {
     setIsRestarting(false);
   };
 
-  const handleStartWorkflow = async () => {
+  const handleStartWorkflow: DryRunFunc = async ({ dryRun } = {}) => {
     try {
-      const response = await fetch(`${apiBaseUrl}/api/start_protocol?study_id=${study_id}`, {
+      const url = `${apiBaseUrl}/api/start_protocol?study_id=${study_id}${dryRun ? "&dry_run" : ""}`;
+      const response = await fetch(url, {
         method: "POST",
         headers,
       });

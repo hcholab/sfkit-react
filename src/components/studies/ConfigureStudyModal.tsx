@@ -1,12 +1,13 @@
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
+import { DryRunFunc } from "../../pages/studies/Study";
 import { ParameterGroup } from "../../types/study";
 import InstructionSteps from "./InstructionSteps";
 
 interface ConfigureStudyModalProps {
   handleShow: () => void;
   handleClose: () => void;
-  handleStartWorkflow: () => Promise<void>;
+  handleStartWorkflow: DryRunFunc;
   showModal: boolean;
   demo: boolean;
   studyId: string;

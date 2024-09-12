@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useCheckNatType } from "../../hooks/useCheckNatType";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { useTerra } from "../../hooks/useTerra";
+import { DryRunFunc } from "../../pages/studies/Study";
 import { ParameterGroup } from "../../types/study";
 import ConfigureComputeEnvModal from "./ConfigureStudyModal";
 import SubTaskContainer from "./SubTaskContainer";
@@ -24,7 +25,7 @@ interface Props {
   imageSrc: string;
   imageLabel: string;
   showFailStatus: boolean;
-  handleStartWorkflow: () => Promise<void>;
+  handleStartWorkflow: DryRunFunc;
   handleDownloadAuthKey: () => void;
 }
 

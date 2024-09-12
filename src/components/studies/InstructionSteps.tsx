@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Accordion, Alert, Button, Card, Dropdown, Form, ProgressBar } from "react-bootstrap";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { useTerra } from "../../hooks/useTerra";
+import { DryRunFunc } from "../../pages/studies/Study";
 import info_square from "../../static/images/info-square.svg";
 import { ParameterGroup } from "../../types/study";
 import { submitStudyParameters } from "../../utils/formUtils";
@@ -18,7 +19,7 @@ interface InstructionStepsProps {
   studyId: string;
   studyType: string;
   parameters: ParameterGroup;
-  handleStartWorkflow: () => Promise<void>;
+  handleStartWorkflow: DryRunFunc;
 }
 
 type Workspace = {
@@ -86,19 +87,17 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     listWorkspaces();
   }, [onTerra, dev, rawlsApiUrl, headers]);
 
-  const handleSubmitParameters = async (event: React.FormEvent<HTMLFormElement> | FormData) =>
+  const handleSubmitParameters = async (event: React.FormEvent<HTMLFormElement>) =>
     submitStudyParameters(event, apiBaseUrl, studyId, headers, setSubmitFeedback, undefined, setParams);
 
   const filteredOptions = workspaces.filter(ws =>
     `${ws.namespace}/${ws.name}`.toLowerCase().includes(workspaceSearchTerm.toLowerCase())
   );
 
-  const getSelectedWorkspace = () => workspaces.find(ws =>
-    `${ws.namespace}/${ws.name}` == selectedWorkspace
-  );
-
   const handleUploadData = async (files: FileList | null) => {
-    const ws = getSelectedWorkspace();
+    const ws = workspaces.find(ws =>
+      `${ws.namespace}/${ws.name}` == selectedWorkspace
+    );
     if (!files || !ws) return;
 
     const samRes = await fetch(`${samApiUrl}/google/v1/user/petServiceAccount/${ws.googleProject}/token`, {
@@ -167,14 +166,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
   };
 
   const handleStartTerraWorkflow = async () => {
-    const ws = getSelectedWorkspace();
-    if (!ws) return;
-
-    // Validate workflow
-    const formData = new FormData();
-    formData.set("GCP_PROJECT", ws.googleProject);
-    formData.set("DATA_PATH", workspaceBucketUrl);
-    await handleSubmitParameters(formData);
+    // Validate the protocol and update its status
     await handleStartWorkflow();
 
     // Create entity
