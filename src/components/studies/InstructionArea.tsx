@@ -335,7 +335,7 @@ const InstructionArea: React.FC<Props> = ({
             the <b><i>absolute path</i></b> to the input data directory on your machine.
           </p>
           <p>
-            Then, either:
+            Finally, either:
           </p>
           <ol>
             <li>
