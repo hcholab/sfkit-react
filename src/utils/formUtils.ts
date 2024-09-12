@@ -10,7 +10,8 @@ export const submitStudyParameters = async (
   if (!(formEvent instanceof FormData)) {
     formEvent.preventDefault();
   }
-  const formData = formEvent instanceof FormData ? formEvent : new FormData(formEvent.currentTarget);
+  const formData = formEvent instanceof FormData
+    ? formEvent : new FormData(formEvent.currentTarget);
   const parameters: Record<string, string | number> = {};
   formData.forEach((value, key) => {
     if (key === "BASE_P") {
