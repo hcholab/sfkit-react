@@ -31,14 +31,14 @@ export const submitStudyParameters = async (
       throw new Error((await response.json()).error || "Unexpected error");
     }
 
+    if (setParams) {
+      setParams(parameters);
+    }
+
     if (setFeedback) {
       setFeedback("Success!");
     } else {
       window.location.reload();
-    }
-
-    if (setParams) {
-      setParams(parameters);
     }
   } catch (error) {
     console.error("Failed to save study parameters:", error);
