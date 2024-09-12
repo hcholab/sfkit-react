@@ -38,10 +38,16 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
   const [workspaceSearchTerm, setWorkspaceSearchTerm] = useState("");
   const [workspaceSearchDropdownOpen, setWorkspaceSearchDropdownOpen] = useState(false);
   const [workspaceBucketUrl, setWorkspaceBucketUrl] = useState<string>("");
+  const [params, setParams] = useState<Record<string, string | number>>({});
   const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
   const [uploadErrors, setUploadErrors] = useState<{ [key: string]: string }>({});
   const [submitFeedback, setSubmitFeedback] = useState<string | null>(null);
   const headers = useGenerateAuthHeaders();
+
+  Object.entries(parameters).forEach(([key, value]) => {
+    if (Array.isArray(value)) return;
+    setParams(p => ({ ...p, [key]: value.value }));
+  });
 
   useEffect(() => {
     setSubmitFeedback(null);
@@ -75,8 +81,8 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     listWorkspaces();
   }, [onTerra, dev, rawlsApiUrl, headers]);
 
-  const handleSubmitParameters = (event: React.FormEvent<HTMLFormElement> | FormData) =>
-    submitStudyParameters(event, apiBaseUrl, studyId, headers, setSubmitFeedback);
+  const handleSubmitParameters = async (event: React.FormEvent<HTMLFormElement> | FormData) =>
+    submitStudyParameters(event, apiBaseUrl, studyId, headers, setSubmitFeedback, undefined, setParams);
 
   const filteredOptions = workspaces.filter(ws =>
     `${ws.namespace}/${ws.name}`.toLowerCase().includes(workspaceSearchTerm.toLowerCase())
@@ -200,9 +206,11 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
           "sfkit.study_id": "this.study_id",
           "sfkit.data": "this.data",
           "sfkit.api_url": `\"${apiBaseUrl}/api\"`,
+          "sfkit.num_cores": params.NUM_CPUS,
+          "sfkit.boot_disk_size_gb": params.BOOT_DISK_SIZE,
         },
         outputs: {},
-        methodConfigVersion: 1,
+        methodConfigVersion: 2,
         methodRepoMethod: {
           methodUri: "dockstore://github.com%2Fhcholab%2Fsfkit/main",
         },

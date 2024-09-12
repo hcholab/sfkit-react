@@ -4,13 +4,14 @@ export const submitStudyParameters = async (
   studyId: string,
   headers: HeadersInit,
   setFeedback?: (feedback: string) => void,
-  setErrorMessage?: (message: string) => void
+  setErrorMessage?: (message: string) => void,
+  setParams?: (params: Record<string, string | number>) => void,
 ) => {
   if (!(formEvent instanceof FormData)) {
     formEvent.preventDefault();
   }
   const formData = formEvent instanceof FormData ? formEvent : new FormData(formEvent.currentTarget);
-  const parameters: { [key: string]: string | number } = {};
+  const parameters: Record<string, string | number> = {};
   formData.forEach((value, key) => {
     if (key === "BASE_P") {
       parameters[key] = value.toString();
@@ -34,6 +35,10 @@ export const submitStudyParameters = async (
       setFeedback("Success!");
     } else {
       window.location.reload();
+    }
+
+    if (setParams) {
+      setParams(parameters);
     }
   } catch (error) {
     console.error("Failed to save study parameters:", error);
