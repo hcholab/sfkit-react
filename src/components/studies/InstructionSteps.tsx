@@ -44,10 +44,15 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
   const [submitFeedback, setSubmitFeedback] = useState<string | null>(null);
   const headers = useGenerateAuthHeaders();
 
-  Object.entries(parameters).forEach(([key, value]) => {
-    if (Array.isArray(value)) return;
-    setParams(p => ({ ...p, [key]: value.value }));
-  });
+  useEffect(() => {
+    const newParams: Record<string, string | number> = {};
+    Object.entries(parameters).forEach(([key, value]) => {
+      if (!Array.isArray(value)) {
+        newParams[key] = value.value;
+      }
+    });
+    setParams(newParams);
+  }, [parameters]);
 
   useEffect(() => {
     setSubmitFeedback(null);
