@@ -599,7 +599,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
       </Card>
       <div className="d-flex justify-content-center mt-3">
         <Button variant="success" onClick={async () => {
-          onTerra ? await handleStartTerraWorkflow() : await handleStartNonTerraWorkflow();
+          await (onTerra ? handleStartTerraWorkflow() : handleStartNonTerraWorkflow());
           location.reload();
         }} disabled={onTerra && !workspaceBucketUrl}>
           Begin {studyType} Workflow
