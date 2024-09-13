@@ -601,7 +601,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
         <Button variant="success" onClick={async () => {
           onTerra ? await handleStartTerraWorkflow() : await handleStartNonTerraWorkflow();
           location.reload();
-        }} disabled={false && onTerra && !workspaceBucketUrl}>
+        }} disabled={onTerra && !workspaceBucketUrl}>
           Begin {studyType} Workflow
         </Button>
       </div>
