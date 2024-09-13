@@ -19,6 +19,7 @@ interface InstructionStepsProps {
   studyId: string;
   studyType: string;
   parameters: ParameterGroup;
+  failStatus: string;
   handleStartWorkflow: DryRunFunc;
 }
 
@@ -31,7 +32,7 @@ type Workspace = {
   accessLevel: string;
 };
 
-const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, studyType, parameters, handleStartWorkflow }) => {
+const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, studyType, parameters, failStatus, handleStartWorkflow }) => {
   const { onTerra, dev, apiBaseUrl, rawlsApiUrl, samApiUrl } = useTerra();
   const [activeKey, setActiveKey] = useState("0");
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
@@ -514,9 +515,9 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
 
                 <div className="text-center">
                   <div>{submitFeedback}</div>
-                  <button className="btn btn-primary" type="submit">
+                  <Button variant="primary" type="submit">
                     Confirm Virtual Machine Configuration
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>
@@ -583,9 +584,9 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
 
               <div className="text-center">
                 <div>{submitFeedback}</div>
-                <button className="btn btn-primary" type="submit">
+                <Button variant="primary" type="submit">
                   Confirm Post-Processing Configuration
-                </button>
+                </Button>
               </div>
             </form>
             <div className="text-end">
@@ -597,12 +598,18 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
         </Accordion.Collapse>
       </Card>
       <div className="d-flex justify-content-center mt-3">
-        <Button variant="success" onClick={
-          onTerra ? handleStartTerraWorkflow : handleStartNonTerraWorkflow
-        } disabled={onTerra && !workspaceBucketUrl}>
+        <Button variant="success" onClick={async () => {
+          onTerra ? await handleStartTerraWorkflow() : await handleStartNonTerraWorkflow();
+          location.reload();
+        }} disabled={false && onTerra && !workspaceBucketUrl}>
           Begin {studyType} Workflow
         </Button>
       </div>
+      {failStatus && (
+        <p className="text-center alert alert-danger mt-3">
+          Study execution has failed: {failStatus}
+        </p>
+      )}
     </Accordion>
   );
 };

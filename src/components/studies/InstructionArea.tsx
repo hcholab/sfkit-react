@@ -209,6 +209,7 @@ const InstructionArea: React.FC<Props> = ({
             studyId={study_id}
             studyType={studyType}
             personalParameters={personalParameters}
+            failStatus={failStatus}
           />
           <hr/>OR<hr/>
         </>
