@@ -179,12 +179,9 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
 
     // Create entity
     const rawlsBaseUrl = `${rawlsApiUrl}/workspaces/${selectedWorkspace}`;
-    const post = {
+    const entityRes = await fetch(`${rawlsBaseUrl}/entities`, {
       method: "POST",
       headers,
-    };
-    const entityRes = await fetch(`${rawlsBaseUrl}/entities`, {
-      ...post,
       body: JSON.stringify({
         name: studyId,
         entityType: "study",
@@ -194,15 +191,15 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
       }),
     });
     if (!entityRes.ok && entityRes.status !== 409) {
-      console.error("Error creating entity:", await entityRes.text());
-      return;
+      throw Error("Error creating entity: " + await entityRes.text());
     }
 
     // Create method config
     const namespace = selectedWorkspace?.split("/")[0];
     const methodConfigurationName = "sfkit";
-    const methodConfRes = await fetch(`${rawlsBaseUrl}/methodconfigs`, {
-      ...post,
+    const methodConfRes = await fetch(`${rawlsBaseUrl}/methodconfigs/${namespace}/${methodConfigurationName}`, {
+      method: "PUT",
+      headers,
       body: JSON.stringify({
         namespace,
         name: methodConfigurationName,
@@ -210,26 +207,26 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
         inputs: {
           "sfkit.study_id": "this.study_id",
           "sfkit.data": "this.data",
-          "sfkit.num_cores": params.NUM_CPUS,
-          "sfkit.boot_disk_size_gb": params.BOOT_DISK_SIZE,
+          "sfkit.num_cores": `${params.NUM_CPUS}`,
+          "sfkit.boot_disk_size_gb": `${params.BOOT_DISK_SIZE}`,
           "sfkit.api_url": `\"${apiBaseUrl}/api\"`,
         },
         outputs: {},
-        methodConfigVersion: 2,
+        methodConfigVersion: 1,
         methodRepoMethod: {
           methodUri: "dockstore://github.com%2Fhcholab%2Fsfkit/main",
         },
         deleted: false,
       }),
     });
-    if (!methodConfRes.ok && methodConfRes.status !== 409) {
-      console.error("Error creating method config:", await methodConfRes.text());
-      return;
+    if (!methodConfRes.ok) {
+      throw Error("Error creating method config: " + await methodConfRes.text());
     }
 
     // Submit Terra workflow
     const submissionRes = await fetch(`${rawlsBaseUrl}/submissions`, {
-      ...post,
+      method: "POST",
+      headers,
       body: JSON.stringify({
         entityType: "study",
         entityName: studyId,
@@ -239,8 +236,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
       }),
     });
     if (!submissionRes.ok) {
-      console.error("Error submitting workflow:", await submissionRes.text());
-      return;
+      throw Error("Error submitting workflow: " + await submissionRes.text());
     }
   };
 
