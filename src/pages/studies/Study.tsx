@@ -34,10 +34,12 @@ const fetchStudy = async (apiBaseUrl: string, study_id: string, headers: Record<
   }
 };
 
+export type DryRunFunc = (opts?: {dryRun?: boolean}) => Promise<void>;
+
 const Study: React.FC = () => {
   const { onTerra, apiBaseUrl, samApiUrl } = useTerra();
   const navigate = useNavigate();
-  const { study_id, auth_key = "" } = useParams();
+  const { study_id = "", auth_key = "" } = useParams();
   const headers = useGenerateAuthHeaders();
 
   const firestoreData = useFirestore();
@@ -55,7 +57,7 @@ const Study: React.FC = () => {
   const [showManhattanDiv, setShowManhattanDiv] = useState<boolean>(false);
   const [imageSrc, setImageSrc] = useState<string>("");
   const [imageLabel, setImageLabel] = useState<string>("");
-  const [showFailStatus, setShowFailStatus] = useState<boolean>(false);
+  const [failStatus, setFailStatus] = useState<string>("");
   const [isRestarting, setIsRestarting] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
@@ -70,17 +72,19 @@ const Study: React.FC = () => {
     setIsRestarting(false);
   };
 
-  const handleStartWorkflow = async () => {
+  const handleStartWorkflow: DryRunFunc = async ({ dryRun } = {}) => {
     try {
-      const response = await fetch(`${apiBaseUrl}/api/start_protocol?study_id=${study_id}`, {
+      const response = await fetch(`${apiBaseUrl}/api/start_protocol?${new URLSearchParams({
+        study_id,
+        ...(dryRun && { dry_run: 'true' })
+      })}`, {
         method: "POST",
         headers,
       });
 
       if (!response.ok) {
         const data = await response.json();
-        setErrorMessage(data.error || "Network response was not ok");
-        setShowFailStatus(true);
+        setFailStatus(data.error || "Network response was not ok");
         throw new Error("Network response was not ok");
       }
 
@@ -88,6 +92,7 @@ const Study: React.FC = () => {
       console.log("Workflow started:", data);
     } catch (error) {
       console.error("Failed to start workflow:", error);
+      throw error;
     }
   };
 
@@ -245,7 +250,7 @@ const Study: React.FC = () => {
                     showManhattanDiv={showManhattanDiv}
                     imageSrc={imageSrc}
                     imageLabel={imageLabel}
-                    showFailStatus={showFailStatus}
+                    failStatus={failStatus}
                     handleStartWorkflow={handleStartWorkflow}
                     handleDownloadAuthKey={onTerra ? handleDownloadSAKey : handleDownloadAuthKey}
                   />

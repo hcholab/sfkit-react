@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Accordion, Alert, Button, Card, Dropdown, Form, ProgressBar } from "react-bootstrap";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { useTerra } from "../../hooks/useTerra";
+import { DryRunFunc } from "../../pages/studies/Study";
 import info_square from "../../static/images/info-square.svg";
 import { ParameterGroup } from "../../types/study";
 import { submitStudyParameters } from "../../utils/formUtils";
@@ -18,7 +19,8 @@ interface InstructionStepsProps {
   studyId: string;
   studyType: string;
   parameters: ParameterGroup;
-  handleStartWorkflow: () => void;
+  failStatus: string;
+  handleStartWorkflow: DryRunFunc;
 }
 
 type Workspace = {
@@ -30,7 +32,7 @@ type Workspace = {
   accessLevel: string;
 };
 
-const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, studyType, parameters, handleStartWorkflow }) => {
+const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, studyType, parameters, failStatus, handleStartWorkflow }) => {
   const { onTerra, dev, apiBaseUrl, rawlsApiUrl, samApiUrl } = useTerra();
   const [activeKey, setActiveKey] = useState("0");
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
@@ -38,10 +40,21 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
   const [workspaceSearchTerm, setWorkspaceSearchTerm] = useState("");
   const [workspaceSearchDropdownOpen, setWorkspaceSearchDropdownOpen] = useState(false);
   const [workspaceBucketUrl, setWorkspaceBucketUrl] = useState<string>("");
+  const [params, setParams] = useState<Record<string, string | number>>({});
   const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
   const [uploadErrors, setUploadErrors] = useState<{ [key: string]: string }>({});
   const [submitFeedback, setSubmitFeedback] = useState<string | null>(null);
   const headers = useGenerateAuthHeaders();
+
+  useEffect(() => {
+    const newParams: Record<string, string | number> = {};
+    Object.entries(parameters).forEach(([key, value]) => {
+      if (!Array.isArray(value)) {
+        newParams[key] = value.value;
+      }
+    });
+    setParams(newParams);
+  }, [parameters]);
 
   useEffect(() => {
     setSubmitFeedback(null);
@@ -75,9 +88,8 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     listWorkspaces();
   }, [onTerra, dev, rawlsApiUrl, headers]);
 
-  const handleSubmitParameters = (event: React.FormEvent<HTMLFormElement>) => {
-    submitStudyParameters(event, apiBaseUrl, studyId, headers, setSubmitFeedback);
-  };
+  const handleSubmitParameters = async (eventForm: React.FormEvent<HTMLFormElement> | FormData) =>
+    submitStudyParameters(eventForm, apiBaseUrl, studyId, headers, setSubmitFeedback, undefined, setParams);
 
   const filteredOptions = workspaces.filter(ws =>
     `${ws.namespace}/${ws.name}`.toLowerCase().includes(workspaceSearchTerm.toLowerCase())
@@ -154,15 +166,22 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     }
   };
 
+  const handleStartNonTerraWorkflow = async () => {
+    const formData = new FormData();
+    formData.set("CREATE_VM", "Yes");
+    await handleSubmitParameters(formData);
+    await handleStartWorkflow();
+  };
+
   const handleStartTerraWorkflow = async () => {
+    // Validate the protocol and update its status
+    await handleStartWorkflow();
+
     // Create entity
     const rawlsBaseUrl = `${rawlsApiUrl}/workspaces/${selectedWorkspace}`;
-    const post = {
+    const entityRes = await fetch(`${rawlsBaseUrl}/entities`, {
       method: "POST",
       headers,
-    };
-    const entityRes = await fetch(`${rawlsBaseUrl}/entities`, {
-      ...post,
       body: JSON.stringify({
         name: studyId,
         entityType: "study",
@@ -172,15 +191,15 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
       }),
     });
     if (!entityRes.ok && entityRes.status !== 409) {
-      console.error("Error creating entity:", await entityRes.text());
-      return;
+      throw Error("Error creating entity: " + await entityRes.text());
     }
 
     // Create method config
     const namespace = selectedWorkspace?.split("/")[0];
     const methodConfigurationName = "sfkit";
-    const methodConfRes = await fetch(`${rawlsBaseUrl}/methodconfigs`, {
-      ...post,
+    const methodConfRes = await fetch(`${rawlsBaseUrl}/methodconfigs/${namespace}/${methodConfigurationName}`, {
+      method: "PUT",
+      headers,
       body: JSON.stringify({
         namespace,
         name: methodConfigurationName,
@@ -188,6 +207,8 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
         inputs: {
           "sfkit.study_id": "this.study_id",
           "sfkit.data": "this.data",
+          "sfkit.num_cores": `${params.NUM_CPUS}`,
+          "sfkit.boot_disk_size_gb": `${params.BOOT_DISK_SIZE}`,
           "sfkit.api_url": `\"${apiBaseUrl}/api\"`,
         },
         outputs: {},
@@ -198,14 +219,14 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
         deleted: false,
       }),
     });
-    if (!methodConfRes.ok && methodConfRes.status !== 409) {
-      console.error("Error creating method config:", await methodConfRes.text());
-      return;
+    if (!methodConfRes.ok) {
+      throw Error("Error creating method config: " + await methodConfRes.text());
     }
 
     // Submit Terra workflow
     const submissionRes = await fetch(`${rawlsBaseUrl}/submissions`, {
-      ...post,
+      method: "POST",
+      headers,
       body: JSON.stringify({
         entityType: "study",
         entityName: studyId,
@@ -215,8 +236,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
       }),
     });
     if (!submissionRes.ok) {
-      console.error("Error submitting workflow:", await submissionRes.text());
-      return;
+      throw Error("Error submitting workflow: " + await submissionRes.text());
     }
   };
 
@@ -491,9 +511,9 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
 
                 <div className="text-center">
                   <div>{submitFeedback}</div>
-                  <button className="btn btn-primary" type="submit">
+                  <Button variant="primary" type="submit">
                     Confirm Virtual Machine Configuration
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>
@@ -541,31 +561,29 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
               ))}
 
               { !onTerra && (
-                <>
-                  <div className="text-start row">
-                    <label htmlFor="RESULTS_PATH" className="col-sm-3 col-form-label text-start">
-                      {parameters.RESULTS_PATH.name}
-                    </label>
-                    <div className="col-sm-9">
-                      <input
-                        type="text"
-                        className="form-control"
-                        name="RESULTS_PATH"
-                        id="RESULTS_PATH"
-                        defaultValue={parameters.RESULTS_PATH.value}
-                      />
-                    </div>
-                    <p className="mt-3 text-start text-muted">{parameters.RESULTS_PATH.description}</p>
+                <div className="text-start row">
+                  <label htmlFor="RESULTS_PATH" className="col-sm-3 col-form-label text-start">
+                    {parameters.RESULTS_PATH.name}
+                  </label>
+                  <div className="col-sm-9">
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="RESULTS_PATH"
+                      id="RESULTS_PATH"
+                      defaultValue={parameters.RESULTS_PATH.value}
+                    />
                   </div>
-
-                  <div className="text-center">
-                    <div>{submitFeedback}</div>
-                    <button className="btn btn-primary" type="submit">
-                      Confirm Post-Processing Configuration
-                    </button>
-                  </div>
-                </>
+                  <p className="mt-3 text-start text-muted">{parameters.RESULTS_PATH.description}</p>
+                </div>
               )}
+
+              <div className="text-center">
+                <div>{submitFeedback}</div>
+                <Button variant="primary" type="submit">
+                  Confirm Post-Processing Configuration
+                </Button>
+              </div>
             </form>
             <div className="text-end">
               <Button variant="success" onClick={() => setActiveKey("2")}>
@@ -576,13 +594,17 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
         </Accordion.Collapse>
       </Card>
       <div className="d-flex justify-content-center mt-3">
-        <Button variant="success" onClick={async () => {
-          onTerra ? await handleStartTerraWorkflow() : handleStartWorkflow();
-          location.reload();
-        }} disabled={onTerra && !workspaceBucketUrl}>
+        <Button variant="success" onClick={
+          onTerra ? handleStartTerraWorkflow : handleStartNonTerraWorkflow
+        } disabled={onTerra && !workspaceBucketUrl}>
           Begin {studyType} Workflow
         </Button>
       </div>
+      {failStatus && (
+        <p className="text-center alert alert-danger mt-3">
+          Study execution has failed: {failStatus}
+        </p>
+      )}
     </Accordion>
   );
 };

@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useCheckNatType } from "../../hooks/useCheckNatType";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { useTerra } from "../../hooks/useTerra";
+import { DryRunFunc } from "../../pages/studies/Study";
 import { ParameterGroup } from "../../types/study";
 import ConfigureComputeEnvModal from "./ConfigureStudyModal";
 import SubTaskContainer from "./SubTaskContainer";
@@ -23,8 +24,8 @@ interface Props {
   showManhattanDiv: boolean;
   imageSrc: string;
   imageLabel: string;
-  showFailStatus: boolean;
-  handleStartWorkflow: () => void;
+  failStatus: string;
+  handleStartWorkflow: DryRunFunc;
   handleDownloadAuthKey: () => void;
 }
 
@@ -40,7 +41,7 @@ const InstructionArea: React.FC<Props> = ({
   tasks,
   showDownloadDiv,
   showManhattanDiv,
-  showFailStatus,
+  failStatus,
   handleStartWorkflow,
   handleDownloadAuthKey,
 }) => {
@@ -53,6 +54,7 @@ const InstructionArea: React.FC<Props> = ({
   const [plotSrc, setPlotSrc] = useState("");
   const [isFetchingPlot, setIsFetchingPlot] = useState(false);
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
+  const [isStudyValid, setIsStudyValid] = useState<boolean>();
   const { checkNatType, isSymmetricNat, isCheckingNatType } = useCheckNatType();
   const headers = useGenerateAuthHeaders();
   const plotSrcRef = useRef("");
@@ -207,6 +209,7 @@ const InstructionArea: React.FC<Props> = ({
             studyId={study_id}
             studyType={studyType}
             personalParameters={personalParameters}
+            failStatus={failStatus}
           />
           <hr/>OR<hr/>
         </>
@@ -277,7 +280,7 @@ const InstructionArea: React.FC<Props> = ({
             {isCheckingNatType === false && (
               <div className={ "alert mt-2 alert-" + (
                 isSymmetricNat === true ? "danger" : (
-                  isSymmetricNat === false ? "info" : "warning"
+                  isSymmetricNat === false ? "success" : "warning"
                 )
               )}>
                 { isSymmetricNat === true ? (
@@ -299,9 +302,9 @@ const InstructionArea: React.FC<Props> = ({
                     </p>
                   </>
                 ) : (isSymmetricNat === false ? (
-                  <>
-                    Your NAT is compatible with the <i>sfkit</i> CLI.
-                  </>
+                  <div className="text-center">
+                    ✔ Your NAT is compatible with the <i>sfkit</i> CLI.
+                  </div>
                 ) : (
                   <>
                     <b>Warning:</b> We were unable to determine your NAT type.
@@ -314,7 +317,37 @@ const InstructionArea: React.FC<Props> = ({
 
           <div className="my-2" style={{ borderTop: 'dashed #ccc' }}/>
           <p>
-            To start <i>sfkit</i> protocol on your machine, first set some environment variables:
+            To start <i>sfkit</i> protocol on your machine, first check that the study is set up correctly:
+          </p>
+          <p className="text-center">
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={() => {
+                setIsStudyValid(undefined);
+                handleStartWorkflow({ dryRun: true })
+                  .then(() => setIsStudyValid(true))
+                  .catch(() => setIsStudyValid(false))
+              }}
+            >
+              Validate Study
+            </button>
+          </p>
+          { isStudyValid === true ? (
+              <div className="alert alert-success text-center">
+                ✔ Study is valid.
+              </div>
+            ) : (
+              isStudyValid === false ? (
+                <div className="alert alert-danger">
+                  <b>Error:</b> {failStatus}
+                </div>
+              ) : (
+                <></>
+              )
+            )
+          }
+          <p>
+            Then, set some environment variables:
           </p>
           {renderCode(
             `export SFKIT_API_URL=${apiBaseUrl}/api
@@ -326,7 +359,7 @@ const InstructionArea: React.FC<Props> = ({
             the <b><i>absolute path</i></b> to the input data directory on your machine.
           </p>
           <p>
-            Then, either:
+            Finally, either:
           </p>
           <ol>
             <li>
@@ -403,7 +436,7 @@ const InstructionArea: React.FC<Props> = ({
               )}
             </>
           )}
-          {showFailStatus && <div className="text-start alert alert-danger">Study execution has failed.</div>}{" "}
+          {failStatus && <div className="text-start alert alert-danger">Study execution has failed: {failStatus}</div>}{" "}
         </div>
       ) : null}
     </div>
