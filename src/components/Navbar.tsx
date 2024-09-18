@@ -2,13 +2,11 @@ import * as React from "react";
 import { useAuth } from "react-oidc-context";
 import { Link } from "react-router-dom";
 import useFirestore from "../hooks/useFirestore";
-import { useTerra } from "../hooks/useTerra";
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
 import NotificationList from "./NotificationList";
 
 const Navbar: React.FC = () => {
-  const { onTerra } = useTerra();
   const { isAuthenticated } = useAuth();
   const { userId, isDbInitialized } = useFirestore();
 
