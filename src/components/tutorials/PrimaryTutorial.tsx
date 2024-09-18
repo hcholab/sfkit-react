@@ -90,18 +90,18 @@ const PrimaryTutorial: React.FC = () => {
       </div>
 
       <div className="row">
-        <p>You will now see a page that looks something like this:</p>
+        <p>You will now see a window that looks something like this:</p>
       </div>
 
       <div className="row my-2">
         <div className="text-center">
-          <img className="img-fluid w-75 border border-secondary" src={choose_workflow} alt="Image failed to load" />
+          <img className="img-fluid w-50 border border-secondary" src={choose_workflow} alt="Image failed to load" />
         </div>
       </div>
 
       <div className="row">
         <p>
-          You are given the option to choose among any of the 3 workflows and 2 configuration options. More details
+          You are given the option to choose among any of the 4 workflows. More details
           about these choices are available in the{" "}
           <Link className="text-decoration-none" target="_blank" to="/workflows">
             workflows
@@ -110,7 +110,7 @@ const PrimaryTutorial: React.FC = () => {
           <Link className="text-decoration-none" target="_blank" to="/instructions">
             instructions
           </Link>
-          . pages. For this tutorial, you can leave the defaults and then click{" "}
+          . pages. For this tutorial, you can leave the default and then click{" "}
           <span className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
             Confirm
           </span>{" "}
