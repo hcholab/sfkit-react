@@ -11,8 +11,10 @@ import studies_index from "../../static/images/tutorial/studies_index.png";
 import study from "../../static/images/tutorial/study.png";
 import upload_data from "../../static/images/tutorial/upload_data.png";
 import { Link } from "react-router-dom";
+import { useTerra } from "../../hooks/useTerra";
 
 const PrimaryTutorial: React.FC = () => {
+  const { onTerra } = useTerra();
   return (
     <div>
       <div>
@@ -44,24 +46,28 @@ const PrimaryTutorial: React.FC = () => {
         </p>
       </div>
 
-      <h4 className="my-4 fw-normal">Video Walkthrough</h4>
-      <div className="row">
-        <p>
-          If you would like to follow along with a video walkthrough, you can watch the video below. The video follows
-          the steps on this page.
-        </p>
-        <div className="text-center">
-          <iframe
-            className="border border-secondary"
-            width="560"
-            height="315"
-            src="https://www.youtube-nocookie.com/embed/phPpkdUn3Qw"
-            title="YouTube video player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen={true}
-          ></iframe>
-        </div>
-      </div>
+      { !onTerra && (
+        <>
+          <h4 className="my-4 fw-normal">Video Walkthrough</h4>
+          <div className="row">
+            <p>
+              If you would like to follow along with a video walkthrough, you can watch the video below. The video follows
+              the steps on this page.
+            </p>
+            <div className="text-center">
+              <iframe
+                className="border border-secondary"
+                width="560"
+                height="315"
+                src="https://www.youtube-nocookie.com/embed/phPpkdUn3Qw"
+                title="YouTube video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen={true}
+              ></iframe>
+            </div>
+          </div>
+        </>
+      )}
 
       <h4 className="my-4 fw-normal">Creating a study</h4>
       <div className="row">
