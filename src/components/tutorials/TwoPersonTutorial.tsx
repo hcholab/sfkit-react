@@ -10,17 +10,9 @@ const TwoPersonTutorial: React.FC = () => {
     <div>
       <div>
         <b className="text-muted">
-          Note: This tutorial uses the <span className="badge bg-auto-cfg">auto-configured</span> option. There is an
-          equivalent tutorial for the <span className="badge bg-user-cfg">user-configured</span> option in the{" "}
-          <a
-            className="text-decoration-none"
-            href="https://sfkit.readthedocs.io/en/latest/tutorial_2.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            sfkit CLI documentation
-          </a>
-          .
+          Note: This tutorial shows how to let <i>sfkit</i> portal automatically create a computing environment
+          and launch the protocol. The alternative steps to launch it manually on your own machine are described
+          on the study page.
         </b>
       </div>
 
