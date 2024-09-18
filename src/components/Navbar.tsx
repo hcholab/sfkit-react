@@ -35,14 +35,11 @@ const Navbar: React.FC = () => {
                 Instructions
               </Link>
             </li>
-            {/* TODO restore this after adjusting Tutorial to Terra users */}
-            { !onTerra && (
-              <li className="nav-item me-4">
-                <Link className="nav-link" to="/tutorials">
-                  Tutorials
-                </Link>
-              </li>
-            )}
+            <li className="nav-item me-4">
+              <Link className="nav-link" to="/tutorials">
+                Tutorials
+              </Link>
+            </li>
             <li className="nav-item me-4">
               <Link className="nav-link" to="/studies">
                 Studies

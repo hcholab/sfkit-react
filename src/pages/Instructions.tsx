@@ -91,16 +91,13 @@ const Instructions: React.FC = () => {
               See <a href="#machine_recommendations"><i>Machine Recommendations</i></a> on the bottom of this page for guidance on machine types.
             </p>
 
-            {/* TODO restore this after adjusting Tutorial to Terra users */}
-            { !onTerra && (
-              <span className="text-muted">
-                Note: For the{" "}
-                <Link to="/tutorials" className="text-decoration-none">
-                  Tutorial
-                </Link>
-                , you can use our GCP project and example data for testing purposes.
-              </span>
-            )}
+            <span className="text-muted">
+              Note: For the{" "}
+              <Link to="/tutorials" className="text-decoration-none">
+                Tutorial
+              </Link>
+              , you can use our GCP project and example data for testing purposes.
+            </span>
           </div>
         </div>
 
