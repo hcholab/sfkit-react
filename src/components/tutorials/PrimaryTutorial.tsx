@@ -136,7 +136,7 @@ const PrimaryTutorial: React.FC = () => {
           of the parameters as they are. In a real study, you would set the parameters according to your data and
           preferences. Click{" "}
           <span className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
-            Submit
+            Save changes
           </span>{" "}
           to proceed.
         </p>
@@ -150,16 +150,49 @@ const PrimaryTutorial: React.FC = () => {
 
       <h4 className="my-4 fw-normal">Configuring your study</h4>
       <div className="row">
+        <p>You should now see a page that looks something like this:</p>
+      </div>
+
+      <div className="row my-2">
+        <div className="text-center">
+          <img className="img-fluid w-75 border border-secondary" src={study} alt="Image failed to load" />
+        </div>
+      </div>
+
+      <div>
         <p>
-          You should now see a page that looks something like this
-          <span className="text-muted">
-            (if you instead see the main study page, click the{" "}
-            <button className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
-              Configure Study
-            </button>{" "}
-            button to get to this page)
-          </span>
-          :
+          This is your main study page. Here you can see the status of your study, and you can download the results when
+          the study is complete. This is also where you can view or add study participants.
+          When all participants initiate their computational protocol, the joint study will begin. For
+          this demo, you are the only real participant.
+        </p>
+        <p>
+          You are now given a choice:
+          <ol>
+            <li>
+              to let <i>sfkit</i> portal automatically create a computing environment
+              { onTerra ? (<>, <i>optionally</i> upload your data to Terra, </>) : " "} and launch the computational protocol,
+              according to a few parameters you choose, OR
+            </li>
+            <li>
+              to launch it manually on your own machine
+              { onTerra ? ", either inside or outside of Terra" : ""},
+              following the instructions for <i>sfkit</i> command-line interface (CLI).
+            </li>
+          </ol>
+        </p>
+        <p>
+          Option 1 is easier, but gives you less flexibility. To go with it, please click the{" "}
+          <button className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
+            Configure Compute Environment
+          </button>{" "}
+          button.
+        </p>
+      </div>
+
+      <div className="row">
+        <p>
+          You should now see a page that looks something like this:
         </p>
       </div>
       <div className="row my-2">
@@ -247,33 +280,9 @@ const PrimaryTutorial: React.FC = () => {
       </div>
 
       <h4 className="my-4 fw-normal">Running your study</h4>
-      <div className="row">
-        <p>You should now see a page that looks something like this:</p>
-      </div>
-
-      <div className="row my-2">
-        <div className="text-center">
-          <img className="img-fluid w-50 border border-secondary" src={study} alt="Image failed to load" />
-        </div>
-      </div>
-
       <div>
         <p>
-          This is your main study page. Here you can see the status of your study, and you can download the results when
-          the study is complete. You can also click the{" "}
-          <button className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
-            Configure Study
-          </button>{" "}
-          button to go back to the configuration page. This is also where you can view the study participants and add
-          more participants to your study. When all participants initiate their study, the joint study will begin. For
-          this demo, you are the only real participant.
-        </p>
-        <p>
-          Click the{" "}
-          <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
-            Begin MPC-GWAS Workflow
-          </span>{" "}
-          button to begin your study. The study should take about 1/2 hour to complete, and status updates will be
+          The study should take about 1/2 hour to complete, and status updates will be
           visible on this page. Feel free to leave this page and come back. When the study is complete, a link to
           download the results should appear.
         </p>
