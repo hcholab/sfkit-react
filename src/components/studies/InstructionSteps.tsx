@@ -354,7 +354,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
                   Upload a folder with your data (unzipped) to the workspace bucket using the button below:
                 </p>
                 <p>
-                  <label htmlFor="upload-data-input" className="btn btn-success">
+                  <label htmlFor="upload-data-input" className="btn btn-primary">
                     Upload Data
                   </label>
                   <input
@@ -447,7 +447,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
               <Button variant="success" onClick={() => setActiveKey("0")}>
                 Previous
               </Button>{" "}
-              <Button variant="success" onClick={() => setActiveKey("2")} disabled={onTerra && !workspaceBucketUrl}>
+              <Button variant="success" onClick={() => setActiveKey("2")} disabled={onTerra && !workspaceBucketUrl && !demo}>
                 Next
               </Button>
             </div>
@@ -596,7 +596,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
       <div className="d-flex justify-content-center mt-3">
         <Button variant="success" onClick={
           onTerra ? handleStartTerraWorkflow : handleStartNonTerraWorkflow
-        } disabled={onTerra && !workspaceBucketUrl}>
+        } disabled={onTerra && (!selectedWorkspace || (!workspaceBucketUrl && !demo))}>
           Begin {studyType} Workflow
         </Button>
       </div>

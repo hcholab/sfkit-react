@@ -1,17 +1,19 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { useTerra } from "../../hooks/useTerra";
 import choose_title from "../../static/images/tutorial/choose_title.png";
 import choose_vm_size from "../../static/images/tutorial/choose_vm_size.png";
 import choose_workflow from "../../static/images/tutorial/choose_workflow.png";
-import give_permissions from "../../static/images/tutorial/give_permissions.png";
 import mpc_parameters from "../../static/images/tutorial/mpc_parameters.png";
 import post_processing from "../../static/images/tutorial/post_processing.png";
+import post_processing_terra from "../../static/images/tutorial/post_processing_terra.png";
+import prepare_compute_terra from "../../static/images/tutorial/prepare_compute_terra.png";
 import prepare_project from "../../static/images/tutorial/prepare_project.png";
 import result from "../../static/images/tutorial/result.png";
 import studies_index from "../../static/images/tutorial/studies_index.png";
 import study from "../../static/images/tutorial/study.png";
 import upload_data from "../../static/images/tutorial/upload_data.png";
-import { Link } from "react-router-dom";
-import { useTerra } from "../../hooks/useTerra";
+import upload_data_terra from "../../static/images/tutorial/upload_data_terra.png";
 
 const PrimaryTutorial: React.FC = () => {
   const { onTerra } = useTerra();
@@ -90,7 +92,7 @@ const PrimaryTutorial: React.FC = () => {
       </div>
 
       <div className="row">
-        <p>You will now see a window that looks something like this:</p>
+        <p>You will now see a dialog that looks something like this:</p>
       </div>
 
       <div className="row my-2">
@@ -132,7 +134,10 @@ const PrimaryTutorial: React.FC = () => {
           <span className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
             Confirm
           </span>{" "}
-          again. You will now be taken to a page to set the "Shared Study Parameters". For the demo, you can leave all
+          again.
+        </p>
+        <p>
+          You will now be taken to a page to set the "Shared Study Parameters". For the demo, you can leave all
           of the parameters as they are. In a real study, you would set the parameters according to your data and
           preferences. Click{" "}
           <span className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
@@ -192,64 +197,79 @@ const PrimaryTutorial: React.FC = () => {
 
       <div className="row">
         <p>
-          You should now see a page that looks something like this:
+          You should now see a dialog that looks something like this:
         </p>
       </div>
       <div className="row my-2">
         <div className="text-center">
-          <img className="img-fluid w-75 border border-secondary" src={prepare_project} alt="Image failed to load" />
+          <img className="img-fluid w-75 border border-secondary" src={onTerra ? prepare_compute_terra : prepare_project} alt="Image failed to load" />
         </div>
       </div>
       <div className="row">
         <p>
-          0. When running a real study, you would need to follow the instructions to set up your GCP account. For the
-          sake of this demo, these steps are optional, and the default configuration will run the demo on a GCP machine
-          controlled by us. If you would like to run the demo on your own GCP account, you can follow the instructions.
-          When you are done, you can click{" "}
+          { onTerra ? <>
+            1. Please pick a Terra workspace to run the demo study in.
+          </> : <>
+            <p>
+              1. When running a real study, you would need to follow the instructions to set up your GCP account. For the
+              sake of this demo, these steps are optional, and the default configuration will run the demo on a GCP machine
+              controlled by us. If you would like to run the demo on your own GCP account, you can follow the instructions.
+            </p>
+            <p>
+              If you are using your own GCP project, please also run the given command in your GCP cloud shell. This command
+              will give the website permissions to set up the protocol for your study in your GCP project. Otherwise, you
+              don't need to do anything here.
+            </p>
+          </>} When you are done, you can click{" "}
           <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
             Next
           </span>
-          .
-        </p>
-      </div>
-
-      <div className="row my-2">
-        <div className="text-center">
-          <img className="img-fluid w-75 border border-secondary" src={upload_data} alt="Image failed to load" />
-        </div>
-      </div>
-
-      <div className="row">
-        <p>
-          1. For the GCP Project ID, either leave it as is to use our machines or enter whatever GCP project you chose
-          in step 0. Either way, for the sake of the demo, you can ignore the data paths. In a real study, you would
-          need to upload your data to a bucket in your GCP account and indicate the paths to said data here. Click{" "}
-          <span className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
-            Save
-          </span>{" "}
-          if you have made any changes. Once you are done with this step, you can click{" "}
-          <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
-            Next
-          </span>
-          .
         </p>
       </div>
 
       <div className="row my-2">
         <div className="text-center">
-          <img className="img-fluid w-75 border border-secondary" src={give_permissions} alt="Image failed to load" />
+          <img className="img-fluid w-75 border border-secondary" src={onTerra ? upload_data_terra : upload_data} alt="Image failed to load" />
         </div>
       </div>
 
       <div className="row">
         <p>
-          2. If you are using your own GCP project, please run the given command in your GCP cloud shell. This command
-          will give the website permissions to set up the protocol for your study in your GCP project. Otherwise, you
-          don't need to do anything here. Once you are done, you can click{" "}
-          <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
-            Next
-          </span>
-          .
+          { onTerra ? <>
+            2. For the sake of the demo, you can ignore the data path. In a real study,
+            you would need to upload your data to the Terra workspace, either:
+            <ul>
+              <li>
+                using{" "}
+                <button className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
+                  Upload Data
+                </button>{" "} button, in which case the bucket URL will be populated automatically, or
+              </li>
+              <li>
+                the main <a
+                  href="https://app.terra.bio"
+                  className="text-decoration-none"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Terra portal
+                </a>, or through Google Cloud SDK or API, and then paste the <code>gs://</code> folder URL here.
+              </li>
+            </ul>
+          </> : <>
+            2. For the GCP Project ID, either leave it as is to use our machines or enter whatever GCP project you chose
+            in step 0. Either way, for the sake of the demo, you can ignore the data paths. In a real study, you would
+            need to upload your data to a bucket in your GCP account and indicate the paths to said data here.
+
+            Click{" "}
+            <span className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
+              Save
+            </span>{" "}
+            if you have made any changes.
+          </>} Once you are done with this step, you can click{" "}
+            <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
+              Next
+            </span>
         </p>
       </div>
 
@@ -265,7 +285,7 @@ const PrimaryTutorial: React.FC = () => {
 
       <div className="row my-2">
         <div className="text-center">
-          <img className="img-fluid w-75 border border-secondary" src={post_processing} alt="Image failed to load" />
+          <img className="img-fluid w-75 border border-secondary" src={onTerra ? post_processing_terra : post_processing} alt="Image failed to load" />
         </div>
       </div>
 
@@ -273,7 +293,7 @@ const PrimaryTutorial: React.FC = () => {
         <p>
           4. For the sake of this demo, you can leave these values as they are. You can click{" "}
           <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
-            Done
+            Begin MPC-GWAS Study
           </span>{" "}
           to proceed.
         </p>
