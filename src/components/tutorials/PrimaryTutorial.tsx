@@ -40,7 +40,8 @@ const PrimaryTutorial: React.FC = () => {
         </p>
       </div>
 
-      { !onTerra && (
+      {/* TODO: update video to match new UI */}
+      { false && (
         <>
           <h4 className="my-4 fw-normal">Video Walkthrough</h4>
           <div className="row">
