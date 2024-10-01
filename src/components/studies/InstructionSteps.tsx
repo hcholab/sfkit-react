@@ -118,6 +118,8 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     const uploads: Promise<void>[] = [];
 
     await Promise.all(Array.from(files).map(async f => {
+      if (f.name === ".DS_Store") return; // Ignore Mac OS's hidden file
+
       const filePath = f.webkitRelativePath.split('/').slice(1).join('/');
       const objPath = encodeURIComponent(`${dataPath}/${filePath}`);
       setUploadProgress(p => ({ ...p, [filePath]: 0 }));
