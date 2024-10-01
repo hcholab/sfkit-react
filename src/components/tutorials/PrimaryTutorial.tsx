@@ -188,6 +188,11 @@ const PrimaryTutorial: React.FC = () => {
           </ol>
         </p>
         <p>
+          Option 2 is more hands-on, but also more flexible. To go with it, please follow
+          the instructions below <i>––– OR –––</i> line on the study page, which
+          contain the actions, checks and commands you need to run on your machine.
+        </p>
+        <p>
           Option 1 is easier, but gives you less flexibility. To go with it, please click the{" "}
           <button className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
             Configure Compute Environment
