@@ -208,11 +208,11 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
         rootEntityType: "study",
         inputs: {
           "sfkit.study_id": "this.study_id",
-          "sfkit.data": demo ? null : "this.data",
-          "sfkit.demo": demo ? "true" : "false",
           "sfkit.num_cores": `${params.NUM_CPUS}`,
           "sfkit.boot_disk_size_gb": `${params.BOOT_DISK_SIZE}`,
           "sfkit.api_url": `"${apiBaseUrl}/api"`,
+          "sfkit.demo": demo ? "true" : "false",
+          ...(demo ? {} : { "sfkit.data": "this.data" }),
         },
         outputs: {},
         methodConfigVersion: 1,
