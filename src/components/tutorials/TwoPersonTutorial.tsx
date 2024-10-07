@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useTerra } from "../../hooks/useTerra";
+import ResultsSection from "./ResultsSection";
 import SampleDataSection from "./SampleDataSection";
 import SetUpYourStudySection from "./SetUpYourStudySection";
-import ResultsSection from "./ResultsSection";
 
 const TwoPersonTutorial: React.FC = () => {
+  const { onTerra } = useTerra();
   const [activeTab, setActiveTab] = useState<string>("data-sfpca");
 
   return (
@@ -40,13 +42,13 @@ const TwoPersonTutorial: React.FC = () => {
       <h4 className="my-4 fw-normal">Execute the Workflow</h4>
       <div className="row">
         <p>
-          Once both users have configured their parts of the study, each user should click the{" "}
+          Once both users have set up compute environments for their parts of the study, they should launch their worklfows either automatically by pressing
           <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
             Begin PCA Workflow
           </span>{" "}
-          button (or the equivalent for a different workflow) on their respective study pages (this is the same as in
+          button (or the equivalent for a different workflow), or manually with <i>sfkit</i> CLI (this is the same as in
           Tutorial 1). The study will run, and you'll be able to see its status on the study page. You may also inspect
-          the newly created VM in your GCP project.
+          the newly created { onTerra ? "workflow submission in your Terra workspace" : "VM in your GCP project"}.
         </p>
       </div>
 
