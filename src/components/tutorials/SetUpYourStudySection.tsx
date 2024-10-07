@@ -2,6 +2,7 @@ import React from "react";
 import TabNavigation from "../instructions/TabNavigation";
 
 import { Link } from "react-router-dom";
+import { useTerra } from "../../hooks/useTerra";
 import mpcgwas1 from "../../static/images/sample_parameters/mpcgwas1.png";
 import mpcgwas2 from "../../static/images/sample_parameters/mpcgwas2.png";
 import sfgwas1 from "../../static/images/sample_parameters/sfgwas1.png";
@@ -20,6 +21,7 @@ interface SectionProps {
 }
 
 const SetUpYourStudySection: React.FC<SectionProps> = ({ activeTab, setActiveTab }) => {
+  const { onTerra } = useTerra();
   return (
     <div>
       <h4 className="my-4 fw-normal">Set Up Your Study</h4>
@@ -125,54 +127,61 @@ const SetUpYourStudySection: React.FC<SectionProps> = ({ activeTab, setActiveTab
             button to send an invite link via email.)
           </p>
           <p>
-            Then both users will follow the instructions to{" "}
+            Then both users should follow the instructions to{" "}
             <button className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
-              Configure Study
-            </button>
-            . Note that this will require the users to use their own GCP projects, in contrast to the first tutorial.
-            (If you choose to use GCP's free trial, you can{" "}
-            <a
-              href="https://cloud.google.com/"
-              target="_blank"
-              className="text-decoration-none"
-              rel="noopener noreferrer"
-            >
-              create a new project for free
-            </a>
-            . That said, this free GCP project has limited resource quotas, so you may need to use a different GCP
-            project for each user. The expected GCP resource cost of this tutorial is ~$1.)
+              Configure Compute Environment
+            </button> or alternatively,
+            the manual instructions on the study page.
           </p>
-          <div className="text-center mb-1">
-            <img
-              className="img-fluid border border-secondary"
-              style={{ maxWidth: "100%" }}
-              src={pcaPrepareProject}
-              alt=""
-            />
-          </div>
-          <p>
-            Once the users have configured their GCP projects, they can upload their data to a GCP storage bucket. Note:
-            you will need to unzip your data before uploading it.
-          </p>
-          <div className="text-center mb-2">
-            <img
-              className="img-fluid border border-secondary"
-              style={{ maxWidth: "100%" }}
-              src={pcaUploadData}
-              alt=""
-            />
-          </div>
-          <p>
-            Note: You need to click the{" "}
-            <button className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
-              Save
-            </button>{" "}
-            button for your configuration changes to take effect.
-          </p>
-          <p>For reference, your GCP storage bucket might look something like this:</p>
-          <div className="text-center">
-            <img className="img-fluid border border-secondary" style={{ maxWidth: "75%" }} src={storageBucket} alt="" />
-          </div>
+          { !onTerra && (
+            <>
+              <p>
+                Note that this will require the users to use their own GCP projects, in contrast to the first tutorial.
+                (If you choose to use GCP's free trial, you can{" "}
+                <a
+                  href="https://cloud.google.com/"
+                  target="_blank"
+                  className="text-decoration-none"
+                  rel="noopener noreferrer"
+                >
+                  create a new project for free
+                </a>
+                . That said, this free GCP project has limited resource quotas, so you may need to use a different GCP
+                project for each user. The expected GCP resource cost of this tutorial is ~$1.)
+              </p>
+              <div className="text-center mb-1">
+                <img
+                  className="img-fluid border border-secondary"
+                  style={{ maxWidth: "100%" }}
+                  src={pcaPrepareProject}
+                  alt=""
+                />
+              </div>
+              <p>
+                Once the users have configured their GCP projects, they can upload their data to a GCP storage bucket. Note:
+                you will need to unzip your data before uploading it.
+              </p>
+              <div className="text-center mb-2">
+                <img
+                  className="img-fluid border border-secondary"
+                  style={{ maxWidth: "100%" }}
+                  src={pcaUploadData}
+                  alt=""
+                />
+              </div>
+              <p>
+                Note: You need to click the{" "}
+                <button className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
+                  Save
+                </button>{" "}
+                button for your configuration changes to take effect.
+              </p>
+              <p>For reference, your GCP storage bucket might look something like this:</p>
+              <div className="text-center">
+                <img className="img-fluid border border-secondary" style={{ maxWidth: "75%" }} src={storageBucket} alt="" />
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

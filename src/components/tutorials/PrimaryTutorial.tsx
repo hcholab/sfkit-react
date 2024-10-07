@@ -1,33 +1,29 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { useTerra } from "../../hooks/useTerra";
 import choose_title from "../../static/images/tutorial/choose_title.png";
 import choose_vm_size from "../../static/images/tutorial/choose_vm_size.png";
 import choose_workflow from "../../static/images/tutorial/choose_workflow.png";
-import give_permissions from "../../static/images/tutorial/give_permissions.png";
 import mpc_parameters from "../../static/images/tutorial/mpc_parameters.png";
 import post_processing from "../../static/images/tutorial/post_processing.png";
+import post_processing_terra from "../../static/images/tutorial/post_processing_terra.png";
+import prepare_compute_terra from "../../static/images/tutorial/prepare_compute_terra.png";
 import prepare_project from "../../static/images/tutorial/prepare_project.png";
 import result from "../../static/images/tutorial/result.png";
 import studies_index from "../../static/images/tutorial/studies_index.png";
 import study from "../../static/images/tutorial/study.png";
 import upload_data from "../../static/images/tutorial/upload_data.png";
-import { Link } from "react-router-dom";
+import upload_data_terra from "../../static/images/tutorial/upload_data_terra.png";
 
 const PrimaryTutorial: React.FC = () => {
+  const { onTerra } = useTerra();
   return (
     <div>
       <div>
         <b className="text-muted">
-          Note: This tutorial uses the <span className="badge bg-auto-cfg">auto-configured</span> option. There is an
-          equivalent tutorial for the <span className="badge bg-user-cfg">user-configured</span> option in the{" "}
-          <a
-            className="text-decoration-none"
-            href="https://sfkit.readthedocs.io/en/latest/tutorial.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            sfkit CLI documentation
-          </a>
-          .
+          Note: This tutorial shows how to let <i>sfkit</i> portal automatically create a computing environment
+          and launch the protocol. The alternative steps to launch it manually on your own machine are described
+          on the study page.
         </b>
       </div>
       <h4 className="my-4 fw-normal">Introduction</h4>
@@ -44,24 +40,29 @@ const PrimaryTutorial: React.FC = () => {
         </p>
       </div>
 
-      <h4 className="my-4 fw-normal">Video Walkthrough</h4>
-      <div className="row">
-        <p>
-          If you would like to follow along with a video walkthrough, you can watch the video below. The video follows
-          the steps on this page.
-        </p>
-        <div className="text-center">
-          <iframe
-            className="border border-secondary"
-            width="560"
-            height="315"
-            src="https://www.youtube-nocookie.com/embed/phPpkdUn3Qw"
-            title="YouTube video player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen={true}
-          ></iframe>
-        </div>
-      </div>
+      {/* TODO: update video to match new UI */}
+      { false && (
+        <>
+          <h4 className="my-4 fw-normal">Video Walkthrough</h4>
+          <div className="row">
+            <p>
+              If you would like to follow along with a video walkthrough, you can watch the video below. The video follows
+              the steps on this page.
+            </p>
+            <div className="text-center">
+              <iframe
+                className="border border-secondary"
+                width="560"
+                height="315"
+                src="https://www.youtube-nocookie.com/embed/phPpkdUn3Qw"
+                title="YouTube video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen={true}
+              ></iframe>
+            </div>
+          </div>
+        </>
+      )}
 
       <h4 className="my-4 fw-normal">Creating a study</h4>
       <div className="row">
@@ -92,18 +93,18 @@ const PrimaryTutorial: React.FC = () => {
       </div>
 
       <div className="row">
-        <p>You will now see a page that looks something like this:</p>
+        <p>You will now see a dialog that looks something like this:</p>
       </div>
 
       <div className="row my-2">
         <div className="text-center">
-          <img className="img-fluid w-75 border border-secondary" src={choose_workflow} alt="Image failed to load" />
+          <img className="img-fluid w-50 border border-secondary" src={choose_workflow} alt="Image failed to load" />
         </div>
       </div>
 
       <div className="row">
         <p>
-          You are given the option to choose among any of the 3 workflows and 2 configuration options. More details
+          You are given the option to choose among any of the 4 workflows. More details
           about these choices are available in the{" "}
           <Link className="text-decoration-none" target="_blank" to="/workflows">
             workflows
@@ -112,7 +113,7 @@ const PrimaryTutorial: React.FC = () => {
           <Link className="text-decoration-none" target="_blank" to="/instructions">
             instructions
           </Link>
-          . pages. For this tutorial, you can leave the defaults and then click{" "}
+          . pages. For this tutorial, you can leave the default and then click{" "}
           <span className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
             Confirm
           </span>{" "}
@@ -134,11 +135,14 @@ const PrimaryTutorial: React.FC = () => {
           <span className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
             Confirm
           </span>{" "}
-          again. You will now be taken to a page to set the "Shared Study Parameters". For the demo, you can leave all
+          again.
+        </p>
+        <p>
+          You will now be taken to a page to set the "Shared Study Parameters". For the demo, you can leave all
           of the parameters as they are. In a real study, you would set the parameters according to your data and
           preferences. Click{" "}
           <span className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
-            Submit
+            Save changes
           </span>{" "}
           to proceed.
         </p>
@@ -152,73 +156,126 @@ const PrimaryTutorial: React.FC = () => {
 
       <h4 className="my-4 fw-normal">Configuring your study</h4>
       <div className="row">
-        <p>
-          You should now see a page that looks something like this
-          <span className="text-muted">
-            (if you instead see the main study page, click the{" "}
-            <button className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
-              Configure Study
-            </button>{" "}
-            button to get to this page)
-          </span>
-          :
-        </p>
-      </div>
-      <div className="row my-2">
-        <div className="text-center">
-          <img className="img-fluid w-75 border border-secondary" src={prepare_project} alt="Image failed to load" />
-        </div>
-      </div>
-      <div className="row">
-        <p>
-          0. When running a real study, you would need to follow the instructions to set up your GCP account. For the
-          sake of this demo, these steps are optional, and the default configuration will run the demo on a GCP machine
-          controlled by us. If you would like to run the demo on your own GCP account, you can follow the instructions.
-          When you are done, you can click{" "}
-          <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
-            Next
-          </span>
-          .
-        </p>
+        <p>You should now see a page that looks something like this:</p>
       </div>
 
       <div className="row my-2">
         <div className="text-center">
-          <img className="img-fluid w-75 border border-secondary" src={upload_data} alt="Image failed to load" />
+          <img className="img-fluid w-75 border border-secondary" src={study} alt="Image failed to load" />
         </div>
+      </div>
+
+      <div>
+        <p>
+          This is your main study page. Here you can see the status of your study, and you can download the results when
+          the study is complete. This is also where you can view or add study participants.
+          When all participants initiate their computational protocol, the joint study will begin. For
+          this demo, you are the only real participant.
+        </p>
+        <p>
+          You are now given a choice:
+          <ol>
+            <li>
+              to let <i>sfkit</i> portal automatically create a computing environment
+              { onTerra ? (<>, <i>optionally</i> upload your data to Terra, </>) : " "} and launch the computational protocol,
+              according to a few parameters you choose, OR
+            </li>
+            <li>
+              to launch it manually on your own machine
+              { onTerra ? ", either inside or outside of Terra" : ""},
+              following the instructions for <i>sfkit</i> command-line interface (CLI).
+            </li>
+          </ol>
+        </p>
+        <p>
+          Option 2 is more hands-on, but also more flexible. To go with it, please follow
+          the instructions below <i>––– OR –––</i> line on the study page, which
+          contain the actions, checks and commands you need to run on your machine.
+        </p>
+        <p>
+          Option 1 is easier, but gives you less flexibility. To go with it, please click the{" "}
+          <button className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
+            Configure Compute Environment
+          </button>{" "}
+          button.
+        </p>
       </div>
 
       <div className="row">
         <p>
-          1. For the GCP Project ID, either leave it as is to use our machines or enter whatever GCP project you chose
-          in step 0. Either way, for the sake of the demo, you can ignore the data paths. In a real study, you would
-          need to upload your data to a bucket in your GCP account and indicate the paths to said data here. Click{" "}
-          <span className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
-            Save
-          </span>{" "}
-          if you have made any changes. Once you are done with this step, you can click{" "}
+          You should now see a dialog that looks something like this:
+        </p>
+      </div>
+      <div className="row my-2">
+        <div className="text-center">
+          <img className="img-fluid w-75 border border-secondary" src={onTerra ? prepare_compute_terra : prepare_project} alt="Image failed to load" />
+        </div>
+      </div>
+      <div className="row">
+        <p>
+          { onTerra ? <>
+            1. Please pick a Terra workspace to run the demo study in.
+          </> : <>
+            <p>
+              1. When running a real study, you would need to follow the instructions to set up your GCP account. For the
+              sake of this demo, these steps are optional, and the default configuration will run the demo on a GCP machine
+              controlled by us. If you would like to run the demo on your own GCP account, you can follow the instructions.
+            </p>
+            <p>
+              If you are using your own GCP project, please also run the given command in your GCP cloud shell. This command
+              will give the website permissions to set up the protocol for your study in your GCP project. Otherwise, you
+              don't need to do anything here.
+            </p>
+          </>} When you are done, you can click{" "}
           <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
             Next
           </span>
-          .
         </p>
       </div>
 
       <div className="row my-2">
         <div className="text-center">
-          <img className="img-fluid w-75 border border-secondary" src={give_permissions} alt="Image failed to load" />
+          <img className="img-fluid w-75 border border-secondary" src={onTerra ? upload_data_terra : upload_data} alt="Image failed to load" />
         </div>
       </div>
 
       <div className="row">
         <p>
-          2. If you are using your own GCP project, please run the given command in your GCP cloud shell. This command
-          will give the website permissions to set up the protocol for your study in your GCP project. Otherwise, you
-          don't need to do anything here. Once you are done, you can click{" "}
-          <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
-            Next
-          </span>
-          .
+          { onTerra ? <>
+            2. For the sake of the demo, you can ignore the data path. In a real study,
+            you would need to upload your data to the Terra workspace, either:
+            <ul>
+              <li>
+                using{" "}
+                <button className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
+                  Upload Data
+                </button>{" "} button, in which case the bucket URL will be populated automatically, or
+              </li>
+              <li>
+                the main <a
+                  href="https://app.terra.bio"
+                  className="text-decoration-none"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Terra portal
+                </a>, or through Google Cloud SDK or API, and then paste the <code>gs://</code> folder URL here.
+              </li>
+            </ul>
+          </> : <>
+            2. For the GCP Project ID, either leave it as is to use our machines or enter whatever GCP project you chose
+            in step 0. Either way, for the sake of the demo, you can ignore the data paths. In a real study, you would
+            need to upload your data to a bucket in your GCP account and indicate the paths to said data here.
+
+            Click{" "}
+            <span className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
+              Save
+            </span>{" "}
+            if you have made any changes.
+          </>} Once you are done with this step, you can click{" "}
+            <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
+              Next
+            </span>
         </p>
       </div>
 
@@ -234,7 +291,7 @@ const PrimaryTutorial: React.FC = () => {
 
       <div className="row my-2">
         <div className="text-center">
-          <img className="img-fluid w-75 border border-secondary" src={post_processing} alt="Image failed to load" />
+          <img className="img-fluid w-75 border border-secondary" src={onTerra ? post_processing_terra : post_processing} alt="Image failed to load" />
         </div>
       </div>
 
@@ -242,40 +299,16 @@ const PrimaryTutorial: React.FC = () => {
         <p>
           4. For the sake of this demo, you can leave these values as they are. You can click{" "}
           <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
-            Done
+            Begin MPC-GWAS Study
           </span>{" "}
           to proceed.
         </p>
       </div>
 
       <h4 className="my-4 fw-normal">Running your study</h4>
-      <div className="row">
-        <p>You should now see a page that looks something like this:</p>
-      </div>
-
-      <div className="row my-2">
-        <div className="text-center">
-          <img className="img-fluid w-50 border border-secondary" src={study} alt="Image failed to load" />
-        </div>
-      </div>
-
       <div>
         <p>
-          This is your main study page. Here you can see the status of your study, and you can download the results when
-          the study is complete. You can also click the{" "}
-          <button className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
-            Configure Study
-          </button>{" "}
-          button to go back to the configuration page. This is also where you can view the study participants and add
-          more participants to your study. When all participants initiate their study, the joint study will begin. For
-          this demo, you are the only real participant.
-        </p>
-        <p>
-          Click the{" "}
-          <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
-            Begin MPC-GWAS Workflow
-          </span>{" "}
-          button to begin your study. The study should take about 1/2 hour to complete, and status updates will be
+          The study should take about 1/2 hour to complete, and status updates will be
           visible on this page. Feel free to leave this page and come back. When the study is complete, a link to
           download the results should appear.
         </p>

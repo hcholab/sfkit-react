@@ -118,6 +118,8 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     const uploads: Promise<void>[] = [];
 
     await Promise.all(Array.from(files).map(async f => {
+      if (f.name === ".DS_Store") return; // Ignore Mac OS's hidden file
+
       const filePath = f.webkitRelativePath.split('/').slice(1).join('/');
       const objPath = encodeURIComponent(`${dataPath}/${filePath}`);
       setUploadProgress(p => ({ ...p, [filePath]: 0 }));
@@ -206,10 +208,11 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
         rootEntityType: "study",
         inputs: {
           "sfkit.study_id": "this.study_id",
-          "sfkit.data": "this.data",
           "sfkit.num_cores": `${params.NUM_CPUS}`,
           "sfkit.boot_disk_size_gb": `${params.BOOT_DISK_SIZE}`,
-          "sfkit.api_url": `\"${apiBaseUrl}/api\"`,
+          "sfkit.api_url": `"${apiBaseUrl}/api"`,
+          "sfkit.demo": demo ? "true" : "false",
+          ...(demo ? {} : { "sfkit.data": "this.data" }),
         },
         outputs: {},
         methodConfigVersion: 1,
@@ -354,7 +357,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
                   Upload a folder with your data (unzipped) to the workspace bucket using the button below:
                 </p>
                 <p>
-                  <label htmlFor="upload-data-input" className="btn btn-success">
+                  <label htmlFor="upload-data-input" className="btn btn-primary">
                     Upload Data
                   </label>
                   <input
@@ -447,7 +450,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
               <Button variant="success" onClick={() => setActiveKey("0")}>
                 Previous
               </Button>{" "}
-              <Button variant="success" onClick={() => setActiveKey("2")} disabled={onTerra && !workspaceBucketUrl}>
+              <Button variant="success" onClick={() => setActiveKey("2")} disabled={onTerra && !workspaceBucketUrl && !demo}>
                 Next
               </Button>
             </div>
@@ -596,7 +599,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
       <div className="d-flex justify-content-center mt-3">
         <Button variant="success" onClick={
           onTerra ? handleStartTerraWorkflow : handleStartNonTerraWorkflow
-        } disabled={onTerra && !workspaceBucketUrl}>
+        } disabled={onTerra && (!selectedWorkspace || (!workspaceBucketUrl && !demo))}>
           Begin {studyType} Workflow
         </Button>
       </div>
