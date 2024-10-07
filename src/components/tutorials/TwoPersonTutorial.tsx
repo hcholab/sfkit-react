@@ -42,7 +42,7 @@ const TwoPersonTutorial: React.FC = () => {
       <h4 className="my-4 fw-normal">Execute the Workflow</h4>
       <div className="row">
         <p>
-          Once both users have set up compute environments for their parts of the study, they should launch their worklfows either automatically by pressing
+          Once both users have set up compute environments for their parts of the study, they should launch their worklfows either automatically by pressing{" "}
           <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
             Begin PCA Workflow
           </span>{" "}
