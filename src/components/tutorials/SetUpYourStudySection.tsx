@@ -127,7 +127,7 @@ const SetUpYourStudySection: React.FC<SectionProps> = ({ activeTab, setActiveTab
           <p>
             Then both users will follow the instructions to{" "}
             <button className="btn btn-primary btn-sm" style={{ pointerEvents: "none" }}>
-              Configure Study
+              Configure Compute Environment
             </button>
             . Note that this will require the users to use their own GCP projects, in contrast to the first tutorial.
             (If you choose to use GCP's free trial, you can{" "}
