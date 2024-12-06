@@ -30,7 +30,6 @@ export type Study = {
     private: boolean;
     invited_participants: string[];
     study_type: string;
-    setup_configuration: string;
     status: Record<string, string>;
     owner_name: string;
     demo: boolean;
@@ -40,4 +39,3 @@ export type Study = {
     display_names: Record<string, string>;
     messages: Message[];
   };
-  

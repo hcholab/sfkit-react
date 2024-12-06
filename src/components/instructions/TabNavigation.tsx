@@ -15,8 +15,8 @@ const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, setActiveTab, 
   ];
 
   const configTabs = [
-    { id: "Auto-configured", label: "auto-configured" },
-    { id: "User-configured", label: "user-configured" },
+    { id: "auto", label: "Automatic" },
+    { id: "manual", label: "Manual" },
   ];
 
   const tabs = tabType === "workflow" ? workflowTabs : configTabs;

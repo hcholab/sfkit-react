@@ -1,12 +1,13 @@
-import React, { useContext } from "react";
-import { Button } from "react-bootstrap";
-import { AppContext } from "../../App";
+import React, { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useCheckNatType } from "../../hooks/useCheckNatType";
+import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
+import { useTerra } from "../../hooks/useTerra";
+import { DryRunFunc } from "../../pages/studies/Study";
 import { ParameterGroup } from "../../types/study";
-import ConfigureStudyModal from "./ConfigureStudyModal";
+import ConfigureComputeEnvModal from "./ConfigureStudyModal";
 import SubTaskContainer from "./SubTaskContainer";
 import TaskElement from "./TaskElement";
-import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
-import { useParams } from "react-router-dom";
 
 interface Props {
   personalParameters: ParameterGroup;
@@ -16,7 +17,6 @@ interface Props {
   demo: boolean;
   studyType: string;
   status: string;
-  setupConfiguration: string;
   showWaitingDiv: boolean;
   tasks: string[];
   parameters: ParameterGroup;
@@ -24,8 +24,8 @@ interface Props {
   showManhattanDiv: boolean;
   imageSrc: string;
   imageLabel: string;
-  showFailStatus: boolean;
-  handleStartWorkflow: () => void;
+  failStatus: string;
+  handleStartWorkflow: DryRunFunc;
   handleDownloadAuthKey: () => void;
 }
 
@@ -37,27 +37,29 @@ const InstructionArea: React.FC<Props> = ({
   demo,
   studyType,
   status,
-  setupConfiguration,
   showWaitingDiv,
   tasks,
   showDownloadDiv,
   showManhattanDiv,
-  showFailStatus,
+  failStatus,
   handleStartWorkflow,
   handleDownloadAuthKey,
 }) => {
-  const { apiBaseUrl } = useContext(AppContext);
+  const { apiBaseUrl, onTerra } = useTerra();
   const { auth_key = "" } = useParams();
-  const [showModal, setShowModal] = React.useState(false);
+  const [showModal, setShowModal] = useState(false);
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
-  const [isDownloading, setIsDownloading] = React.useState(false);
-  const [plotSrc, setPlotSrc] = React.useState("");
-  const [isFetchingPlot, setIsFetchingPlot] = React.useState(false);
-  const plotSrcRef = React.useRef("");
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [plotSrc, setPlotSrc] = useState("");
+  const [isFetchingPlot, setIsFetchingPlot] = useState(false);
+  const [hoveredButton, setHoveredButton] = useState<string | null>(null);
+  const [isStudyValid, setIsStudyValid] = useState<boolean>();
+  const { checkNatType, isSymmetricNat, isCheckingNatType } = useCheckNatType();
   const headers = useGenerateAuthHeaders();
+  const plotSrcRef = useRef("");
 
-  const fetchPlotFile = React.useCallback(async () => {
+  const fetchPlotFile = useCallback(async () => {
     try {
       setIsFetchingPlot(true);
 
@@ -81,7 +83,7 @@ const InstructionArea: React.FC<Props> = ({
     }
   }, [apiBaseUrl, study_id, headers]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if ((idToken || auth_key) && showManhattanDiv && !plotSrcRef.current) {
       fetchPlotFile();
     }
@@ -142,10 +144,10 @@ const InstructionArea: React.FC<Props> = ({
           const subTasks = subTaskElements;
           subTaskElements = [];
           return (
-            <React.Fragment key={index}>
+            <Fragment key={index}>
               <TaskElement task={task} showCheck={showCheck} />
               <SubTaskContainer taskDescription={task}>{subTasks}</SubTaskContainer>
-            </React.Fragment>
+            </Fragment>
           );
         } else {
           return <TaskElement key={index} task={task} showCheck={showCheck} />;
@@ -163,27 +165,56 @@ const InstructionArea: React.FC<Props> = ({
     );
   };
 
+  const renderCode = (text: string, fontSize: string = "100%") => (
+    <p className="p-2 rounded position-relative" style={{ backgroundColor: "#f0f0f0", fontSize }}>
+      <code>
+        {text.split('\n').map((line, i, arr) => (
+          <React.Fragment key={i}>
+            {i && arr[i - 1].endsWith('\\') ? <>&nbsp;&nbsp;&nbsp;&nbsp;</> : ""}
+            {line.trim()}
+            {i < arr.length - 1 ? <br /> : ""}
+          </React.Fragment>
+        ))}
+      </code>
+      <button
+        className="btn btn-sm btn-light position-absolute top-0 end-0 m-1"
+        onClick={() => navigator.clipboard.writeText(
+          text.split('\n').map((line, i, arr) =>
+            line.replace(/^\s+/g, i && arr[i - 1].endsWith('\\') ? '    ' : '')
+          ).join('\n')
+        )}
+        onMouseEnter={() => setHoveredButton(text)}
+        onMouseLeave={() => setHoveredButton(null)}
+        style={{
+          opacity: hoveredButton === text ? 1 : 0.1,
+          transition: 'opacity 0.3s ease',
+          fontSize: "100%",
+        }}
+      >
+        ⧉
+      </button>
+    </p>
+  );
+
   return (
     <div className="mt-3" id="instructions">
-      {status === "" && setupConfiguration === "website" ? (
+      {status === "" ? (
         <>
-          <ConfigureStudyModal
+          <ConfigureComputeEnvModal
             showModal={showModal}
             handleShow={handleShow}
             handleClose={handleClose}
-            studyType={studyType}
+            handleStartWorkflow={handleStartWorkflow}
             demo={demo}
             studyId={study_id}
+            studyType={studyType}
             personalParameters={personalParameters}
+            failStatus={failStatus}
           />
-          <div className="mt-2">
-            <Button variant="success" onClick={handleStartWorkflow}>
-              Begin {studyType} Workflow
-            </Button>
-          </div>
+          <hr/>OR<hr/>
         </>
       ) : null}
-      {status === "" && setupConfiguration !== "website" ? (
+      {status === "" ? (
         <div className="text-start">
           <p>
             Once all participants have joined the study, and you have set the 'Study Parameters', you can proceed with
@@ -194,15 +225,173 @@ const InstructionArea: React.FC<Props> = ({
             </a>
             on your machine.
           </p>
+          <div className="my-2" style={{ borderTop: 'dashed #ccc' }}/>
+          <p>
+            { onTerra ? (
+              <>
+                If you are running the study on a machine <b><i>outside of Terra</i></b>, you
+              </>
+            ) : (
+              <>
+                On your machine, you
+              </>
+            )} will need to download <code>
+            { onTerra ? "service_account_key.json" : "auth_key.txt" }
+            </code> { onTerra && "and run the following command " }
+            to authenticate the <i>sfkit</i> command-line interface:
+          </p>
+          { onTerra && (
+            <>
+              {renderCode("export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service_account_key.json")}
+              <p>
+                <b>Note:</b> Replace <code>/path/to/service_account_key.json</code> with
+                the <b><i>absolute path</i></b> to the service account key downloaded to your machine.
+              </p>
+              <div className="alert alert-warning mt-2">
+                <b>Warning:</b> This key contains sensitive credentials.
+                Store it in a secure out-of-the-way location on your computer, such as
+                the <code>~/.config/gcloud/</code> directory.
+                Never share this key or commit it to version control.
+              </div>
+            </>
+          )}
+          <p className="text-center mt-2">
+            <button className="btn btn-primary btn-sm" onClick={handleDownloadAuthKey}>
+              Download { onTerra ? "Service Account Key" : "Auth Key" }
+            </button>
+          </p>
+
           <div>
-            Click below to download <code>auth_key.txt</code> which you will need on your machine to authenticate with
-            the sfkit command-line interface.
-            <div className="text-center mt-2">
-              <button className="btn btn-primary btn-sm" onClick={handleDownloadAuthKey}>
-                Download Auth Key
+            <p>
+              You will also need to check the type of Network Address Translation (NAT) on your machine.
+              This is done automatically by the <i>sfkit</i> CLI. However, if you use it on the same machine,
+              you can also click the following button:
+            </p>
+            <p className="text-center mt-3">
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={checkNatType}
+                disabled={isCheckingNatType === true}
+              >
+                {isCheckingNatType ? 'Checking NAT Type...' : 'Check NAT Type'}
               </button>
-            </div>
+
+            </p>
+            {isCheckingNatType === false && (
+              <div className={ "alert mt-2 alert-" + (
+                isSymmetricNat === true ? "danger" : (
+                  isSymmetricNat === false ? "success" : "warning"
+                )
+              )}>
+                { isSymmetricNat === true ? (
+                  <>
+                    <p>
+                      <b>Error:</b> Your NAT is <i>symmetric</i>.
+                      This means the CLI won't be able to establish peer-to-peer connections
+                      with other participant machines. You will need to either set up port forwarding,
+                      use a different network, or configure your network to use a different NAT type.
+                    </p>
+                    <p>
+                      For more information on why that is, please refer to this article explaining
+                      the nitty-gritty details: <a
+                        href="https://tailscale.com/blog/how-nat-traversal-works"
+                        className="text-decoration-none"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >How NAT Traversal Works</a>
+                    </p>
+                  </>
+                ) : (isSymmetricNat === false ? (
+                  <div className="text-center">
+                    ✔ Your NAT is compatible with the <i>sfkit</i> CLI.
+                  </div>
+                ) : (
+                  <>
+                    <b>Warning:</b> We were unable to determine your NAT type.
+                    Please run <i>sfkit</i> CLI as explained below, which will check it automatically.
+                  </>
+                ))}
+              </div>
+            )}
           </div>
+
+          <div className="my-2" style={{ borderTop: 'dashed #ccc' }}/>
+          <p>
+            To start <i>sfkit</i> protocol on your machine, first check that the study is set up correctly:
+          </p>
+          <p className="text-center">
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={() => {
+                setIsStudyValid(undefined);
+                handleStartWorkflow({ dryRun: true })
+                  .then(() => setIsStudyValid(true))
+                  .catch(() => setIsStudyValid(false))
+              }}
+            >
+              Validate Study
+            </button>
+          </p>
+          { isStudyValid === true ? (
+              <div className="alert alert-success text-center">
+                ✔ Study is valid.
+              </div>
+            ) : (
+              isStudyValid === false ? (
+                <div className="alert alert-danger">
+                  <b>Error:</b> {failStatus}
+                </div>
+              ) : (
+                <></>
+              )
+            )
+          }
+          <p>
+            Then, set some environment variables:
+          </p>
+          {renderCode(
+            `export SFKIT_API_URL=${apiBaseUrl}/api
+            export SFKIT_STUDY_ID=${study_id}
+            export SFKIT_DATA_PATH=/path/to/data_dir`
+          )}
+          <p>
+            <b>Note:</b> Replace <code>/path/to/data_dir</code> with
+            the <b><i>absolute path</i></b> to the input data directory on your machine.
+          </p>
+          <p>
+            Finally, either:
+          </p>
+          <ol>
+            <li>
+              <p>
+                <b>(Recommended)</b> Use a container, if your environment can run arbitrary Docker images:
+              </p>
+              {renderCode(
+                `docker run --rm -it --pull always --platform linux/amd64 \\
+                  -v "\${SFKIT_DATA_PATH}":/data \\
+                  -v "\${GOOGLE_APPLICATION_CREDENTIALS}":/key.json:ro \\
+                  -e GOOGLE_APPLICATION_CREDENTIALS=/key.json \\
+                  -e SFKIT_API_URL \\
+                  us-central1-docker.pkg.dev/dsp-artifact-registry/sfkit/sfkit all \\
+                  --data_path /data --study_id "\${SFKIT_STUDY_ID}"`
+              )}
+            </li>
+            <li>
+              <p>
+                Install <i>sfkit</i> CLI manually using the following script:
+              </p>
+              {renderCode("curl -sL https://github.com/hcholab/sfkit/releases/latest/download/install.sh | bash", "87%")}
+              <p>
+                <b>Note:</b> This script might not work on some machines.
+                If you are unable to install the CLI with this method, please contact us
+                at <a href="mailto:support@sfkit.org">support@sfkit.org</a>.
+              </p>
+              <p>
+                Then, run this command to start the protocol:
+              </p>
+              {renderCode(`sfkit all --data_path "\${SFKIT_DATA_PATH}" --study_id "\${SFKIT_STUDY_ID}"`)}
+            </li>
+          </ol>
         </div>
       ) : null}
       {status !== "" ? (
@@ -247,7 +436,7 @@ const InstructionArea: React.FC<Props> = ({
               )}
             </>
           )}
-          {showFailStatus && <div className="text-start alert alert-danger">Study execution has failed.</div>}{" "}
+          {failStatus && <div className="text-start alert alert-danger">Study execution has failed: {failStatus}</div>}{" "}
         </div>
       ) : null}
     </div>

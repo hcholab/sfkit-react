@@ -1,25 +1,23 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { AppContext } from "../App";
+import { DocumentData, doc, onSnapshot } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { useAuth } from "react-oidc-context";
+import LoginButton from "../components/LoginButton";
 import ChooseWorkflow from "../components/studies/ChooseWorkflow";
 import DisplayStudy from "../components/studies/DisplayStudy";
-import { Study } from "../types/study";
-import { DocumentData, doc, onSnapshot } from "firebase/firestore";
 import { getDb } from "../hooks/firebase";
-import LoginButton from "../components/LoginButton";
-import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 import useFirestore from "../hooks/useFirestore";
-import { useAuth } from "react-oidc-context";
+import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
+import { useTerra } from "../hooks/useTerra";
+import { Study } from "../types/study";
 
 const Studies: React.FC = () => {
-  const { apiBaseUrl } = useContext(AppContext);
-  const onTerra = apiBaseUrl.includes("broad");
+  const { onTerra, apiBaseUrl } = useTerra();
   const [activeTab, setActiveTab] = useState(() => {
     return localStorage.getItem("activeTab") || "mine";
   });
   const [myStudies, setMyStudies] = useState<Study[] | null>(null);
   const [otherStudies, setOtherStudies] = useState<Study[] | null>(null);
   const [user, setUser] = useState<DocumentData | null>(null);
-  const isFetchingPublicStudiesRef = useRef(false);
 
   const headers = useGenerateAuthHeaders();
   const idToken = useAuth().user?.id_token || "";
@@ -59,29 +57,20 @@ const Studies: React.FC = () => {
     if ((!headers.Authorization || headers.Authorization === "Bearer ") && onTerra) {
       return;
     }
-    // we don't need to fetch public studies if we already have them
-    if (otherStudies && otherStudies.length > 0) {
-      return;
-    }
     const fetchPublicStudies = async () => {
-      if (!isFetchingPublicStudiesRef.current) {
-        isFetchingPublicStudiesRef.current = true;
-        try {
-          const response = await fetch(`${apiBaseUrl}/api/public_studies`, {
-            headers,
-          });
-          const data = await response.json();
-          setOtherStudies(data.studies);
-        } catch (error) {
-          console.error("Error fetching public studies:", error);
-        } finally {
-          isFetchingPublicStudiesRef.current = false;
-        }
+      try {
+        const response = await fetch(`${apiBaseUrl}/api/public_studies`, {
+          headers,
+        });
+        const data = await response.json();
+        setOtherStudies(data.studies);
+      } catch (error) {
+        console.error("Error fetching public studies:", error);
       }
     };
 
     fetchPublicStudies();
-  }, [apiBaseUrl, headers, onTerra, otherStudies]);
+  }, [apiBaseUrl, onTerra, headers]);
 
   useEffect(() => {
     if (myStudies && myStudies.length > 0) {

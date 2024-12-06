@@ -1,15 +1,18 @@
 export const submitStudyParameters = async (
-  event: React.FormEvent<HTMLFormElement>,
+  eventForm: React.FormEvent<HTMLFormElement> | FormData,
   apiBaseUrl: string,
   studyId: string,
   headers: HeadersInit,
   setFeedback?: (feedback: string) => void,
-  setErrorMessage?: (message: string) => void
+  setErrorMessage?: (message: string) => void,
+  setParams?: (params: Record<string, string | number>) => void,
 ) => {
-  event.preventDefault();
-
-  const formData = new FormData(event.currentTarget);
-  const parameters: { [key: string]: string | number } = {};
+  if (!(eventForm instanceof FormData)) {
+    eventForm.preventDefault();
+  }
+  const formData = eventForm instanceof FormData
+    ? eventForm : new FormData(eventForm.currentTarget);
+  const parameters: Record<string, string | number> = {};
   formData.forEach((value, key) => {
     if (key === "BASE_P") {
       parameters[key] = value.toString();
@@ -27,6 +30,10 @@ export const submitStudyParameters = async (
     });
     if (!response.ok) {
       throw new Error((await response.json()).error || "Unexpected error");
+    }
+
+    if (setParams) {
+      setParams(parameters);
     }
 
     if (setFeedback) {

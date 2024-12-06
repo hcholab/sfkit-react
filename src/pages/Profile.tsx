@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useAuth } from "react-oidc-context";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../App";
-import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
-import { useAuth } from "react-oidc-context";
+import LoginButton from "../components/LoginButton";
 import useFirestore from "../hooks/useFirestore";
+import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 
 const Profile = () => {
   const { apiBaseUrl } = useContext(AppContext);
@@ -13,6 +14,7 @@ const Profile = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [profileData, setProfileData] = useState({
     displayName: "",
+    email: "",
     about: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
@@ -32,10 +34,11 @@ const Profile = () => {
         });
 
         if (response.ok) {
-          const data = await response.json();
+          const { profile: p } = await response.json();
           setProfileData({
-            displayName: data.profile.displayName || "",
-            about: data.profile.about || "",
+            displayName: p.displayName || "",
+            email: p.email || "",
+            about: p.about || "",
           });
         } else {
           console.error("Failed to fetch profile data");
@@ -87,6 +90,18 @@ const Profile = () => {
   };
 
   const isOwnProfile = userId === decodedUserIdFromParams;
+
+  if (!idToken) {
+    return (
+      <div
+        className="d-flex flex-column align-items-center justify-content-center"
+        style={{ transform: "translateY(+200%)" }}
+      >
+        <p className="mb-4">Please log in to view a user profile.</p>
+        <LoginButton />
+      </div>
+    );
+  }
 
   return (
     <section className="py-5">
@@ -146,6 +161,13 @@ const Profile = () => {
                           Edit
                         </button>
                       )}
+                    </p>
+                  </div>
+                  <div className="mb-3">
+                    <p>
+                      <b>Email</b>
+                      <br />
+                      {profileData.email}
                     </p>
                   </div>
                   <div className="mb-3">
