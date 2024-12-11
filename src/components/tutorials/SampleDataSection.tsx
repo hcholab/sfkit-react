@@ -97,6 +97,25 @@ const SampleDataSection: React.FC<SectionProps> = ({ activeTab, setActiveTab }) 
               </a>
             </div>
           </div>
+          <div
+            className={`container tab-pane fade ${activeTab === "data-securedti" ? "show active" : ""}`}
+            id="data-securedti"
+          >
+            <div className="d-flex justify-content-around align-items-center">
+            <a className="btn btn-secondary" href={`${BASE_URL}/securedti_p0.zip`}>
+                CP0 Secure-DTI Sample Data
+              </a>
+              <a className="btn btn-secondary" href={`${BASE_URL}/securedti_p1.zip`}>
+                CP1 Secure-DTI Sample Data
+              </a>
+              <a className="btn btn-secondary" href={`${BASE_URL}/securedti_p2.zip`}>
+                CP2 Secure-DTI Sample Data
+              </a>
+              <a className="btn btn-secondary" href={`${BASE_URL}/securedti_sp.zip`}>
+                SP Secure-DTI Sample Data
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
