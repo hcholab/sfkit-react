@@ -28,10 +28,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, setActiveTab, 
         <li className="nav-item" key={tab.id}>
           <button
             className={`nav-link ${activeTab === tab.id ? "active" : ""}`}
-            onClick={() => {
-              console.log("Selected workflow tab:", tab);
-              setActiveTab(tab.id);
-            }}
+            onClick={() => setActiveTab(tab.id)}
             type="button"
           >
             {tab.label}

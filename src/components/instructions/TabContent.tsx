@@ -138,19 +138,19 @@ const TabContent: React.FC<TabContentProps> = ({ activeTab, tabType }) => {
                 </ul>
               </div>
             </div>
-            <div
-              className={`container tab-pane fade ${activeTab === "data-securedti" ? "show active" : ""}`}
-              id="data-securedti"
-            >
-              <div className="row mt-3">
-                <div>
-                  Input to this workflow consists of the following files:
-                  <ul>
-                    <li>
-                      {/* TODO: Add files */}
-                    </li>
-                  </ul>
-                </div>
+          </div>
+          <div
+            className={`container tab-pane fade ${activeTab === "data-securedti" ? "show active" : ""}`}
+            id="data-securedti"
+          >
+            <div className="row mt-3">
+              <div>
+                Input to this workflow consists of the following files:
+                <ul>
+                  <li>
+                    {/* TODO: Add files */}
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
