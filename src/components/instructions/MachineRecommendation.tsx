@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-type WorkflowType = "mpcgwas" | "sfgwas" | "sfpca" | "sfrelate";
-const workflows: WorkflowType[] = ["mpcgwas", "sfgwas", "sfpca", "sfrelate"];
+type WorkflowType = "mpcgwas" | "sfgwas" | "sfpca" | "sfrelate" | "securedti";
+const workflows: WorkflowType[] = ["mpcgwas", "sfgwas", "sfpca", "sfrelate", "securedti"];
 
 type SelectionsType = {
   [key in WorkflowType]: {
@@ -24,6 +24,7 @@ const MachineRecommendation: React.FC = () => {
     sfgwas: { rows: 0, cols: 0 },
     sfpca: { rows: 0, cols: 0 },
     sfrelate: { rows: 0, cols: 0 },
+    securedti: { rows: 0, cols: 0 },
   });
 
   const recommendMachine = (workflow: string) => {
