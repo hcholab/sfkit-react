@@ -58,7 +58,8 @@ const SharedStudyParameters: React.FC<SharedStudyParametersProps> = ({ study, is
           <p className="mt-1 text-start text-muted">{study.parameters[parameterName].description}</p>
         </React.Fragment>
       ))}
-      <Accordion className="mb-3" id="advancedParameters">
+      { study.advanced_parameters.index.length && (
+        <Accordion className="mb-3" id="advancedParameters">
         <Accordion.Item eventKey="0">
           <Accordion.Header>Advanced Parameters</Accordion.Header>
           <Accordion.Body>
@@ -82,6 +83,7 @@ const SharedStudyParameters: React.FC<SharedStudyParametersProps> = ({ study, is
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
+      )}
     </Row>
   );
 };
