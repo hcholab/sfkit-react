@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { Alert, Button, Col, Container, Form, Row } from "react-bootstrap";
 import { useAuth } from "react-oidc-context";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { AppContext } from "../../App";
+import { AppContext } from "../../appContext";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 
 const CreateStudy: React.FC = () => {

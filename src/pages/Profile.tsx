@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import { useParams } from "react-router-dom";
-import { AppContext } from "../App";
+import { AppContext } from "../appContext";
 import LoginButton from "../components/LoginButton";
 import useFirestore from "../hooks/useFirestore";
 import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";

@@ -5,6 +5,7 @@ import resultsMpcgwas from "../../static/images/tutorial/results_mpcgwas_1kg.png
 import resultsPca from "../../static/images/tutorial/results_pca_1kg.png";
 import resultsSfgwas from "../../static/images/tutorial/results_sfgwas_1kg.png";
 import resultsSfrelate from "../../static/images/tutorial/results_sfrelate_1kg.png";
+// import resultsSecuredti from "../../static/images/tutorial/results_securedti_1kg.png";
 
 interface SectionProps {
   activeTab: string;
@@ -78,6 +79,20 @@ const ResultsSection: React.FC<SectionProps> = ({ activeTab, setActiveTab }) => 
                   className="img-fluid border border-secondary"
                   style={{ maxWidth: "75%" }}
                   src={resultsSfrelate}
+                  alt=""
+                />
+              </div>
+            </div>
+
+            <div
+              className={`container tab-pane fade ${activeTab === "data-securedti" ? "show active" : ""}`}
+              id="results-securedti"
+            >
+              <div className="text-center">
+                <img
+                  className="img-fluid border border-secondary"
+                  style={{ maxWidth: "75%" }}
+                  // src={resultsSfrelate} TODO: Add image
                   alt=""
                 />
               </div>

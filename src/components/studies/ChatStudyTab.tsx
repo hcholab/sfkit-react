@@ -1,9 +1,9 @@
 import { doc, onSnapshot } from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
-import { AppContext } from "../../App";
+import { AppContext } from "../../appContext";
 import { getDb } from "../../hooks/firebase";
-import { Message, Study } from "../../types/study";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
+import { Message, Study } from "../../types/study";
 
 interface Props {
   study: Study;

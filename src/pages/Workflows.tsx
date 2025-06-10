@@ -144,6 +144,33 @@ const Workflows: React.FC = () => {
             tool for researchers and individuals looking to explore genetic relationships securely.
           </p>
         </div>
+
+        <div>
+          <h4 className="my-4 fw-normal">Secure-DTI</h4>
+          <p>
+            This workflow implements a collaborative Secure DTI protocol based on secure multiparty computation (MPC) as
+            described in{" "}
+            <a
+              className="text-decoration-none"
+              href="https://www.science.org/doi/10.1126/science.aat4807"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Realizing private and practical pharmacological collaboration
+            </a>{" "}
+            (Science, 2018).
+          </p>
+
+          <p>
+            Each user provides an input dataset. These data are encrypted and split into multiple copies (<i>secret shares</i> in MPC
+            terminology), which are then distributed to collaborators before running the joint analysis. Unencrypted
+            data is not shared with a server.
+          </p>
+
+          <p>
+            This workflow currently supports joint analyses between pairs of collaborators.
+          </p>
+        </div>
       </div>
     </section>
   );

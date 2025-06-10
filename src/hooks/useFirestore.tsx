@@ -1,8 +1,8 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { AppContext } from "../App";
+import { useAuth } from "react-oidc-context";
+import { AppContext } from "../appContext";
 import { getFirestoreDatabase } from "./firebase";
 import useGenerateAuthHeaders from "./useGenerateAuthHeaders";
-import { useAuth } from "react-oidc-context";
 
 type FirestoreHook = {
   userId: string;

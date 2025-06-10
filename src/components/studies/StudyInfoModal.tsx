@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
-import { AppContext } from "../../App";
-import { Study } from "../../types/study";
+import { AppContext } from "../../appContext";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
+import { Study } from "../../types/study";
 
 interface StudyInfoProps {
   study: Study;

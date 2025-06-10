@@ -48,6 +48,12 @@ const Contact: React.FC = () => {
               </a>{" "}
               - the source code for the MPC-GWAS
             </li>
+            <li>
+              <a href="https://github.com/hcholab/secure-dti" className="text-decoration-none">
+                https://github.com/hcholab/secure-dti
+              </a>{" "}
+              - the source code for the Secure-DTI
+            </li>
           </ul>
         </div>
 
@@ -85,6 +91,12 @@ const Contact: React.FC = () => {
                 Secure and Federated Genome-Wide Association Studies for Biobank-Scale Datasets
               </a>{" "}
               (Preprint): This paper outlines recent enhancements to the SF-GWAS workflow.
+            </li>
+            <li>
+              <a href="https://www.science.org/doi/10.1126/science.aat4807" className="text-decoration-none">
+                Realizing private and practical pharmacological collaboration
+              </a>{" "}
+              (Science, 2018): This paper introduces the Secure-DTI workflow.
             </li>
           </ul>
         </div>
