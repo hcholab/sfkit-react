@@ -1,5 +1,5 @@
 import { useContext, useMemo } from "react";
-import { AppContext } from "../App";
+import { AppContext } from "../appContext";
 
 const terraRe = /^(sfkit\.dsde-(dev|staging|prod)\.broadinstitute\.org)$/;
 

@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
-import { AppContext } from "../../App";
-import { Study } from "../../types/study";
-import SharedStudyParameters from "./SharedStudyParameters";
+import { AppContext } from "../../appContext";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
+import { Study } from "../../types/study";
 import { submitStudyParameters } from "../../utils/formUtils";
+import SharedStudyParameters from "./SharedStudyParameters";
 
 interface StudyParametersProps {
   study: Study;

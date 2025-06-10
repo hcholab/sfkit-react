@@ -2,7 +2,7 @@ import { DocumentData } from "firebase/firestore";
 import React, { useContext, useState } from "react";
 import { Button, Card, Form, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { AppContext } from "../../App";
+import { AppContext } from "../../appContext";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { Study } from "../../types/study";
 import StudyConfigBadge from "./StudyConfigBadge";

@@ -1,7 +1,8 @@
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { AuthProvider } from "react-oidc-context";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { AppConfig, getAppConfig } from "./appConfig";
+import { AppContext } from "./appContext";
 import Footer from "./components/Footer";
 import { IdleStatusMonitor } from "./components/IdleStatusMonitor";
 import Navbar from "./components/Navbar";
@@ -15,10 +16,6 @@ import Workflows from "./pages/Workflows";
 import CreateStudy from "./pages/studies/CreateStudy";
 import Study from "./pages/studies/Study";
 import "./static/css/study.css";
-
-export const AppContext = createContext({
-  apiBaseUrl: "",
-});
 
 const App: React.FC = () => {
   const [appConfig, setAppConfig] = useState<AppConfig>();

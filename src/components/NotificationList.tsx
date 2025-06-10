@@ -3,7 +3,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
 import { Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { AppContext } from "../App";
+import { AppContext } from "../appContext";
 import { getDb } from "../hooks/firebase";
 import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 
