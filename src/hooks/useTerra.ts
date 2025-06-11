@@ -11,6 +11,7 @@ export const useTerra = () => {
         const localDev = process.env.NODE_ENV === "development";
         const hostname = localDev ? "dev.sfkit.org" : url.hostname;
         const dev = hostname.includes("dev");
+        console.log("dev", dev);
 
         return {
             onTerra: terraRe.test(url.hostname),
