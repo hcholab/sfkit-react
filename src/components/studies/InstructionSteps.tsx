@@ -33,7 +33,7 @@ type Workspace = {
 };
 
 const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, studyType, parameters, failStatus, handleStartWorkflow }) => {
-  const { onTerra, dev, apiBaseUrl, rawlsApiUrl, samApiUrl } = useTerra();
+  const { onTerra, localDev, apiBaseUrl, rawlsApiUrl, samApiUrl } = useTerra();
   const [activeKey, setActiveKey] = useState("0");
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [selectedWorkspace, setSelectedWorkspace] = useState<string>();
@@ -66,7 +66,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     const listWorkspaces = async () => {
       try {
         const url = `${rawlsApiUrl}/workspaces?fields=accessLevel,workspace.namespace,workspace.name,workspace.cloudPlatform,workspace.googleProject,workspace.bucketName`;
-        const res = dev
+        const res = localDev
           ? { ok: true, json: async () => (await import("./workspaces.json")).default }
           : await fetch(url, { headers });
         const data = await res.json();
@@ -86,7 +86,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     };
 
     listWorkspaces();
-  }, [onTerra, dev, rawlsApiUrl, headers]);
+  }, [onTerra, localDev, rawlsApiUrl, headers]);
 
   const handleSubmitParameters = async (eventForm: React.FormEvent<HTMLFormElement> | FormData) =>
     submitStudyParameters(eventForm, apiBaseUrl, studyId, headers, setSubmitFeedback, undefined, setParams);

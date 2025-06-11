@@ -8,14 +8,16 @@ export const useTerra = () => {
 
     return useMemo(() => {
         const url = new URL(apiBaseUrl);
-        const dev = process.env.NODE_ENV === "development";
-        const hostname = dev ? "sfkit.dsde-dev.broadinstitute.org" : url.hostname;
+        const localDev = process.env.NODE_ENV === "development";
+        const hostname = localDev ? "dev.sfkit.org" : url.hostname;
+        const dev = hostname.includes("dev");
 
         return {
-            onTerra: dev || terraRe.test(url.hostname),
+            onTerra: terraRe.test(url.hostname),
             apiBaseUrl,
             rawlsApiUrl: `https://${hostname.replace(/^sfkit\./, "rawls.")}/api`,
             samApiUrl: `https://${hostname.replace(/^sfkit\./, "sam.")}/api`,
+            localDev,
             dev,
         };
     }, [apiBaseUrl]);
