@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import { useTerra } from "../../hooks/useTerra";
 
 const ChooseWorkflow: React.FC = () => {
   const navigate = useNavigate();
   const [studyType, setStudyType] = useState("MPC-GWAS");
   const [showModal, setShowModal] = useState(false);
+  const { dev } = useTerra();
 
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
@@ -27,6 +29,12 @@ const ChooseWorkflow: React.FC = () => {
     { id: "sfrelate", value: "SF-RELATE", label: "SF-RELATE" },
     { id: "securedti", value: "Secure-DTI", label: "Secure-DTI" },
   ];
+
+  if (dev) {
+    workflowOptions.splice(2, 0,
+      { id: "sfgwaslmm", value: "SF-GWAS-LMM", label: "SF-GWAS-LMM" },
+    );
+  };
 
   return (
     <div>

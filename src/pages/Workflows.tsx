@@ -1,7 +1,10 @@
 import React from "react";
+import { useTerra } from "../hooks/useTerra";
 import info_square from "../static/images/info-square.svg";
 
 const Workflows: React.FC = () => {
+  const { dev } = useTerra();
+
   return (
     <section className="py-5">
       <div className="container col-12 col-lg-7">
@@ -101,6 +104,16 @@ const Workflows: React.FC = () => {
             unencrypted data while ensuring that only encrypted intermediate results are shared among the users.
           </p>
         </div>
+
+        {dev && (
+          <div>
+            <h4 className="my-4 fw-normal">SF-GWAS-LMM</h4>
+            <p>
+              This workflow implements a Linear Mixed Model (LMM)-based association analysis. For PCA-based GWAS,
+              please use SF-GWAS instead.
+            </p>
+          </div>
+        )}
 
         <div>
           <h3 className="mt-5 my-4">Principal Component Analysis (PCA)</h3>
