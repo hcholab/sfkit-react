@@ -7,6 +7,9 @@ RUN npm ci
 
 COPY . .
 
+ARG SERVICE_NAME=sfkit-dev-react
+RUN cp config/${SERVICE_NAME}.json public/appConfig.json
+
 RUN npm run lint
 RUN npm run build
 
