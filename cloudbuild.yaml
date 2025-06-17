@@ -1,15 +1,24 @@
 steps:
-  - name: 'gcr.io/cloud-builders/docker'
+  - id: Configure
+    name: alpine
+    dir: public
+    args: ['ln', '-sf', 'appConfig-$_SERVICE_NAME.json', 'appConfig.json']
+
+  - id: Build
+    name: gcr.io/cloud-builders/docker
     args: ['build',
            '--build-arg', 'APP_VERSION=$_APP_VERSION',
            '--build-arg', 'BUILD_VERSION=$_BUILD_VERSION',
            '-t', 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA',
            '.']
-    id: Build
-  - name: 'gcr.io/cloud-builders/docker'
+
+  - id: Push
+    name: gcr.io/cloud-builders/docker
     args: ['push', 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA']
-    id: Push
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+
+  - id: Deploy
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
     args:
       - run
       - services
@@ -20,9 +29,9 @@ steps:
       - '--region=us-central1'
       - '--min-instances=1'
       - '--quiet'
-    id: Deploy
-    entrypoint: gcloud
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+
+  - id: SetIAM
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
     entrypoint: gcloud
     args:
       - run
@@ -32,17 +41,20 @@ steps:
       - '--region=us-central1'
       - '--member=allUsers'
       - '--role=roles/run.invoker'
-    id: SetIAM
+
 images:
   - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA'
+
 options:
   logging: CLOUD_LOGGING_ONLY
   substitutionOption: ALLOW_LOOSE
+
 substitutions:
   _DEPLOY_REGION: us-central1
   _APP_VERSION: latest
   _BUILD_VERSION: latest
   _SERVICE_NAME: sfkit-react-dev
+
 tags:
   - gcp-cloud-build-deploy-cloud-run
   - gcp-cloud-build-deploy-cloud-run-managed
