@@ -67,11 +67,13 @@ const SharedStudyParameters: React.FC<SharedStudyParametersProps> = ({ study, is
               <React.Fragment key={parameterName}>
                 <Form.Floating className="mb-3">
                   <Form.Control
-                    type="number"
+                    type={study.advanced_parameters[parameterName].type || "number"}
                     id={parameterName}
                     name={parameterName}
-                    min="0"
-                    step="any"
+                    {...(study.advanced_parameters[parameterName].type && {
+                      min: "0",
+                      step: "any"
+                    })}
                     defaultValue={study.advanced_parameters[parameterName].value}
                     disabled={!isOwner}
                   />

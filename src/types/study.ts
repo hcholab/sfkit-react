@@ -8,6 +8,7 @@ type Parameter = {
   name: string;
   description: string;
   value: string | number;
+  type?: "text" | "number";
 };
 
 type ParameterIndex = {
