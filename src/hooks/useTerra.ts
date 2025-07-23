@@ -3,7 +3,7 @@ import { AppContext } from "../appContext";
 
 const terraRe = /^(sfkit\.dsde-(dev|staging|prod)\.broadinstitute\.org)$/;
 
-export const useTerra = () => {
+export const useConfig = () => {
     const { apiBaseUrl } = useContext(AppContext);
 
     return useMemo(() => {

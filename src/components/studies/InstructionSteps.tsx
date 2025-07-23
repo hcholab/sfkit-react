@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Accordion, Alert, Button, Card, Dropdown, Form, ProgressBar } from "react-bootstrap";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
-import { useTerra } from "../../hooks/useTerra";
+import { useConfig } from "../../hooks/useTerra";
 import { DryRunFunc } from "../../pages/studies/Study";
 import info_square from "../../static/images/info-square.svg";
 import { ParameterGroup } from "../../types/study";
@@ -33,7 +33,7 @@ type Workspace = {
 };
 
 const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, studyType, parameters, failStatus, handleStartWorkflow }) => {
-  const { onTerra, localDev, apiBaseUrl, rawlsApiUrl, samApiUrl } = useTerra();
+  const { onTerra, localDev, apiBaseUrl, rawlsApiUrl, samApiUrl } = useConfig();
   const [activeKey, setActiveKey] = useState("0");
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [selectedWorkspace, setSelectedWorkspace] = useState<string>();
@@ -249,94 +249,94 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
         <Card.Header>1. {onTerra ? "Select Terra Workspace" : "Prepare Project"}</Card.Header>
         <Accordion.Collapse eventKey="0">
           <Card.Body>
-            { onTerra ? (
-            <div>
-              <p>
-                1. Please select a Terra workspace to host the input dataset and run privacy-preserving computation on it.
-              </p>
-              <div className="mb-2">
-                <Dropdown
-                  onSelect={key => key && setSelectedWorkspace(key)}
-                  onToggle={setWorkspaceSearchDropdownOpen}
-                  show={workspaceSearchDropdownOpen}
-                >
-                  <Dropdown.Toggle as="div" className="form-select">
-                    <Form.Control
-                      type="text"
-                      placeholder="Search or Select Workspace..."
-                      value={workspaceSearchTerm}
-                      onChange={e => {
-                        setWorkspaceSearchTerm(e.target.value);
-                        if (filteredOptions.length && !workspaceSearchDropdownOpen) {
-                          setWorkspaceSearchDropdownOpen(true);
-                        }
-                      }}
-                      autoFocus
-                    />
-                  </Dropdown.Toggle>
+            {onTerra ? (
+              <div>
+                <p>
+                  1. Please select a Terra workspace to host the input dataset and run privacy-preserving computation on it.
+                </p>
+                <div className="mb-2">
+                  <Dropdown
+                    onSelect={key => key && setSelectedWorkspace(key)}
+                    onToggle={setWorkspaceSearchDropdownOpen}
+                    show={workspaceSearchDropdownOpen}
+                  >
+                    <Dropdown.Toggle as="div" className="form-select">
+                      <Form.Control
+                        type="text"
+                        placeholder="Search or Select Workspace..."
+                        value={workspaceSearchTerm}
+                        onChange={e => {
+                          setWorkspaceSearchTerm(e.target.value);
+                          if (filteredOptions.length && !workspaceSearchDropdownOpen) {
+                            setWorkspaceSearchDropdownOpen(true);
+                          }
+                        }}
+                        autoFocus
+                      />
+                    </Dropdown.Toggle>
 
-                  <Dropdown.Menu>
-                    {filteredOptions.map((option, index) => (
-                      <Dropdown.Item
-                        key={index}
-                        eventKey={`${option.namespace}/${option.name}`}
-                        onClick={() => setWorkspaceSearchTerm(`${option.namespace}/${option.name}`)}
-                      >
-                        {option.namespace}/{option.name}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                </Dropdown>
+                    <Dropdown.Menu>
+                      {filteredOptions.map((option, index) => (
+                        <Dropdown.Item
+                          key={index}
+                          eventKey={`${option.namespace}/${option.name}`}
+                          onClick={() => setWorkspaceSearchTerm(`${option.namespace}/${option.name}`)}
+                        >
+                          {option.namespace}/{option.name}
+                        </Dropdown.Item>
+                      ))}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </div>
               </div>
-            </div>
             ) : (
-            <div>
-              <p>
-                1. You should create a GCP (Google Cloud Platform) project that is dedicated to this study. If you are
-                new to GCP, go to{" "}
-                <a
-                  href="https://cloud.google.com/"
-                  className="text-decoration-none"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  https://cloud.google.com/
-                </a>{" "}
-                to set up a project.
-              </p>
-              <p className="px-2">
-                1a. You need to have the <code>gcloud.iam.roles.create</code> permission in your GCP project. If you are
-                the owner/creator of the project, this is automatically given. If you are within an organization such
-                that you are not the owner, please talk to your administrator to get the appropriate role. This could be
-                "owner", but there are also other roles (such as "Project IAM Admin") that have this permission.
-              </p>
-              <p className="px-2">
-                1b. You need to enable the
-                <a
-                  className="text-decoration-none"
-                  href="https://cloud.google.com/compute/docs/reference/rest/v1"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {" "}
-                  Compute Engine API{" "}
-                </a>
-                in your GCP account. If you don't know how to enable an API, see the Google documentation
-                <a
-                  href="https://cloud.google.com/endpoints/docs/openapi/enable-api"
-                  className="text-decoration-none"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {" "}
-                  here
-                </a>
-                .
-              </p>
-              <p className="px-2">
-                1c. <GivePermissions demo={demo} />
-              </p>
-            </div>
+              <div>
+                <p>
+                  1. You should create a GCP (Google Cloud Platform) project that is dedicated to this study. If you are
+                  new to GCP, go to{" "}
+                  <a
+                    href="https://cloud.google.com/"
+                    className="text-decoration-none"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    https://cloud.google.com/
+                  </a>{" "}
+                  to set up a project.
+                </p>
+                <p className="px-2">
+                  1a. You need to have the <code>gcloud.iam.roles.create</code> permission in your GCP project. If you are
+                  the owner/creator of the project, this is automatically given. If you are within an organization such
+                  that you are not the owner, please talk to your administrator to get the appropriate role. This could be
+                  "owner", but there are also other roles (such as "Project IAM Admin") that have this permission.
+                </p>
+                <p className="px-2">
+                  1b. You need to enable the
+                  <a
+                    className="text-decoration-none"
+                    href="https://cloud.google.com/compute/docs/reference/rest/v1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {" "}
+                    Compute Engine API{" "}
+                  </a>
+                  in your GCP account. If you don't know how to enable an API, see the Google documentation
+                  <a
+                    href="https://cloud.google.com/endpoints/docs/openapi/enable-api"
+                    className="text-decoration-none"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {" "}
+                    here
+                  </a>
+                  .
+                </p>
+                <p className="px-2">
+                  1c. <GivePermissions demo={demo} />
+                </p>
+              </div>
             )}
             <div className="text-end">
               <Button variant="success" onClick={() => setActiveKey("1")} disabled={onTerra && !selectedWorkspace}>
@@ -351,7 +351,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
         <Card.Header>2. Upload Data</Card.Header>
         <Accordion.Collapse eventKey="1">
           <Card.Body>
-            { onTerra ? (
+            {onTerra ? (
               <div>
                 <p>
                   Upload a folder with your data (unzipped) to the workspace bucket using the button below:
@@ -403,48 +403,48 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
                 </p>
               </div>
             ) : (
-            <div>
-              <p>
-                1. Upload a folder with your data (unzipped) to a Google cloud storage bucket in your GCP (Google Cloud
-                Platform) project. If you are unfamiliar with Google Cloud Storage, see the Google documentation
-                <a
-                  href="https://cloud.google.com/storage/docs/quickstart-console"
-                  className="text-decoration-none"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {" "}
-                  here{" "}
-                </a>
-                (the default configuration/settings for the bucket are fine).
-              </p>
-              <p>2. Please set the following user-specific parameters:</p>
-              <form onSubmit={handleSubmitParameters}>
-                <div className="row mb-3 p-3 bg-light">
-                  {["GCP_PROJECT", "DATA_PATH"].map((key) => (
-                    <React.Fragment key={key}>
-                      <label htmlFor={key} className="col-sm-3 col-form-label text-start">
-                        {parameters[key].name}
-                      </label>
-                      <div className="col-sm-9">
-                        <input
-                          type="text"
-                          className="form-control"
-                          name={key}
-                          id={key}
-                          defaultValue={parameters[key].value}
-                        />
-                      </div>
-                      <p className="mt-3 text-start text-muted">{parameters[key].description}</p>
-                    </React.Fragment>
-                  ))}
-                  <div className="text-center">{submitFeedback}</div>
-                  <div className="d-flex flex-wrap justify-content-center">
-                    <input type="submit" name="save" value="Save" className="btn btn-primary me-2 mb-2 mb-sm-0" />
+              <div>
+                <p>
+                  1. Upload a folder with your data (unzipped) to a Google cloud storage bucket in your GCP (Google Cloud
+                  Platform) project. If you are unfamiliar with Google Cloud Storage, see the Google documentation
+                  <a
+                    href="https://cloud.google.com/storage/docs/quickstart-console"
+                    className="text-decoration-none"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {" "}
+                    here{" "}
+                  </a>
+                  (the default configuration/settings for the bucket are fine).
+                </p>
+                <p>2. Please set the following user-specific parameters:</p>
+                <form onSubmit={handleSubmitParameters}>
+                  <div className="row mb-3 p-3 bg-light">
+                    {["GCP_PROJECT", "DATA_PATH"].map((key) => (
+                      <React.Fragment key={key}>
+                        <label htmlFor={key} className="col-sm-3 col-form-label text-start">
+                          {parameters[key].name}
+                        </label>
+                        <div className="col-sm-9">
+                          <input
+                            type="text"
+                            className="form-control"
+                            name={key}
+                            id={key}
+                            defaultValue={parameters[key].value}
+                          />
+                        </div>
+                        <p className="mt-3 text-start text-muted">{parameters[key].description}</p>
+                      </React.Fragment>
+                    ))}
+                    <div className="text-center">{submitFeedback}</div>
+                    <div className="d-flex flex-wrap justify-content-center">
+                      <input type="submit" name="save" value="Save" className="btn btn-primary me-2 mb-2 mb-sm-0" />
+                    </div>
                   </div>
-                </div>
-              </form>
-            </div>
+                </form>
+              </div>
             )}
             <div className="text-end">
               <Button variant="success" onClick={() => setActiveKey("0")}>
@@ -548,7 +548,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
               <p>Options for what happens on protocol completion:</p>
             </div>
             <form onSubmit={handleSubmitParameters}>
-              { (onTerra ? ["SEND_RESULTS"] : ["DELETE_VM", "SEND_RESULTS"]).map((key) => (
+              {(onTerra ? ["SEND_RESULTS"] : ["DELETE_VM", "SEND_RESULTS"]).map((key) => (
                 <div className="text-start row" key={key}>
                   <label htmlFor={key} className="col-sm-3 col-form-label text-start">
                     {parameters[key]?.name}
@@ -563,7 +563,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
                 </div>
               ))}
 
-              { !onTerra && (
+              {!onTerra && (
                 <div className="text-start row">
                   <label htmlFor="RESULTS_PATH" className="col-sm-3 col-form-label text-start">
                     {parameters.RESULTS_PATH.name}

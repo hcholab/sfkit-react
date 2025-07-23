@@ -4,11 +4,11 @@ import MachineRecommendation from "../components/instructions/MachineRecommendat
 import ProcessSteps from "../components/instructions/ProcessSteps";
 import TabContent from "../components/instructions/TabContent";
 import TabNavigation from "../components/instructions/TabNavigation";
-import { useTerra } from "../hooks/useTerra";
+import { useConfig } from "../hooks/useTerra";
 import info_square from "../static/images/info-square.svg";
 
 const Instructions: React.FC = () => {
-  const { onTerra } = useTerra();
+  const { onTerra } = useConfig();
   const [activeTab1, setActiveTab1] = useState<string>("data-mpcgwas");
   const [activeTab2, setActiveTab2] = useState<string>("auto");
   const sfkit = <i>sfkit</i>;
@@ -27,7 +27,7 @@ const Instructions: React.FC = () => {
           <p>
             Once the study is configured on the website, you can launch it in two different modes:
           </p>
-          { onTerra ? (
+          {onTerra ? (
             <>
               <p>
                 1. You can upload data to your Terra workspace through Terra or {sfkit} portal, and then
@@ -62,7 +62,7 @@ const Instructions: React.FC = () => {
             To run a study using <b>sfkit</b>, you will need{onTerra ? "" : " either"}:
           </p>
           <div>
-            { onTerra ? (
+            {onTerra ? (
               <div style={{ marginLeft: "20px" }}>
                 <p>
                   1. A Terra workspace.
@@ -136,13 +136,13 @@ const Instructions: React.FC = () => {
               </li>
               <li>
                 Either let {sfkit} portal automatically launch the protocol in your{" "}
-                { onTerra ? "Terra workspace" : "GCP project"}, <b>OR</b>
+                {onTerra ? "Terra workspace" : "GCP project"}, <b>OR</b>
               </li>
               <li>
                 Launch it manually{" "}
-                { onTerra && "in a Terra interactive analysis machine, or "}
+                {onTerra && "in a Terra interactive analysis machine, or "}
                 on your own machine
-                { onTerra && " outside of Terra"}.
+                {onTerra && " outside of Terra"}.
               </li>
             </ul>
           </div>

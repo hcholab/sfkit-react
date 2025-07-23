@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useTerra } from "../../hooks/useTerra";
+import { useConfig } from "../../hooks/useTerra";
 import auth_image from "../../static/images/sfkit/auth.png";
 import data_image from "../../static/images/sfkit/data.png";
 import keys_image from "../../static/images/sfkit/keys.png";
@@ -15,7 +15,7 @@ interface Step {
 }
 
 const ProcessSteps: React.FC = () => {
-  const { onTerra } = useTerra();
+  const { onTerra } = useConfig();
   const [activeStep, setActiveStep] = useState<string>("");
   const [hoveredStep, setHoveredStep] = useState<string>("");
   const sfkit = <i>sfkit</i>;
@@ -29,11 +29,11 @@ const ProcessSteps: React.FC = () => {
         <p>
           <b>{`1. Authentication`}</b>: Authenticate your machine with {sfkit}. This allows {sfkit} to ensure that the machine
           running the protocol is indeed yours. This is achieved by validating
-          { onTerra
-          ? <> cloud-native default application credentials available on a Terra machine,
+          {onTerra
+            ? <> cloud-native default application credentials available on a Terra machine,
               or alternatively from a Terra Pet Service Account downloaded from {sfkit} portal.
             </>
-          : <> a secure key that is copied from the website to the machine.</>}
+            : <> a secure key that is copied from the website to the machine.</>}
 
         </p>
       ),
@@ -126,9 +126,8 @@ const ProcessSteps: React.FC = () => {
           <div
             key={step.id}
             style={{ flex: "0 0 20%", maxWidth: "20%" }}
-            className={`my-3 p-1 btn d-flex align-items-stretch ${
-              hoveredStep === step.id ? "border border-secondary" : ""
-            }`}
+            className={`my-3 p-1 btn d-flex align-items-stretch ${hoveredStep === step.id ? "border border-secondary" : ""
+              }`}
             onMouseEnter={() => {
               setHoveredStep(step.id);
               setActiveStep(step.id);

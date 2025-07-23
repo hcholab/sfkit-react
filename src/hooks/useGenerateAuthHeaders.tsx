@@ -1,13 +1,13 @@
 import { useMemo } from "react";
 import { useAuth } from "react-oidc-context";
 import { useParams } from "react-router-dom";
-import { useTerra } from "./useTerra";
+import { useConfig } from "./useTerra";
 
 const useGenerateAuthHeaders = (): Record<string, string> => {
   const { auth_key } = useParams();
   const auth = useAuth();
   const accessToken = auth.user?.access_token || "";
-  const { onTerra } = useTerra();
+  const { onTerra } = useConfig();
 
   return useMemo(() => {
     const headers: Record<string, string> = {

@@ -1,9 +1,9 @@
 import React from "react";
-import { useTerra } from "../hooks/useTerra";
+import { useConfig } from "../hooks/useTerra";
 import info_square from "../static/images/info-square.svg";
 
 const Workflows: React.FC = () => {
-  const { dev } = useTerra();
+  const { dev } = useConfig();
 
   return (
     <section className="py-5">

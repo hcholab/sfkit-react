@@ -2,7 +2,7 @@ import React, { Fragment, useCallback, useEffect, useRef, useState } from "react
 import { useParams } from "react-router-dom";
 import { useCheckNatType } from "../../hooks/useCheckNatType";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
-import { useTerra } from "../../hooks/useTerra";
+import { useConfig } from "../../hooks/useTerra";
 import { DryRunFunc } from "../../pages/studies/Study";
 import { ParameterGroup } from "../../types/study";
 import ConfigureComputeEnvModal from "./ConfigureStudyModal";
@@ -45,7 +45,7 @@ const InstructionArea: React.FC<Props> = ({
   handleStartWorkflow,
   handleDownloadAuthKey,
 }) => {
-  const { apiBaseUrl, onTerra } = useTerra();
+  const { apiBaseUrl, onTerra, dev } = useConfig();
   const { auth_key = "" } = useParams();
   const [showModal, setShowModal] = useState(false);
   const handleShow = () => setShowModal(true);
@@ -211,7 +211,7 @@ const InstructionArea: React.FC<Props> = ({
             personalParameters={personalParameters}
             failStatus={failStatus}
           />
-          <hr/>OR<hr/>
+          <hr />OR<hr />
         </>
       ) : null}
       {status === "" ? (
@@ -225,9 +225,9 @@ const InstructionArea: React.FC<Props> = ({
             </a>
             on your machine.
           </p>
-          <div className="my-2" style={{ borderTop: 'dashed #ccc' }}/>
+          <div className="my-2" style={{ borderTop: 'dashed #ccc' }} />
           <p>
-            { onTerra ? (
+            {onTerra ? (
               <>
                 If you are running the study on a machine <b><i>outside of Terra</i></b>, you
               </>
@@ -236,11 +236,11 @@ const InstructionArea: React.FC<Props> = ({
                 On your machine, you
               </>
             )} will need to download <code>
-            { onTerra ? "service_account_key.json" : "auth_key.txt" }
-            </code> { onTerra && "and run the following command " }
+              {onTerra ? "service_account_key.json" : "auth_key.txt"}
+            </code> {onTerra && "and run the following command "}
             to authenticate the <i>sfkit</i> command-line interface:
           </p>
-          { onTerra && (
+          {onTerra && (
             <>
               {renderCode("export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service_account_key.json")}
               <p>
@@ -257,7 +257,7 @@ const InstructionArea: React.FC<Props> = ({
           )}
           <p className="text-center mt-2">
             <button className="btn btn-primary btn-sm" onClick={handleDownloadAuthKey}>
-              Download { onTerra ? "Service Account Key" : "Auth Key" }
+              Download {onTerra ? "Service Account Key" : "Auth Key"}
             </button>
           </p>
 
@@ -278,12 +278,12 @@ const InstructionArea: React.FC<Props> = ({
 
             </p>
             {isCheckingNatType === false && (
-              <div className={ "alert mt-2 alert-" + (
+              <div className={"alert mt-2 alert-" + (
                 isSymmetricNat === true ? "danger" : (
                   isSymmetricNat === false ? "success" : "warning"
                 )
               )}>
-                { isSymmetricNat === true ? (
+                {isSymmetricNat === true ? (
                   <>
                     <p>
                       <b>Error:</b> Your NAT is <i>symmetric</i>.
@@ -315,7 +315,7 @@ const InstructionArea: React.FC<Props> = ({
             )}
           </div>
 
-          <div className="my-2" style={{ borderTop: 'dashed #ccc' }}/>
+          <div className="my-2" style={{ borderTop: 'dashed #ccc' }} />
           <p>
             To start <i>sfkit</i> protocol on your machine, first check that the study is set up correctly:
           </p>
@@ -332,19 +332,19 @@ const InstructionArea: React.FC<Props> = ({
               Validate Study
             </button>
           </p>
-          { isStudyValid === true ? (
-              <div className="alert alert-success text-center">
-                ✔ Study is valid.
+          {isStudyValid === true ? (
+            <div className="alert alert-success text-center">
+              ✔ Study is valid.
+            </div>
+          ) : (
+            isStudyValid === false ? (
+              <div className="alert alert-danger">
+                <b>Error:</b> {failStatus}
               </div>
             ) : (
-              isStudyValid === false ? (
-                <div className="alert alert-danger">
-                  <b>Error:</b> {failStatus}
-                </div>
-              ) : (
-                <></>
-              )
+              <></>
             )
+          )
           }
           <p>
             Then, set some environment variables:

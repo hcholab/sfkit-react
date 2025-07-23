@@ -13,7 +13,7 @@ import StudyActionButtons from "../../components/studies/StudyActionButtons";
 import StudyHeader from "../../components/studies/StudyHeader";
 import { getDb } from "../../hooks/firebase";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
-import { useTerra } from "../../hooks/useTerra";
+import { useConfig } from "../../hooks/useTerra";
 
 const fetchStudy = async (apiBaseUrl: string, study_id: string, headers: Record<string, string>) => {
   try {
@@ -34,10 +34,10 @@ const fetchStudy = async (apiBaseUrl: string, study_id: string, headers: Record<
   }
 };
 
-export type DryRunFunc = (opts?: {dryRun?: boolean}) => Promise<void>;
+export type DryRunFunc = (opts?: { dryRun?: boolean }) => Promise<void>;
 
 const Study: React.FC = () => {
-  const { onTerra, apiBaseUrl, samApiUrl } = useTerra();
+  const { onTerra, apiBaseUrl, samApiUrl } = useConfig();
   const navigate = useNavigate();
   const { study_id = "", auth_key = "" } = useParams();
   const headers = useGenerateAuthHeaders();

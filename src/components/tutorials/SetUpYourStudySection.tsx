@@ -2,7 +2,7 @@ import React from "react";
 import TabNavigation from "../instructions/TabNavigation";
 
 import { Link } from "react-router-dom";
-import { useTerra } from "../../hooks/useTerra";
+import { useConfig } from "../../hooks/useTerra";
 import mpcgwas1 from "../../static/images/sample_parameters/mpcgwas1.png";
 import mpcgwas2 from "../../static/images/sample_parameters/mpcgwas2.png";
 import sfgwas1 from "../../static/images/sample_parameters/sfgwas1.png";
@@ -22,7 +22,7 @@ interface SectionProps {
 }
 
 const SetUpYourStudySection: React.FC<SectionProps> = ({ activeTab, setActiveTab }) => {
-  const { onTerra } = useTerra();
+  const { onTerra } = useConfig();
   return (
     <div>
       <h4 className="my-4 fw-normal">Set Up Your Study</h4>
@@ -149,7 +149,7 @@ const SetUpYourStudySection: React.FC<SectionProps> = ({ activeTab, setActiveTab
             </button> or alternatively,
             the manual instructions on the study page.
           </p>
-          { !onTerra && (
+          {!onTerra && (
             <>
               <p>
                 Note that this will require the users to use their own GCP projects, in contrast to the first tutorial.

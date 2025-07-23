@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useAuth } from "react-oidc-context";
 import { useNavigate } from 'react-router-dom';
 import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
-import { useTerra } from "../hooks/useTerra";
+import { useConfig } from "../hooks/useTerra";
 
 const idleTimeoutMins = 15; // minutes of inactivity
 const idleTimeout = idleTimeoutMins * 60 * 1000;
@@ -11,7 +11,7 @@ const idleEvents = ['click', 'keydown'];
 export const IdleStatusMonitor = () => {
   const auth = useAuth();
   const headers = useGenerateAuthHeaders();
-  const { onTerra, samApiUrl } = useTerra();
+  const { onTerra, samApiUrl } = useConfig();
   const timeoutId = useRef<number>();
   const navigate = useNavigate();
 

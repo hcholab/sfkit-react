@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useTerra } from "../../hooks/useTerra";
+import { useConfig } from "../../hooks/useTerra";
 import choose_title from "../../static/images/tutorial/choose_title.png";
 import choose_vm_size from "../../static/images/tutorial/choose_vm_size.png";
 import choose_workflow from "../../static/images/tutorial/choose_workflow.png";
@@ -16,7 +16,7 @@ import upload_data from "../../static/images/tutorial/upload_data.png";
 import upload_data_terra from "../../static/images/tutorial/upload_data_terra.png";
 
 const PrimaryTutorial: React.FC = () => {
-  const { onTerra } = useTerra();
+  const { onTerra } = useConfig();
   return (
     <div>
       <div>
@@ -41,7 +41,7 @@ const PrimaryTutorial: React.FC = () => {
       </div>
 
       {/* TODO: update video to match new UI */}
-      { false && (
+      {false && (
         <>
           <h4 className="my-4 fw-normal">Video Walkthrough</h4>
           <div className="row">
@@ -177,12 +177,12 @@ const PrimaryTutorial: React.FC = () => {
           <ol>
             <li>
               to let <i>sfkit</i> portal automatically create a computing environment
-              { onTerra ? (<>, <i>optionally</i> upload your data to Terra, </>) : " "} and launch the computational protocol,
+              {onTerra ? (<>, <i>optionally</i> upload your data to Terra, </>) : " "} and launch the computational protocol,
               according to a few parameters you choose, OR
             </li>
             <li>
               to launch it manually on your own machine
-              { onTerra ? ", either inside or outside of Terra" : ""},
+              {onTerra ? ", either inside or outside of Terra" : ""},
               following the instructions for <i>sfkit</i> command-line interface (CLI).
             </li>
           </ol>
@@ -213,7 +213,7 @@ const PrimaryTutorial: React.FC = () => {
       </div>
       <div className="row">
         <p>
-          { onTerra ? <>
+          {onTerra ? <>
             1. Please pick a Terra workspace to run the demo study in.
           </> : <>
             <p>
@@ -241,7 +241,7 @@ const PrimaryTutorial: React.FC = () => {
 
       <div className="row">
         <p>
-          { onTerra ? <>
+          {onTerra ? <>
             2. For the sake of the demo, you can ignore the data path. In a real study,
             you would need to upload your data to the Terra workspace, either:
             <ul>
@@ -273,9 +273,9 @@ const PrimaryTutorial: React.FC = () => {
             </span>{" "}
             if you have made any changes.
           </>} Once you are done with this step, you can click{" "}
-            <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
-              Next
-            </span>
+          <span className="btn btn-success btn-sm" style={{ pointerEvents: "none" }}>
+            Next
+          </span>
         </p>
       </div>
 

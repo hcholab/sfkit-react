@@ -1,5 +1,5 @@
 import React from "react";
-import { useTerra } from "../../hooks/useTerra";
+import { useConfig } from "../../hooks/useTerra";
 
 interface TabContentProps {
   activeTab: string;
@@ -7,7 +7,7 @@ interface TabContentProps {
 }
 
 const TabContent: React.FC<TabContentProps> = ({ activeTab, tabType }) => {
-  const { onTerra } = useTerra();
+  const { onTerra } = useConfig();
 
   return (
     <div className="row tab-content">
@@ -165,7 +165,7 @@ const TabContent: React.FC<TabContentProps> = ({ activeTab, tabType }) => {
             <div className="row mt-3">
               <p>
                 The sfkit portal will
-                { onTerra ? " launch a Terra WDL workflow " : " set up the machine and run the study "}
+                {onTerra ? " launch a Terra WDL workflow " : " set up the machine and run the study "}
                 for you. This option is currently supported
                 using the
                 <a
@@ -177,7 +177,7 @@ const TabContent: React.FC<TabContentProps> = ({ activeTab, tabType }) => {
                   {" "}
                   Google Cloud Platform (GCP)
                 </a>.
-                { onTerra ? " " : " You will need to give sfkit limited permissions to interact with your GCP project. " }
+                {onTerra ? " " : " You will need to give sfkit limited permissions to interact with your GCP project. "}
                 You will be walked through the specifics of this process once you create a study
                 and press <i>Configure Compute Environment</i> button.
               </p>
@@ -203,7 +203,7 @@ const TabContent: React.FC<TabContentProps> = ({ activeTab, tabType }) => {
                   sfkit Command-Line Interface
                 </a>{" "}
                 will walk you through each step of the workflow so you can run the study on your own machine
-                { onTerra ? ", either inside or outside of Terra" : "" }.
+                {onTerra ? ", either inside or outside of Terra" : ""}.
               </p>
               <p>
                 This is recommended for users who are familiar with the command line and want to directly control their

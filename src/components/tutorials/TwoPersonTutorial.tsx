@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { useTerra } from "../../hooks/useTerra";
+import { useConfig } from "../../hooks/useTerra";
 import ResultsSection from "./ResultsSection";
 import SampleDataSection from "./SampleDataSection";
 import SetUpYourStudySection from "./SetUpYourStudySection";
 
 const TwoPersonTutorial: React.FC = () => {
-  const { onTerra } = useTerra();
+  const { onTerra } = useConfig();
   const [activeTab, setActiveTab] = useState<string>("data-sfpca");
 
   return (
@@ -48,7 +48,7 @@ const TwoPersonTutorial: React.FC = () => {
           </span>{" "}
           button (or the equivalent for a different workflow), or manually with <i>sfkit</i> CLI (this is the same as in
           Tutorial 1). The study will run, and you'll be able to see its status on the study page. You may also inspect
-          the newly created { onTerra ? "workflow submission in your Terra workspace" : "VM in your GCP project"}.
+          the newly created {onTerra ? "workflow submission in your Terra workspace" : "VM in your GCP project"}.
         </p>
       </div>
 

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { useTerra } from "../../hooks/useTerra";
+import { useConfig } from "../../hooks/useTerra";
 
 const ChooseWorkflow: React.FC = () => {
   const navigate = useNavigate();
   const [studyType, setStudyType] = useState("MPC-GWAS");
   const [showModal, setShowModal] = useState(false);
-  const { dev } = useTerra();
+  const { dev } = useConfig();
 
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
