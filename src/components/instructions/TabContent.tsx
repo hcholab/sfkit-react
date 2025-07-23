@@ -1,5 +1,5 @@
 import React from "react";
-import { useConfig } from "../../hooks/useTerra";
+import { useConfig } from "../../hooks/useConfig";
 
 interface TabContentProps {
   activeTab: string;

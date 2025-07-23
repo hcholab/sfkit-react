@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { useConfig } from "../../hooks/useTerra";
+import { useConfig } from "../../hooks/useConfig";
 
 const ChooseWorkflow: React.FC = () => {
   const navigate = useNavigate();

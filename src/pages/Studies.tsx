@@ -7,7 +7,7 @@ import DisplayStudy from "../components/studies/DisplayStudy";
 import { getDb } from "../hooks/firebase";
 import useFirestore from "../hooks/useFirestore";
 import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
-import { useConfig } from "../hooks/useTerra";
+import { useConfig } from "../hooks/useConfig";
 import { Study } from "../types/study";
 
 const Studies: React.FC = () => {

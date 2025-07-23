@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useConfig } from "../../hooks/useTerra";
+import { useConfig } from "../../hooks/useConfig";
 import choose_title from "../../static/images/tutorial/choose_title.png";
 import choose_vm_size from "../../static/images/tutorial/choose_vm_size.png";
 import choose_workflow from "../../static/images/tutorial/choose_workflow.png";

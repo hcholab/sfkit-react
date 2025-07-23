@@ -1,5 +1,5 @@
 import React from "react";
-import { useConfig } from "../hooks/useTerra";
+import { useConfig } from "../hooks/useConfig";
 import info_square from "../static/images/info-square.svg";
 
 const Workflows: React.FC = () => {

@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useAuth } from "react-oidc-context";
 import { useNavigate } from 'react-router-dom';
 import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
-import { useConfig } from "../hooks/useTerra";
+import { useConfig } from "../hooks/useConfig";
 
 const idleTimeoutMins = 15; // minutes of inactivity
 const idleTimeout = idleTimeoutMins * 60 * 1000;

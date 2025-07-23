@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Accordion, Alert, Button, Card, Dropdown, Form, ProgressBar } from "react-bootstrap";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
-import { useConfig } from "../../hooks/useTerra";
+import { useConfig } from "../../hooks/useConfig";
 import { DryRunFunc } from "../../pages/studies/Study";
 import info_square from "../../static/images/info-square.svg";
 import { ParameterGroup } from "../../types/study";

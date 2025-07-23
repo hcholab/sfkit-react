@@ -2,7 +2,7 @@ import React from "react";
 import TabNavigation from "../instructions/TabNavigation";
 
 import { Link } from "react-router-dom";
-import { useConfig } from "../../hooks/useTerra";
+import { useConfig } from "../../hooks/useConfig";
 import mpcgwas1 from "../../static/images/sample_parameters/mpcgwas1.png";
 import mpcgwas2 from "../../static/images/sample_parameters/mpcgwas2.png";
 import sfgwas1 from "../../static/images/sample_parameters/sfgwas1.png";

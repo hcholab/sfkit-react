@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useConfig } from "../../hooks/useTerra";
+import { useConfig } from "../../hooks/useConfig";
 import ResultsSection from "./ResultsSection";
 import SampleDataSection from "./SampleDataSection";
 import SetUpYourStudySection from "./SetUpYourStudySection";

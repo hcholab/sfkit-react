@@ -2,7 +2,7 @@ import React, { Fragment, useCallback, useEffect, useRef, useState } from "react
 import { useParams } from "react-router-dom";
 import { useCheckNatType } from "../../hooks/useCheckNatType";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
-import { useConfig } from "../../hooks/useTerra";
+import { useConfig } from "../../hooks/useConfig";
 import { DryRunFunc } from "../../pages/studies/Study";
 import { ParameterGroup } from "../../types/study";
 import ConfigureComputeEnvModal from "./ConfigureStudyModal";

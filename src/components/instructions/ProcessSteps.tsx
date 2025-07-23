@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useConfig } from "../../hooks/useTerra";
+import { useConfig } from "../../hooks/useConfig";
 import auth_image from "../../static/images/sfkit/auth.png";
 import data_image from "../../static/images/sfkit/data.png";
 import keys_image from "../../static/images/sfkit/keys.png";

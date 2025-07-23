@@ -4,7 +4,7 @@ import MachineRecommendation from "../components/instructions/MachineRecommendat
 import ProcessSteps from "../components/instructions/ProcessSteps";
 import TabContent from "../components/instructions/TabContent";
 import TabNavigation from "../components/instructions/TabNavigation";
-import { useConfig } from "../hooks/useTerra";
+import { useConfig } from "../hooks/useConfig";
 import info_square from "../static/images/info-square.svg";
 
 const Instructions: React.FC = () => {
