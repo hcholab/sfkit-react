@@ -1,4 +1,5 @@
 import React from "react";
+import { useConfig } from "../../hooks/useConfig";
 
 interface TabNavigationProps {
   activeTab: string;
@@ -7,6 +8,8 @@ interface TabNavigationProps {
 }
 
 const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, setActiveTab, tabType }) => {
+  const { dev } = useConfig();
+
   const workflowTabs = [
     { id: "data-mpcgwas", label: "MPC-GWAS workflow" },
     { id: "data-sfgwas", label: "SF-GWAS workflow" },
@@ -14,6 +17,10 @@ const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, setActiveTab, 
     { id: "data-sfrelate", label: "SF-Relate workflow" },
     { id: "data-securedti", label: "Secure-DTI workflow" },
   ];
+
+  if (dev) {
+    workflowTabs.splice(2, 0, { id: "data-sfgwas-lmm", label: "SF-GWAS-LMM workflow" });
+  }
 
   const configTabs = [
     { id: "auto", label: "Automatic" },

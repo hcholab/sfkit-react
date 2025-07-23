@@ -74,6 +74,19 @@ const SampleDataSection: React.FC<SectionProps> = ({ activeTab, setActiveTab }) 
               </a>
             </div>
           </div>
+          <div
+            className={`container tab-pane fade ${activeTab === "data-sfgwas-lmm" ? "show active" : ""}`}
+            id="data-sfgwas-lmm"
+          >
+            <div className="d-flex justify-content-around align-items-center">
+              <a className="btn btn-secondary" href={`${BASE_URL}/sfgwas_lmm_p1.zip`}>
+                Party 1 SF-GWAS-LMM Sample Data
+              </a>
+              <a className="btn btn-secondary" href={`${BASE_URL}/sfgwas_lmm_p2.zip`}>
+                Party 2 SF-GWAS-LMM Sample Data
+              </a>
+            </div>
+          </div>
           <div className={`container tab-pane fade ${activeTab === "data-sfpca" ? "show active" : ""}`} id="data-sfpca">
             <div className="d-flex justify-content-around align-items-center">
               <a className="btn btn-secondary" href={`${BASE_URL}/pca_p1.zip`}>
@@ -102,7 +115,7 @@ const SampleDataSection: React.FC<SectionProps> = ({ activeTab, setActiveTab }) 
             id="data-securedti"
           >
             <div className="d-flex justify-content-around align-items-center">
-            <a className="btn btn-secondary" href={`${BASE_URL}/securedti_p0.zip`}>
+              <a className="btn btn-secondary" href={`${BASE_URL}/securedti_p0.zip`}>
                 CP0 Secure-DTI Sample Data
               </a>
               <a className="btn btn-secondary" href={`${BASE_URL}/securedti_p1.zip`}>
