@@ -372,7 +372,7 @@ const InstructionArea: React.FC<Props> = ({
                   -v "\${GOOGLE_APPLICATION_CREDENTIALS}":/key.json:ro \\
                   -e GOOGLE_APPLICATION_CREDENTIALS=/key.json \\
                   -e SFKIT_API_URL \\
-                  us-central1-docker.pkg.dev/dsp-artifact-registry/sfkit/sfkit all \\
+                  ${"ghcr.io/hcholab/sfkit" + (dev ? ":dev" : "")} all \\
                   --data_path /data --study_id "\${SFKIT_STUDY_ID}"`
               )}
             </li>
