@@ -29,3 +29,4 @@ steps:
       --region $_SERVICE_REGION
       --service-account $_SERVICE_ACCOUNT
       --min-instances 1
+      --max-instances 5
