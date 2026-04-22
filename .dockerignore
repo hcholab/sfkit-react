@@ -4,7 +4,7 @@
 !*.html
 !*.json
 !*.ts
-!*.yaml
+!pnpm-*.yaml
 !config/
 !eslint.config.js
 !src/
