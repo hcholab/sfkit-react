@@ -6,7 +6,7 @@ substitutions:
   _SERVICE_NAME: sfkit-react
   _SERVICE_REGION: us-central1
   _SERVICE_ACCOUNT: ${_SERVICE_NAME}-sa@${PROJECT_ID}.iam.gserviceaccount.com
-  _IMAGE: ${_GCR_HOSTNAME}/${PROJECT_ID}/${_SERVICE_NAME}:${SHORT_SHA}
+  _IMAGE: ${_GCR_HOSTNAME}/${PROJECT_ID}/${_SERVICE_NAME}
 
 options:
   logging: CLOUD_LOGGING_ONLY
@@ -15,14 +15,17 @@ options:
 steps:
   - name: gcr.io/cloud-builders/docker
     script: >-
-      docker buildx build --push -t $_IMAGE
+      docker buildx create --use --driver docker-container &&
+      docker buildx build --push -t $_IMAGE:$SHORT_SHA
+      --cache-from type=registry,ref=$_IMAGE:cache
+      --cache-to type=registry,ref=$_IMAGE:cache,mode=max
       --build-arg APP_VERSION=$SHORT_SHA
       --build-arg BUILD_VERSION=$SHORT_SHA .
 
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
     script: >-
       gcloud run deploy $_SERVICE_NAME
-      --image $_IMAGE
+      --image $_IMAGE:$SHORT_SHA
       --region $_SERVICE_REGION
       --service-account $_SERVICE_ACCOUNT
       --min-instances 1
