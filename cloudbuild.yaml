@@ -28,4 +28,5 @@ steps:
       --image $_IMAGE:$SHORT_SHA
       --region $_SERVICE_REGION
       --service-account $_SERVICE_ACCOUNT
+      --allow-unauthenticated
       --min-instances 1
