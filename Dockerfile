@@ -3,16 +3,17 @@ FROM node@sha256:d1b3b4da11eefd5941e7f0b9cf17783fc99d9c6fc34884a665f40a06dbdfc94
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci
+RUN corepack enable
+COPY package.json pnpm-*.yaml ./
+RUN pnpm install --frozen-lockfile
 
 COPY . .
 
 ARG SERVICE_NAME=sfkit-react-dev
 RUN cp config/${SERVICE_NAME}.json public/appConfig.json
 
-RUN npm run lint
-RUN npm run build
+RUN pnpm run lint
+RUN pnpm run build
 
 ARG APP_VERSION=latest
 ARG BUILD_VERSION=latest
