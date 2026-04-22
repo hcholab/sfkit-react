@@ -15,7 +15,7 @@ options:
 steps:
   - name: gcr.io/cloud-builders/docker
     script: >-
-      docker build --push -t $_IMAGE
+      docker buildx build --push -t $_IMAGE
       --build-arg APP_VERSION=$SHORT_SHA
       --build-arg BUILD_VERSION=$SHORT_SHA .
 
