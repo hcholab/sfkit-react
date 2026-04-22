@@ -24,6 +24,6 @@ steps:
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
     script: >-
       gcloud run deploy $_SERVICE_NAME
-        --image $_IMAGE:$SHORT_SHA
-        --region $_SERVICE_REGION
-        --min-instances 1
+      --image $_IMAGE:$SHORT_SHA
+      --region $_SERVICE_REGION
+      --min-instances 1
