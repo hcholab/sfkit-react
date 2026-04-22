@@ -1,4 +1,5 @@
-FROM node:lts-alpine AS build
+#    node:lts-alpine on 04/16/2026
+FROM node@sha256:d1b3b4da11eefd5941e7f0b9cf17783fc99d9c6fc34884a665f40a06dbdfc94f AS build
 
 WORKDIR /app
 
@@ -18,7 +19,8 @@ ARG BUILD_VERSION=latest
 
 RUN echo "{\"appVersion\": \"$APP_VERSION\", \"buildVersion\": \"$BUILD_VERSION\"}" > dist/version
 
-FROM us.gcr.io/broad-dsp-gcr-public/base/nginx:distroless
+#    cgr.dev/chainguard/nginx:latest on 04/17/2026
+FROM cgr.dev/chainguard/nginx@sha256:4f95b13f583eff562608d0822bb03acc15829a681b86fa8cd454c20067e06f3c
 
 COPY nginx.conf /etc/nginx/conf.d/nginx.default.conf
 COPY --from=build /app/dist /usr/share/nginx/html/
