@@ -1,14 +1,3 @@
-import { Parameter, ParameterType } from "../types/study";
-
-// The API tells us which control to render via the parameter's "type", defaulting to "number".
-// Studies created before "type" existed have no such field, so fall back to recognizing the
-// string values a boolean parameter can hold.
-export const parameterType = (parameter?: Parameter): ParameterType => {
-  if (parameter?.type) return parameter.type;
-  if (parameter?.value === "true" || parameter?.value === "false") return "boolean";
-  return "number";
-};
-
 export const submitStudyParameters = async (
   eventForm: React.FormEvent<HTMLFormElement> | FormData,
   apiBaseUrl: string,

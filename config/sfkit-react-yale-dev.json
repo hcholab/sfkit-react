@@ -1,7 +1,0 @@
-{
-  "apiBaseUrl": "TODO",
-  "auth": {
-    "client_id": "TODO",
-    "authority": "https://accounts.google.com"
-  }
-}
