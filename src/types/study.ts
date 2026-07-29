@@ -4,11 +4,13 @@ export interface Message {
   body: string;
 }
 
-type Parameter = {
+export type ParameterType = "text" | "number" | "boolean";
+
+export type Parameter = {
   name: string;
   description: string;
   value: string | number;
-  type?: "text" | "number";
+  type?: ParameterType;
 };
 
 type ParameterIndex = {
