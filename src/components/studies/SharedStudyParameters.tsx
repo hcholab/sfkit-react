@@ -1,12 +1,47 @@
 import React from "react";
 import { Accordion, Col, Form, Row } from "react-bootstrap";
-import { Study } from "../../types/study";
+import { Parameter, Study } from "../../types/study";
+import { parameterType } from "../../utils/formUtils";
 
 interface SharedStudyParametersProps {
   study: Study;
   isOwner: boolean;
   userId: string;
 }
+
+interface ParameterControlProps {
+  parameter: Parameter;
+  parameterName: string;
+  disabled: boolean;
+  required?: boolean;
+}
+
+// Renders the form control matching the parameter's type: a No/Yes select for booleans (whose value
+// is submitted as the string "false"/"true"), otherwise a text or number input.
+const ParameterControl: React.FC<ParameterControlProps> = ({ parameter, parameterName, disabled, required }) => {
+  const type = parameterType(parameter);
+
+  if (type === "boolean") {
+    return (
+      <Form.Select id={parameterName} name={parameterName} defaultValue={String(parameter.value)} disabled={disabled}>
+        <option value="false">No</option>
+        <option value="true">Yes</option>
+      </Form.Select>
+    );
+  }
+
+  return (
+    <Form.Control
+      type={type}
+      id={parameterName}
+      name={parameterName}
+      {...(type === "number" && { min: "0", step: "any" })}
+      defaultValue={parameter.value}
+      disabled={disabled}
+      required={required}
+    />
+  );
+};
 
 const SharedStudyParameters: React.FC<SharedStudyParametersProps> = ({ study, isOwner, userId }) => {
   return (
@@ -44,13 +79,9 @@ const SharedStudyParameters: React.FC<SharedStudyParametersProps> = ({ study, is
             {study.parameters[parameterName].name}
           </Form.Label>
           <Col sm="3">
-            <Form.Control
-              type={parameterName === "skip_qc" ? "text" : "number"}
-              id={parameterName}
-              name={parameterName}
-              min="0"
-              step="any"
-              defaultValue={study.parameters[parameterName].value}
+            <ParameterControl
+              parameter={study.parameters[parameterName]}
+              parameterName={parameterName}
               disabled={!isOwner}
               required
             />
@@ -66,15 +97,9 @@ const SharedStudyParameters: React.FC<SharedStudyParametersProps> = ({ study, is
             {study.advanced_parameters.index.map((parameterName) => (
               <React.Fragment key={parameterName}>
                 <Form.Floating className="mb-3">
-                  <Form.Control
-                    type={study.advanced_parameters[parameterName].type || "number"}
-                    id={parameterName}
-                    name={parameterName}
-                    {...(study.advanced_parameters[parameterName].type && {
-                      min: "0",
-                      step: "any"
-                    })}
-                    defaultValue={study.advanced_parameters[parameterName].value}
+                  <ParameterControl
+                    parameter={study.advanced_parameters[parameterName]}
+                    parameterName={parameterName}
                     disabled={!isOwner}
                   />
                   <Form.Label htmlFor={parameterName}>{study.advanced_parameters[parameterName].name}</Form.Label>
