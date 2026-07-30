@@ -21,6 +21,7 @@ steps:
       --cache-to type=registry,ref=$_IMAGE:cache,mode=max
       --build-arg APP_VERSION=$SHORT_SHA
       --build-arg BUILD_VERSION=$SHORT_SHA .
+      --build-arg SERVICE_NAME=$_SERVICE_NAME
 
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
     script: >-
