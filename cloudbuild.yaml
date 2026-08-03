@@ -7,6 +7,7 @@ substitutions:
   _SERVICE_REGION: us-central1
   _SERVICE_ACCOUNT: ${_SERVICE_NAME}-sa@${PROJECT_ID}.iam.gserviceaccount.com
   _IMAGE: ${_GCR_HOSTNAME}/${PROJECT_ID}/${_SERVICE_NAME}
+  _CUSTOM_DOMAIN: ""
 
 options:
   logging: CLOUD_LOGGING_ONLY
@@ -31,3 +32,9 @@ steps:
       --service-account $_SERVICE_ACCOUNT
       --min-instances 1
       --max-instances 5
+      && [ -z "$_CUSTOM_DOMAIN" ] ||
+      gcloud run domain-mappings create \
+        --project=${PROJECT_ID} \
+        --region=$_SERVICE_REGION \
+        --service=$_SERVICE_NAME \
+        --domain=$_CUSTOM_DOMAIN
