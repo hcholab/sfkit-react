@@ -34,7 +34,5 @@ steps:
       --max-instances 5
       && ([ -z "$_CUSTOM_DOMAIN" ] ||
       gcloud run domain-mappings create \
-        --project=${PROJECT_ID} \
-        --region=$_SERVICE_REGION \
         --service=$_SERVICE_NAME \
         --domain=$_CUSTOM_DOMAIN)
