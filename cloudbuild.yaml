@@ -7,7 +7,6 @@ substitutions:
   _SERVICE_REGION: us-central1
   _SERVICE_ACCOUNT: ${_SERVICE_NAME}-sa@${PROJECT_ID}.iam.gserviceaccount.com
   _IMAGE: ${_GCR_HOSTNAME}/${PROJECT_ID}/${_SERVICE_NAME}
-  _CUSTOM_DOMAIN: ""
 
 options:
   logging: CLOUD_LOGGING_ONLY
@@ -24,7 +23,7 @@ steps:
       --build-arg BUILD_VERSION=$SHORT_SHA .
       --build-arg SERVICE_NAME=$_SERVICE_NAME
 
-  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
     script: >-
       gcloud run deploy $_SERVICE_NAME
       --image $_IMAGE:$SHORT_SHA
@@ -32,8 +31,3 @@ steps:
       --service-account $_SERVICE_ACCOUNT
       --min-instances 1
       --max-instances 5
-      && ([ -z "$_CUSTOM_DOMAIN" ] ||
-      gcloud beta run domain-mappings create \
-        --service $_SERVICE_NAME \
-        --region $_SERVICE_REGION \
-        --domain $_CUSTOM_DOMAIN)
