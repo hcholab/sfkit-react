@@ -33,6 +33,7 @@ steps:
       --min-instances 1
       --max-instances 5
       && ([ -z "$_CUSTOM_DOMAIN" ] ||
-      gcloud run domain-mappings create \
-        --service=$_SERVICE_NAME \
-        --domain=$_CUSTOM_DOMAIN)
+      gcloud beta run domain-mappings create \
+        --service $_SERVICE_NAME \
+        --region $_SERVICE_REGION \
+        --domain $_CUSTOM_DOMAIN)
