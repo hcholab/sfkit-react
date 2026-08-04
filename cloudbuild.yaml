@@ -4,6 +4,7 @@ substitutions:
   _BUILD_VERSION: latest
   _GCR_HOSTNAME: us.gcr.io
   _SERVICE_NAME: sfkit-react
+  _SERVICE_CONFIG_NAME: ${_SERVICE_NAME}
   _SERVICE_REGION: us-central1
   _SERVICE_ACCOUNT: ${_SERVICE_NAME}-sa@${PROJECT_ID}.iam.gserviceaccount.com
   _IMAGE: ${_GCR_HOSTNAME}/${PROJECT_ID}/${_SERVICE_NAME}
@@ -21,7 +22,7 @@ steps:
       --cache-to type=registry,ref=$_IMAGE:cache,mode=max
       --build-arg APP_VERSION=$SHORT_SHA
       --build-arg BUILD_VERSION=$SHORT_SHA .
-      --build-arg SERVICE_NAME=$_SERVICE_NAME
+      --build-arg SERVICE_NAME=$_SERVICE_CONFIG_NAME
 
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
     script: >-
