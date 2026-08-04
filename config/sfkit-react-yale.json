@@ -1,7 +1,7 @@
 {
-  "apiBaseUrl": "TODO",
+  "apiBaseUrl": "https://sfkit-website-452868788274.us-central1.run.app",
   "auth": {
-    "client_id": "TODO",
+    "client_id": "452868788274-gq8q487qtmkl11414rsmn57iged23cgr.apps.googleusercontent.com",
     "authority": "https://accounts.google.com"
   }
 }
