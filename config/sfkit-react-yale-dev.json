@@ -2,6 +2,7 @@
   "apiBaseUrl": "https://sfkit-website-999848870545.us-central1.run.app",
   "auth": {
     "client_id": "999848870545-4asipq7m93jrceeell4lqub6s4760kus.apps.googleusercontent.com",
-    "authority": "https://accounts.google.com"
+    "authority": "https://accounts.google.com",
+    "redirect_uri": "https://dev.sfkit.yale.edu"
   }
 }
