@@ -1,13 +1,9 @@
+import type { FirebaseOptions } from "firebase/app";
 import { FirebaseApp, initializeApp } from "firebase/app";
 import { Auth, getAuth, signInWithCustomToken, signOut } from "firebase/auth";
 import { Firestore, getFirestore } from "firebase/firestore";
 
-export type FirebaseConfig = {
-  apiKey: string;
-  authDomain: string;
-  projectId: string;
-  databaseId: string;
-};
+export type FirebaseConfig = FirebaseOptions & { databaseId: string };
 
 let _app: FirebaseApp | undefined;
 let _auth: Auth | undefined;
