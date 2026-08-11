@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { AuthProvider } from "react-oidc-context";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { AppConfig, getAppConfig } from "./appConfig";
 import { AppContext } from "./appContext";
+import { AuthProvider } from "./auth";
 import Footer from "./components/Footer";
 import { IdleStatusMonitor } from "./components/IdleStatusMonitor";
 import Navbar from "./components/Navbar";
@@ -25,7 +25,7 @@ const App: React.FC = () => {
 
   return (
     appConfig && (
-      <AuthProvider {...appConfig.auth}>
+      <AuthProvider {...appConfig}>
         <AppContext.Provider value={{ ...appConfig }}>
           <Router>
             <div className="App d-flex flex-column min-vh-100">
