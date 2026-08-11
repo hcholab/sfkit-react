@@ -1,44 +1,37 @@
 import type { FirebaseOptions } from "firebase/app";
 import { FirebaseApp, initializeApp } from "firebase/app";
-import { Auth, getAuth, signInWithCustomToken, signOut } from "firebase/auth";
+import { Auth, getAuth, signOut } from "firebase/auth";
 import { Firestore, getFirestore } from "firebase/firestore";
 
 export type FirebaseConfig = FirebaseOptions & { databaseId: string };
 
-let _app: FirebaseApp | undefined;
-let _auth: Auth | undefined;
+let app: FirebaseApp | undefined;
+let auth: Auth | undefined;
 let db: Firestore;
 
 export const initFirebaseApp = (cfg: FirebaseConfig): void => {
-  _app = initializeApp(cfg);
-  _auth = getAuth(_app);
+  app = initializeApp(cfg);
+  auth = getAuth(app);
+  db = getFirestore(getFirebaseApp(), cfg.databaseId);
 };
 
 export const getFirebaseApp = (): FirebaseApp => {
-  if (!_app) throw new Error("FirebaseApp not initialized");
-  return _app;
+  if (!app) throw new Error("FirebaseApp not initialized");
+  return app;
 };
 
 export const getFirebaseAuth = (): Auth => {
-  if (!_auth) throw new Error("Firebase Auth not initialized");
-  return _auth;
+  if (!auth) throw new Error("Firebase Auth not initialized");
+  return auth;
 };
 
 export const removeUser = async (): Promise<void> => {
   await signOut(getFirebaseAuth());
 };
 
-export const getFirestoreDatabase = async (customToken: string, apiKey: string, projectId: string, databaseId: string): Promise<string> => {
-  const app = initializeApp({ apiKey, projectId });
-  const auth = getAuth(app);
-  const { user: { uid } } = await signInWithCustomToken(auth, customToken);
-  db = getFirestore(app, databaseId);
-  return uid;
-};
-
 export const getDb = () => {
   if (!db) {
-    throw new Error("Db has not been initialized. Call getFirestoreDatabase first.");
+    throw new Error("Firestore not initialized. Call initFirestore first.");
   }
   return db;
 };
