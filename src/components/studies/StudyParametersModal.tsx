@@ -9,7 +9,7 @@ import SharedStudyParameters from "./SharedStudyParameters";
 
 interface StudyParametersProps {
   study: Study;
-  userId: string;
+  userId?: string;
 }
 
 const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId }) => {

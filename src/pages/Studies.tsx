@@ -1,13 +1,12 @@
 import { DocumentData, doc, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { useAuth } from "react-oidc-context";
+import { useAuth } from "../auth";
 import LoginButton from "../components/LoginButton";
 import ChooseWorkflow from "../components/studies/ChooseWorkflow";
 import DisplayStudy from "../components/studies/DisplayStudy";
 import { getDb } from "../hooks/firebase";
-import useFirestore from "../hooks/useFirestore";
-import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 import { useConfig } from "../hooks/useConfig";
+import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 import { Study } from "../types/study";
 
 const Studies: React.FC = () => {
@@ -20,8 +19,7 @@ const Studies: React.FC = () => {
   const [user, setUser] = useState<DocumentData | null>(null);
 
   const headers = useGenerateAuthHeaders();
-  const idToken = useAuth().user?.id_token || "";
-  const { userId } = useFirestore();
+  const { userId } = useAuth();
 
   useEffect(() => {
     if (userId) {
@@ -36,7 +34,7 @@ const Studies: React.FC = () => {
   }, [userId]);
 
   useEffect(() => {
-    if (idToken) {
+    if (userId) {
       const fetchMyStudies = async () => {
         try {
           const response = await fetch(`${apiBaseUrl}/api/my_studies`, {
@@ -50,7 +48,7 @@ const Studies: React.FC = () => {
       };
       fetchMyStudies();
     }
-  }, [apiBaseUrl, idToken, headers]);
+  }, [apiBaseUrl, userId, headers]);
 
   useEffect(() => {
     // on Terra, we need authorization
@@ -80,7 +78,7 @@ const Studies: React.FC = () => {
     }
   }, [myStudies, otherStudies]);
 
-  if (!idToken && onTerra) {
+  if (!userId && onTerra) {
     return (
       <div
         className="d-flex flex-column align-items-center justify-content-center"
@@ -137,7 +135,7 @@ const Studies: React.FC = () => {
                   </div>
                 ) : (
                   myStudies.map((study) => (
-                    <DisplayStudy key={study.title} study={study} userId={userId} idToken={idToken} user={user} />
+                    <DisplayStudy key={study.title} study={study} userId={userId} user={user} />
                   ))
                 )}
               </div>
@@ -152,7 +150,7 @@ const Studies: React.FC = () => {
                   </div>
                 ) : (
                   otherStudies.map((study) => (
-                    <DisplayStudy key={study.title} study={study} userId={userId} idToken={idToken} user={user} />
+                    <DisplayStudy key={study.title} study={study} userId={userId} user={user} />
                   ))
                 )}
               </div>

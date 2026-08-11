@@ -7,7 +7,7 @@ import { Study } from "../../types/study";
 
 interface StudyProps {
   study: Study;
-  userId: string;
+  userId?: string;
 }
 
 const StudyParticipants: React.FC<StudyProps> = ({ study, userId }) => {

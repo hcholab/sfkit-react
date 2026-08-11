@@ -6,7 +6,7 @@ import { Study } from "../../types/study";
 
 interface StudyInfoProps {
   study: Study;
-  userId: string;
+  userId?: string;
 }
 
 const StudyInfoModal: React.FC<StudyInfoProps> = ({ study, userId }) => {

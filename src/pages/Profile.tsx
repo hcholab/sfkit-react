@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useAuth } from "react-oidc-context";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../appContext";
+import { useAuth } from "../auth";
 import LoginButton from "../components/LoginButton";
-import useFirestore from "../hooks/useFirestore";
 import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 
 const Profile = () => {
@@ -19,11 +18,10 @@ const Profile = () => {
   });
   const [errorMessage, setErrorMessage] = useState("");
 
-  const idToken = useAuth().user?.id_token || "";
-  const { userId } = useFirestore();
+  const { userId } = useAuth();
 
   useEffect(() => {
-    if (!idToken) {
+    if (!userId) {
       return;
     }
 
@@ -52,7 +50,7 @@ const Profile = () => {
     };
 
     fetchProfileData();
-  }, [apiBaseUrl, idToken, decodedUserIdFromParams, headers]);
+  }, [apiBaseUrl, userId, decodedUserIdFromParams, headers]);
 
   const handleEditToggle = () => {
     setIsEditMode((prevMode) => !prevMode);
@@ -91,7 +89,7 @@ const Profile = () => {
 
   const isOwnProfile = userId === decodedUserIdFromParams;
 
-  if (!idToken) {
+  if (!userId) {
     return (
       <div
         className="d-flex flex-column align-items-center justify-content-center"

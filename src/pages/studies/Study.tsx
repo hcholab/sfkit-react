@@ -2,18 +2,17 @@ import { doc, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Alert, Col, Container, Row, Tab, Tabs } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
-import StudyParticipants from "../../components/studies/StudyParticipants";
-import useFirestore from "../../hooks/useFirestore";
-import { ParameterGroup, Study as StudyType } from "../../types/study";
 
-import { useAuth } from "react-oidc-context";
+import { useAuth } from "../../auth";
 import ChatStudyTab from "../../components/studies/ChatStudyTab";
 import InstructionArea from "../../components/studies/InstructionArea";
 import StudyActionButtons from "../../components/studies/StudyActionButtons";
 import StudyHeader from "../../components/studies/StudyHeader";
+import StudyParticipants from "../../components/studies/StudyParticipants";
 import { getDb } from "../../hooks/firebase";
-import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { useConfig } from "../../hooks/useConfig";
+import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
+import { ParameterGroup, Study as StudyType } from "../../types/study";
 
 const fetchStudy = async (apiBaseUrl: string, study_id: string, headers: Record<string, string>) => {
   try {
@@ -42,9 +41,7 @@ const Study: React.FC = () => {
   const { study_id = "", auth_key = "" } = useParams();
   const headers = useGenerateAuthHeaders();
 
-  const firestoreData = useFirestore();
-  const { userId, isDbInitialized } = firestoreData;
-  const idToken = useAuth().user?.id_token || "";
+  const { userId } = useAuth();
 
   const [study, setStudy] = useState<StudyType | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -147,7 +144,7 @@ const Study: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isDbInitialized && study_id) {
+    if (study_id && userId) {
       const unsubscribe = onSnapshot(
         doc(getDb(), "studies", study_id),
         (doc) => {
@@ -169,10 +166,10 @@ const Study: React.FC = () => {
 
       return () => unsubscribe();
     }
-  }, [isDbInitialized, study_id, userId]);
+  }, [study_id, userId]);
 
   useEffect(() => {
-    if (idToken || auth_key) {
+    if (userId || auth_key) {
       const fetchAndSetStudy = async () => {
         try {
           const fetchedStudy = await fetchStudy(apiBaseUrl, study_id?.toString() || "", headers);
@@ -188,12 +185,12 @@ const Study: React.FC = () => {
 
       fetchAndSetStudy();
     }
-  }, [idToken, auth_key, apiBaseUrl, study_id, headers]);
+  }, [userId, auth_key, apiBaseUrl, study_id, headers]);
 
   if (errorMessage) return <div>{errorMessage}</div>;
   // TODO: distinguish between "not found" and "finding"
   if (!study) return <div>Study not found</div>;
-  if (!study.participants.includes(userId)) return <div>Not authorized</div>;
+  if (userId && !study.participants.includes(userId)) return <div>Not authorized</div>;
 
   return (
     <Container className="py-5">
@@ -216,7 +213,7 @@ const Study: React.FC = () => {
               )}
             </div>
 
-            {!idToken && (
+            {!userId && (
               <Alert variant="warning" className="mt-3">
                 Note: you created this study anonymously. Please save the link if you would like to return.
               </Alert>
@@ -238,10 +235,10 @@ const Study: React.FC = () => {
                   <InstructionArea
                     studyType={study.study_type}
                     demo={study.demo}
-                    idToken={idToken}
+                    userId={userId}
                     study_id={study.study_id}
                     title={study.title}
-                    personalParameters={study.personal_parameters[userId]}
+                    personalParameters={study.personal_parameters[userId || ""]}
                     status={status}
                     showWaitingDiv={showWaitingDiv}
                     tasks={tasks}

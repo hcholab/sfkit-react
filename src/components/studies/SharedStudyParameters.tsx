@@ -6,7 +6,7 @@ import { parameterType } from "../../utils/formUtils";
 interface SharedStudyParametersProps {
   study: Study;
   isOwner: boolean;
-  userId: string;
+  userId?: string;
 }
 
 interface ParameterControlProps {

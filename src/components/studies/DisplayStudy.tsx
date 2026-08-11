@@ -9,16 +9,17 @@ import StudyConfigBadge from "./StudyConfigBadge";
 
 interface StudyProps {
   study: Study;
-  userId: string;
-  idToken: string;
+  userId?: string;
   user: DocumentData | null;
 }
 
-const DisplayStudy: React.FC<StudyProps> = ({ study, userId, idToken, user }) => {
+const DisplayStudy: React.FC<StudyProps> = ({ study, userId, user }) => {
   const { apiBaseUrl } = useContext(AppContext);
   const [infoModalShow, setInfoModalShow] = useState(false);
   const [joinModalShow, setJoinModalShow] = useState(false);
   const headers = useGenerateAuthHeaders();
+
+  if (!userId) return <div />;
 
   const isUserParticipant = () => study.participants.includes(userId);
   const isUserInvited = () => study.invited_participants?.includes(user?.email);
@@ -112,7 +113,7 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, idToken, user }) =>
   };
 
   const renderJoinStudyOption = () => {
-    if (!idToken) {
+    if (!userId) {
       return null;
     }
 

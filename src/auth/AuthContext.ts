@@ -1,10 +1,8 @@
-import type { User } from "firebase/auth";
 import { createContext } from "react";
 
 export type AuthState = {
-  user: User | null;
+  userId?: string;
   isLoading: boolean;
-  isAuthenticated: boolean;
   removeUser: () => Promise<void>;
 };
 

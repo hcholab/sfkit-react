@@ -7,7 +7,7 @@ import { Message, Study } from "../../types/study";
 
 interface Props {
   study: Study;
-  userId: string;
+  userId?: string;
 }
 
 const ChatStudyTab: React.FC<Props> = ({ study, userId }) => {

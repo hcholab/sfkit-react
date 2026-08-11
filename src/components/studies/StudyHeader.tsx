@@ -11,7 +11,7 @@ interface StudyHeaderProps {
   studyType: string;
   description: string;
   study: Study;
-  userId: string;
+  userId?: string;
 }
 
 const StudyHeader: React.FC<StudyHeaderProps> = ({

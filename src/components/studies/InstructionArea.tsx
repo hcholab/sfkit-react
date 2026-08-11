@@ -1,8 +1,8 @@
 import React, { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useCheckNatType } from "../../hooks/useCheckNatType";
-import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { useConfig } from "../../hooks/useConfig";
+import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { DryRunFunc } from "../../pages/studies/Study";
 import { ParameterGroup } from "../../types/study";
 import ConfigureComputeEnvModal from "./ConfigureStudyModal";
@@ -13,7 +13,7 @@ interface Props {
   personalParameters: ParameterGroup;
   title: string;
   study_id: string;
-  idToken: string;
+  userId?: string;
   demo: boolean;
   studyType: string;
   status: string;
@@ -33,7 +33,7 @@ const InstructionArea: React.FC<Props> = ({
   personalParameters,
   title,
   study_id,
-  idToken,
+  userId,
   demo,
   studyType,
   status,
@@ -84,10 +84,10 @@ const InstructionArea: React.FC<Props> = ({
   }, [apiBaseUrl, study_id, headers]);
 
   useEffect(() => {
-    if ((idToken || auth_key) && showManhattanDiv && !plotSrcRef.current) {
+    if ((userId || auth_key) && showManhattanDiv && !plotSrcRef.current) {
       fetchPlotFile();
     }
-  }, [showManhattanDiv, fetchPlotFile, idToken, auth_key]);
+  }, [showManhattanDiv, fetchPlotFile, userId, auth_key]);
 
   const handleDownloadResults = async () => {
     try {

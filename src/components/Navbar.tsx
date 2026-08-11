@@ -1,14 +1,12 @@
 import * as React from "react";
-import { useAuth } from "react-oidc-context";
 import { Link } from "react-router-dom";
-import useFirestore from "../hooks/useFirestore";
+import { useAuth } from "../auth";
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
 import NotificationList from "./NotificationList";
 
 const Navbar: React.FC = () => {
-  const { isAuthenticated } = useAuth();
-  const { userId, isDbInitialized } = useFirestore();
+  const { userId } = useAuth();
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light py-4">
@@ -55,8 +53,8 @@ const Navbar: React.FC = () => {
             </li>
           </ul>
           <div className="ms-auto d-flex align-items-center">
-            {isAuthenticated && isDbInitialized && <NotificationList userId={userId} />}
-            {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+            {userId && <NotificationList userId={userId} />}
+            {userId ? <LogoutButton /> : <LoginButton />}
           </div>
         </div>
       </div>

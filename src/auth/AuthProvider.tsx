@@ -23,9 +23,8 @@ export const AuthProvider: FC<ProviderProps> = ({ firebase, children }) => {
 
   const value = useMemo<AuthState>(
     () => ({
-      user,
+      userId: user?.uid ?? "",
       isLoading,
-      isAuthenticated: user !== null,
       removeUser,
     }),
     [user, isLoading],
