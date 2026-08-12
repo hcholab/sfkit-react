@@ -39,7 +39,7 @@ const Study: React.FC = () => {
   const { onTerra, apiBaseUrl, samApiUrl } = useConfig();
   const navigate = useNavigate();
   const { study_id = "", auth_key = "" } = useParams();
-  const headers = useGenerateAuthHeaders();
+  const getHeaders = useGenerateAuthHeaders();
 
   const { userId } = useAuth();
 
@@ -61,6 +61,7 @@ const Study: React.FC = () => {
   const handleRestartStudy = async () => {
     setIsRestarting(true);
 
+    const headers = await getHeaders();
     await fetch(`${apiBaseUrl}/api/restart_study?study_id=${study_id}`, {
       method: "GET",
       headers,
@@ -71,6 +72,7 @@ const Study: React.FC = () => {
 
   const handleStartWorkflow: DryRunFunc = async ({ dryRun } = {}) => {
     try {
+      const headers = await getHeaders();
       const response = await fetch(`${apiBaseUrl}/api/start_protocol?${new URLSearchParams({
         study_id,
         ...(dryRun && { dry_run: 'true' })
@@ -95,6 +97,7 @@ const Study: React.FC = () => {
 
   const handleDownloadFile = async (url: string, fileName: string) => {
     try {
+      const headers = await getHeaders();
       const res = await fetch(url, { headers });
       if (!res.ok) {
         throw new Error(await res.text());
@@ -124,6 +127,7 @@ const Study: React.FC = () => {
     if (isConfirmed) {
       setIsDeleting(true);
       try {
+        const headers = await getHeaders();
         const response = await fetch(`${apiBaseUrl}/api/delete_study?study_id=${study_id}`, {
           method: "DELETE",
           headers,
@@ -172,6 +176,7 @@ const Study: React.FC = () => {
     if (userId || auth_key) {
       const fetchAndSetStudy = async () => {
         try {
+          const headers = await getHeaders();
           const fetchedStudy = await fetchStudy(apiBaseUrl, study_id?.toString() || "", headers);
           setStudy(fetchedStudy);
         } catch (error) {
@@ -185,7 +190,7 @@ const Study: React.FC = () => {
 
       fetchAndSetStudy();
     }
-  }, [userId, auth_key, apiBaseUrl, study_id, headers]);
+  }, [userId, auth_key, apiBaseUrl, study_id, getHeaders]);
 
   if (errorMessage) return <div>{errorMessage}</div>;
   // TODO: distinguish between "not found" and "finding"

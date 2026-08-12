@@ -1,26 +1,25 @@
-import { useMemo } from "react";
-import { useAuth } from "react-oidc-context";
+import { useCallback } from "react";
 import { useParams } from "react-router-dom";
+import { getFirebaseAuth } from "./firebase";
 import { useConfig } from "./useConfig";
 
-const useGenerateAuthHeaders = (): Record<string, string> => {
+const useGenerateAuthHeaders = () => {
   const { auth_key } = useParams();
-  const auth = useAuth();
-  const accessToken = auth.user?.access_token || "";
   const { onTerra } = useConfig();
 
-  return useMemo(() => {
+  return useCallback(async (): Promise<Record<string, string>> => {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
-    if (accessToken) {
-      headers.Authorization = `Bearer ${accessToken}`;
+    const idToken = await getFirebaseAuth().currentUser?.getIdToken();
+    if (idToken) {
+      headers.Authorization = `Bearer ${idToken}`;
     } else if (auth_key && !onTerra) {
       headers.Authorization = auth_key;
     }
 
     return headers;
-  }, [auth_key, accessToken, onTerra]);
+  }, [auth_key, onTerra]);
 };
 
 export default useGenerateAuthHeaders;

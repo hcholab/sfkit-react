@@ -44,7 +44,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
   const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
   const [uploadErrors, setUploadErrors] = useState<{ [key: string]: string }>({});
   const [submitFeedback, setSubmitFeedback] = useState<string | null>(null);
-  const headers = useGenerateAuthHeaders();
+  const getHeaders = useGenerateAuthHeaders();
 
   useEffect(() => {
     const newParams: Record<string, string | number> = {};
@@ -61,10 +61,12 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
   }, [activeKey]);
 
   useEffect(() => {
-    if (!onTerra || !headers.Authorization) return;
+    if (!onTerra) return;
 
     const listWorkspaces = async () => {
       try {
+        const headers = await getHeaders();
+        if (!headers.Authorization) return;
         const url = `${rawlsApiUrl}/workspaces?fields=accessLevel,workspace.namespace,workspace.name,workspace.cloudPlatform,workspace.googleProject,workspace.bucketName`;
         const res = localDev
           ? { ok: true, json: async () => (await import("./workspaces.json")).default }
@@ -86,10 +88,12 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     };
 
     listWorkspaces();
-  }, [onTerra, localDev, rawlsApiUrl, headers]);
+  }, [onTerra, localDev, rawlsApiUrl, getHeaders]);
 
-  const handleSubmitParameters = async (eventForm: React.FormEvent<HTMLFormElement> | FormData) =>
+  const handleSubmitParameters = async (eventForm: React.FormEvent<HTMLFormElement> | FormData) => {
+    const headers = await getHeaders();
     submitStudyParameters(eventForm, apiBaseUrl, studyId, headers, setSubmitFeedback, undefined, setParams);
+  };
 
   const filteredOptions = workspaces.filter(ws =>
     `${ws.namespace}/${ws.name}`.toLowerCase().includes(workspaceSearchTerm.toLowerCase())
@@ -101,6 +105,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     );
     if (!files || !ws) return;
 
+    const headers = await getHeaders();
     const samRes = await fetch(`${samApiUrl}/google/v1/user/petServiceAccount/${ws.googleProject}/token`, {
       method: "POST",
       headers,
@@ -180,6 +185,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     await handleStartWorkflow();
 
     // Create entity
+    const headers = await getHeaders();
     const rawlsBaseUrl = `${rawlsApiUrl}/workspaces/${selectedWorkspace}`;
     const entityRes = await fetch(`${rawlsBaseUrl}/entities`, {
       method: "POST",

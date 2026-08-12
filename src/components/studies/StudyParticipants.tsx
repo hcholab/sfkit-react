@@ -16,7 +16,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId }) => {
   const [email, setEmail] = React.useState("");
   const [message, setMessage] = React.useState("");
   const [errorMessage, setErrorMessage] = React.useState("");
-  const headers = useGenerateAuthHeaders();
+  const getHeaders = useGenerateAuthHeaders();
 
   const handleShowInviteModal = () => setShowInviteModal(true);
   const handleCloseInviteModal = () => setShowInviteModal(false);
@@ -26,6 +26,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId }) => {
     setErrorMessage("");
 
     try {
+      const headers = await getHeaders();
       const response = await fetch(`${apiBaseUrl}/api/invite_participant`, {
         method: "POST",
         headers,
@@ -47,6 +48,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId }) => {
   const handleRemoveParticipant = async (participantId: string) => {
     setErrorMessage("");
     try {
+      const headers = await getHeaders();
       const response = await fetch(`${apiBaseUrl}/api/remove_participant`, {
         method: "POST",
         headers,
@@ -68,6 +70,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId }) => {
   const handleApproveRequest = async (participantId: string) => {
     setErrorMessage("");
     try {
+      const headers = await getHeaders();
       const response = await fetch(
         `${apiBaseUrl}/api/approve_join_study?study_id=${study.study_id}&userId=${participantId}`,
         {

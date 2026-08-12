@@ -56,13 +56,14 @@ const InstructionArea: React.FC<Props> = ({
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
   const [isStudyValid, setIsStudyValid] = useState<boolean>();
   const { checkNatType, isSymmetricNat, isCheckingNatType } = useCheckNatType();
-  const headers = useGenerateAuthHeaders();
+  const getHeaders = useGenerateAuthHeaders();
   const plotSrcRef = useRef("");
 
   const fetchPlotFile = useCallback(async () => {
     try {
       setIsFetchingPlot(true);
 
+      const headers = await getHeaders();
       const response = await fetch(`${apiBaseUrl}/api/fetch_plot_file`, {
         method: "POST",
         headers,
@@ -81,7 +82,7 @@ const InstructionArea: React.FC<Props> = ({
     } finally {
       setIsFetchingPlot(false);
     }
-  }, [apiBaseUrl, study_id, headers]);
+  }, [apiBaseUrl, study_id, getHeaders]);
 
   useEffect(() => {
     if ((userId || auth_key) && showManhattanDiv && !plotSrcRef.current) {
@@ -92,6 +93,7 @@ const InstructionArea: React.FC<Props> = ({
   const handleDownloadResults = async () => {
     try {
       setIsDownloading(true);
+      const headers = await getHeaders();
       const response = await fetch(`${apiBaseUrl}/api/download_results_file?study_id=${encodeURIComponent(study_id)}`, {
         method: "GET",
         headers,

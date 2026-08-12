@@ -18,7 +18,7 @@ const Studies: React.FC = () => {
   const [otherStudies, setOtherStudies] = useState<Study[] | null>(null);
   const [user, setUser] = useState<DocumentData | null>(null);
 
-  const headers = useGenerateAuthHeaders();
+  const getHeaders = useGenerateAuthHeaders();
   const { userId } = useAuth();
 
   useEffect(() => {
@@ -37,6 +37,7 @@ const Studies: React.FC = () => {
     if (userId) {
       const fetchMyStudies = async () => {
         try {
+          const headers = await getHeaders();
           const response = await fetch(`${apiBaseUrl}/api/my_studies`, {
             headers,
           });
@@ -48,15 +49,16 @@ const Studies: React.FC = () => {
       };
       fetchMyStudies();
     }
-  }, [apiBaseUrl, userId, headers]);
+  }, [apiBaseUrl, userId, getHeaders]);
 
   useEffect(() => {
-    // on Terra, we need authorization
-    if ((!headers.Authorization || headers.Authorization === "Bearer ") && onTerra) {
-      return;
-    }
     const fetchPublicStudies = async () => {
       try {
+        const headers = await getHeaders();
+        // on Terra, we need authorization
+        if ((!headers.Authorization || headers.Authorization === "Bearer ") && onTerra) {
+          return;
+        }
         const response = await fetch(`${apiBaseUrl}/api/public_studies`, {
           headers,
         });
@@ -68,7 +70,7 @@ const Studies: React.FC = () => {
     };
 
     fetchPublicStudies();
-  }, [apiBaseUrl, onTerra, headers]);
+  }, [apiBaseUrl, onTerra, getHeaders]);
 
   useEffect(() => {
     if (myStudies && myStudies.length > 0) {

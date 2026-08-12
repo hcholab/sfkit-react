@@ -14,7 +14,7 @@ const ChatStudyTab: React.FC<Props> = ({ study, userId }) => {
   const { apiBaseUrl } = useContext(AppContext);
   const [messages, setMessages] = useState<Message[]>([]);
   const [displayNames, setDisplayNames] = useState<{ [key: string]: string }>({});
-  const headers = useGenerateAuthHeaders();
+  const getHeaders = useGenerateAuthHeaders();
 
   useEffect(() => {
     const db = getDb();
@@ -51,6 +51,7 @@ const ChatStudyTab: React.FC<Props> = ({ study, userId }) => {
 
     if (message) {
       try {
+        const headers = await getHeaders();
         const response = await fetch(`${apiBaseUrl}/api/send_message`, {
           method: "POST",
           headers,

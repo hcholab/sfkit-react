@@ -14,7 +14,7 @@ interface StudyParametersProps {
 
 const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId }) => {
   const { apiBaseUrl } = useContext(AppContext);
-  const headers = useGenerateAuthHeaders();
+  const getHeaders = useGenerateAuthHeaders();
   const location = useLocation();
   const navigate = useNavigate();
   const isNewStudy = location.state?.isNewStudy;
@@ -31,7 +31,8 @@ const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId })
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleSaveChanges = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSaveChanges = async (e: React.FormEvent<HTMLFormElement>) => {
+    const headers = await getHeaders();
     submitStudyParameters(e, apiBaseUrl, study.study_id, headers, undefined, setErrorMessage);
   };
 

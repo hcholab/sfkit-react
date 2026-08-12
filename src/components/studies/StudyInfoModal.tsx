@@ -15,7 +15,7 @@ const StudyInfoModal: React.FC<StudyInfoProps> = ({ study, userId }) => {
   const [description, setDescription] = useState(study.description || "");
   const [information, setInformation] = useState(study.study_information || "");
   const [errorMessage, setErrorMessage] = useState("");
-  const headers = useGenerateAuthHeaders();
+  const getHeaders = useGenerateAuthHeaders();
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -24,6 +24,7 @@ const StudyInfoModal: React.FC<StudyInfoProps> = ({ study, userId }) => {
     e.preventDefault();
 
     try {
+      const headers = await getHeaders();
       const response = await fetch(`${apiBaseUrl}/api/study_information?study_id=${study.study_id}`, {
         method: "POST",
         headers,

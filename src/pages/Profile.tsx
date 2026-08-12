@@ -7,7 +7,7 @@ import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 
 const Profile = () => {
   const { apiBaseUrl } = useContext(AppContext);
-  const headers = useGenerateAuthHeaders();
+  const getHeaders = useGenerateAuthHeaders();
   const { userId: userIdFromParams } = useParams();
   const decodedUserIdFromParams = decodeURIComponent(userIdFromParams || "");
   const [isEditMode, setIsEditMode] = useState(false);
@@ -27,6 +27,7 @@ const Profile = () => {
 
     const fetchProfileData = async () => {
       try {
+        const headers = await getHeaders();
         const response = await fetch(`${apiBaseUrl}/api/profile/${decodedUserIdFromParams}`, {
           headers,
         });
@@ -50,7 +51,7 @@ const Profile = () => {
     };
 
     fetchProfileData();
-  }, [apiBaseUrl, userId, decodedUserIdFromParams, headers]);
+  }, [apiBaseUrl, userId, decodedUserIdFromParams, getHeaders]);
 
   const handleEditToggle = () => {
     setIsEditMode((prevMode) => !prevMode);
@@ -67,6 +68,7 @@ const Profile = () => {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const headers = await getHeaders();
       const response = await fetch(`${apiBaseUrl}/api/profile/${decodedUserIdFromParams}`, {
         method: "POST",
         headers,

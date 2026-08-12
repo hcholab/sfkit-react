@@ -17,7 +17,7 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, user }) => {
   const { apiBaseUrl } = useContext(AppContext);
   const [infoModalShow, setInfoModalShow] = useState(false);
   const [joinModalShow, setJoinModalShow] = useState(false);
-  const headers = useGenerateAuthHeaders();
+  const getHeaders = useGenerateAuthHeaders();
 
   if (!userId) return <div />;
 
@@ -32,6 +32,7 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, user }) => {
     e.preventDefault();
 
     try {
+      const headers = await getHeaders();
       const response = await fetch(`${apiBaseUrl}/api/request_join_study?study_id=${study.study_id}`, {
         method: "POST",
         headers,
@@ -77,6 +78,7 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, user }) => {
     e.preventDefault();
 
     try {
+      const headers = await getHeaders();
       const response = await fetch(`${apiBaseUrl}/api/accept_invitation?study_id=${study.study_id}`, {
         method: "POST",
         headers,

@@ -8,7 +8,7 @@ import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 const CreateStudy: React.FC = () => {
   const { apiBaseUrl } = useContext(AppContext);
   const userId = useAuth().userId;
-  const headers = useGenerateAuthHeaders();
+  const getHeaders = useGenerateAuthHeaders();
   const location = useLocation();
   const { studyType } = location.state as { studyType: string };
   const navigate = useNavigate();
@@ -48,6 +48,7 @@ const CreateStudy: React.FC = () => {
     };
 
     try {
+      const headers = await getHeaders();
       const response = await fetch(`${apiBaseUrl}/api/create_study`, {
         method: "POST",
         headers,

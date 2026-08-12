@@ -15,7 +15,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ userId }) => {
   const { apiBaseUrl } = useContext(AppContext);
   const [notifications, setNotifications] = useState<string[]>([]);
   const [displayName, setDisplayName] = useState("");
-  const headers = useGenerateAuthHeaders();
+  const getHeaders = useGenerateAuthHeaders();
 
   useEffect(() => {
     if (userId) {
@@ -55,6 +55,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ userId }) => {
     try {
       setNotifications((prev) => prev.filter((_, i) => i !== index));
 
+      const headers = await getHeaders();
       const response = await fetch(`${apiBaseUrl}/api/update_notifications`, {
         method: "POST",
         headers,
