@@ -10,7 +10,7 @@ interface Step {
   id: string;
   number: string;
   title: string;
-  content: JSX.Element;
+  content: React.JSX.Element;
   imgSrc: string;
 }
 
