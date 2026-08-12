@@ -1,13 +1,13 @@
 import React, { useContext, useState } from "react";
 import { Alert, Button, Col, Container, Form, Row } from "react-bootstrap";
-import { useAuth } from "react-oidc-context";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../../appContext";
+import { useAuth } from "../../auth";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 
 const CreateStudy: React.FC = () => {
   const { apiBaseUrl } = useContext(AppContext);
-  const idToken = useAuth().user?.id_token || "";
+  const userId = useAuth().userId;
   const headers = useGenerateAuthHeaders();
   const location = useLocation();
   const { studyType } = location.state as { studyType: string };
@@ -36,7 +36,7 @@ const CreateStudy: React.FC = () => {
     e.preventDefault();
 
     if (
-      !idToken &&
+      !userId &&
       !window.confirm("You are not logged in. Do you want to continue creating the study without logging in?")
     ) {
       return;
@@ -61,7 +61,7 @@ const CreateStudy: React.FC = () => {
       const data = await response.json();
 
       if (data.study_id) {
-        if (!idToken) {
+        if (!userId) {
           navigate(`/studies/${data.study_id}/${data.auth_key}`, { state: { isNewStudy: true } });
         } else {
           navigate(`/studies/${data.study_id}`, { state: { isNewStudy: true } });

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useAuth } from "react-oidc-context";
+import { useAuth } from "../auth";
 import { useNavigate } from 'react-router-dom';
 import useGenerateAuthHeaders from "../hooks/useGenerateAuthHeaders";
 import { useConfig } from "../hooks/useConfig";
@@ -15,11 +15,11 @@ export const IdleStatusMonitor = () => {
   const timeoutId = useRef<number>();
   const navigate = useNavigate();
 
-  const signOut = auth.signoutRedirect;
+  const signOut = auth.removeUser;
 
   useEffect(() => {
     (async () => {
-      if (!onTerra || !auth.isAuthenticated || timeoutId.current) return;
+      if (!onTerra || !auth.userId || timeoutId.current) return;
 
       const res = await fetch(`${samApiUrl}/groups/v1`, { headers });
       const groups = await res.json() as { groupName: string }[];
@@ -56,7 +56,7 @@ export const IdleStatusMonitor = () => {
         timeoutId.current = undefined;
       };
     })().catch(console.error);
-  }, [auth.isAuthenticated, onTerra, samApiUrl, headers, navigate, signOut]);
+  }, [auth.userId, onTerra, samApiUrl, headers, navigate, signOut]);
 
   return <div />;
 };
