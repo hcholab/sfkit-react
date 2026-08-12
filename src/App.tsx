@@ -4,7 +4,6 @@ import { AppConfig, getAppConfig } from "./appConfig";
 import { AppContext } from "./appContext";
 import { AuthProvider } from "./auth";
 import Footer from "./components/Footer";
-import { IdleStatusMonitor } from "./components/IdleStatusMonitor";
 import Navbar from "./components/Navbar";
 import Contact from "./pages/Contact";
 import Home from "./pages/Home";
@@ -43,7 +42,6 @@ const App: React.FC = () => {
                   <Route path="/contact" element={<Contact />} />
                 </Routes>
               </div>
-              <IdleStatusMonitor />
               <Footer />
             </div>
           </Router>
