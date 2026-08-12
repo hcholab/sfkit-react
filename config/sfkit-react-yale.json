@@ -1,7 +1,9 @@
 {
   "apiBaseUrl": "https://sfkit-website-452868788274.us-central1.run.app",
-  "auth": {
-    "client_id": "452868788274-gq8q487qtmkl11414rsmn57iged23cgr.apps.googleusercontent.com",
-    "authority": "https://accounts.google.com"
+  "firebase": {
+    "apiKey": "AIzaSyDX25bIl4JGCzEETfHA0EUTElvfo-h6-0o",
+    "authDomain": "sfkit-project-a9c2.firebaseapp.com",
+    "projectId": "sfkit-project-a9c2",
+    "databaseId": "sfkit"
   }
 }

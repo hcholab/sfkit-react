@@ -1,8 +1,9 @@
 {
   "apiBaseUrl": "https://sfkit-website-999848870545.us-central1.run.app",
-  "auth": {
-    "client_id": "999848870545-4asipq7m93jrceeell4lqub6s4760kus.apps.googleusercontent.com",
-    "authority": "https://accounts.google.com",
-    "redirect_uri": "https://dev.sfkit.yale.edu"
+  "firebase": {
+    "apiKey": "AIzaSyCFYFRHQWK6dswLZc2Zqn0HPYEhgqh5rns",
+    "authDomain": "sfkit-dev-project-173b.firebaseapp.com",
+    "projectId": "sfkit-dev-project-173b",
+    "databaseId": "sfkit"
   }
 }
