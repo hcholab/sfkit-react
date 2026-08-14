@@ -15,7 +15,8 @@ RUN cp config/${SERVICE_NAME}.json public/appConfig.json
 RUN apk add --no-cache gettext jq && \
     export API_BASE_URL=$(jq -r .apiBaseUrl public/appConfig.json) && \
     export FIREBASE_AUTH_DOMAIN=$(jq -r .firebase.authDomain public/appConfig.json) && \
-    envsubst '${API_BASE_URL} ${FIREBASE_AUTH_DOMAIN}' < nginx.conf > nginx.default.conf
+    export FIREBASE_AUTH_UPSTREAM=$(jq -r '.firebase.projectId + ".firebaseapp.com"' public/appConfig.json) && \
+    envsubst '${API_BASE_URL} ${FIREBASE_AUTH_DOMAIN} ${FIREBASE_AUTH_UPSTREAM}' < nginx.conf > nginx.default.conf
 
 RUN pnpm run lint
 RUN pnpm run build
