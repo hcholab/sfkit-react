@@ -9,13 +9,14 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-ARG SERVICE_NAME=sfkit-react-dev
-RUN cp config/${SERVICE_NAME}.json public/appConfig.json
+ARG SERVICE_NAME="sfkit-react-dev"
+ENV APP_CONFIG="public/appConfig.json"
+RUN cp config/${SERVICE_NAME}.json ${APP_CONFIG}
 
 RUN apk add --no-cache gettext jq && \
-    export API_BASE_URL=$(jq -r .apiBaseUrl public/appConfig.json) && \
-    export FIREBASE_AUTH_DOMAIN=$(jq -r .firebase.authDomain public/appConfig.json) && \
-    export FIREBASE_AUTH_UPSTREAM=$(jq -r '.firebase.projectId + ".firebaseapp.com"' public/appConfig.json) && \
+    export API_BASE_URL=$(jq -r .apiBaseUrl ${APP_CONFIG}) && \
+    export FIREBASE_AUTH_DOMAIN=$(jq -r .firebase.authDomain ${APP_CONFIG}n) && \
+    export FIREBASE_AUTH_UPSTREAM=$(jq -r '.firebase.projectId + ".firebaseapp.com"' ${APP_CONFIG}) && \
     envsubst '${API_BASE_URL} ${FIREBASE_AUTH_DOMAIN} ${FIREBASE_AUTH_UPSTREAM}' < nginx.conf > nginx.default.conf
 
 RUN pnpm run lint
