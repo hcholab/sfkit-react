@@ -25,8 +25,8 @@ ARG BUILD_VERSION=latest
 
 RUN echo "{\"appVersion\": \"$APP_VERSION\", \"buildVersion\": \"$BUILD_VERSION\"}" > dist/version
 
-#    cgr.dev/chainguard/nginx:latest on 04/17/2026
-FROM cgr.dev/chainguard/nginx@sha256:4f95b13f583eff562608d0822bb03acc15829a681b86fa8cd454c20067e06f3c
+#    cgr.dev/chainguard/nginx:latest on 08/14/2026
+FROM cgr.dev/chainguard/nginx@sha256:d826cd7cff4e5a8f9477e685696cbddb47c33df1b8dc22c7d581e16ff70e44aa
 
 COPY --from=build /app/nginx.default.conf /etc/nginx/conf.d/
 COPY --from=build /app/dist /usr/share/nginx/html/
