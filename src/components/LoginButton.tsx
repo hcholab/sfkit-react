@@ -5,10 +5,8 @@ import { getFirebaseAuth } from "../hooks/firebase";
 const LoginButton: FC = () => {
   const handleLogin = async () => {
     try {
-      const auth = getFirebaseAuth();
-      const signIn = location.hostname === auth.config.authDomain ?
-        signInWithRedirect : signInWithPopup;
-      await signIn(auth, new GoogleAuthProvider());
+      const signIn = location.hostname === "localhost" ? signInWithPopup : signInWithRedirect;
+      await signIn(getFirebaseAuth(), new GoogleAuthProvider());
     } catch (error) {
       console.error("Login failed:", error);
     }
