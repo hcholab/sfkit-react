@@ -1,12 +1,11 @@
-import * as React from "react";
-import { useAuth } from "react-oidc-context";
+import { GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
+import type { FC } from "react";
+import { getFirebaseAuth } from "../hooks/firebase";
 
-const LoginButton: React.FC = () => {
-  const auth = useAuth();
-
+const LoginButton: FC = () => {
   const handleLogin = async () => {
     try {
-      auth.signinPopup();
+      await signInWithRedirect(getFirebaseAuth(), new GoogleAuthProvider());
     } catch (error) {
       console.error("Login failed:", error);
     }
