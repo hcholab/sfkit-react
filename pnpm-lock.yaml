@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@firebase-oss/ui-react':
         specifier: 7.0.3
-        version: 7.0.3(@types/react@19.2.17)(firebase@12.17.1)(nanostores@1.4.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.8.3)
+        version: 7.0.3(@types/react@19.2.17)(firebase@12.17.0)(nanostores@1.4.2)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.8.3)
       '@firebase-oss/ui-styles':
         specifier: 7.0.3
         version: 7.0.3(typescript@5.8.3)
@@ -30,8 +30,8 @@ importers:
         specifier: ^1.13.1
         version: 1.13.1
       firebase:
-        specifier: ^12.17.0
-        version: 12.17.1
+        specifier: 12.17.0
+        version: 12.17.0
       react:
         specifier: 19.2.8
         version: 19.2.8
@@ -366,13 +366,13 @@ packages:
     resolution: {integrity: sha512-tLpOaaCol9ugUIYp2R3CbWPPA8Ajg/papX/XHEy8U52b/QXH3BbX8tTJX9aShDCjp+9sMAxMLD94i7lresdugQ==}
     engines: {node: '>=20.0.0'}
 
-  '@firebase/data-connect@0.7.3':
-    resolution: {integrity: sha512-nHBFk3Ntl+NZCRIUG2d5j7I69P0otjyQ/duhVKLbw4+5cNke/F6RK1pdE5Jnf831/QOTs2Bd00LlxlZ+jNsb9w==}
+  '@firebase/data-connect@0.7.2':
+    resolution: {integrity: sha512-Z64TRTp5KsvZtuCS1BhEg0H63TTDIi6k7idGG+z1ImAnP2qHv+xt0S5rzAONpiO7Z1geldWhpu1iY/ju+l3a3w==}
     peerDependencies:
       '@firebase/app': 0.x
 
-  '@firebase/database-compat@2.1.6':
-    resolution: {integrity: sha512-mu7S/75UIajB1A5M9Vfojk69LttW55uABp9nHEtWrV/mIaSEwvoaIe9GySsEzS2EKFK5/3f5okcAuUbihhYeJg==}
+  '@firebase/database-compat@2.1.5':
+    resolution: {integrity: sha512-m2KZDNXrg8DBzXWQNbbrjOhsJnM+ctsSFaDYKrqj1gEetQ8BSAwRuMUdeWLM9a6qPBgOvOA+o09j1BSEzdFqOg==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       '@firebase/app': 0.x
@@ -1211,8 +1211,8 @@ packages:
     resolution: {integrity: sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==}
     engines: {node: '>=10'}
 
-  firebase@12.17.1:
-    resolution: {integrity: sha512-dhp41ye9jMQvhx5FwjMkf/hjDHJApl7gXmvzOZGvP0M7c/GZGUnQ4qvsvlOBkF0Pa7wAwHMdcpL0ON2pXCQ4Sw==}
+  firebase@12.17.0:
+    resolution: {integrity: sha512-8iENFg2/k7asnybijN3ZrmTag0BuyiihUXrRZkX+yCW+YocknpzPZ4DUkdbyA/rdrdaCssBqHH8zpdDliv+4ng==}
 
   flat-cache@3.2.0:
     resolution: {integrity: sha512-CYcENa+FtcUKLmhhqyctpclsq7QF38pKjZHsGNiSQF5r4FtoKDWabFDl3hzaEQMvT1LHEysw5twgLvpYYb4vbw==}
@@ -1337,8 +1337,8 @@ packages:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
 
-  libphonenumber-js@1.13.9:
-    resolution: {integrity: sha512-VNS5vWMM7r0P66BYv+TQJATxExEgLxN+34hfHDVhDkUsGAE4cRg0shCNSLTXNKm7nIUscC7AfB51TjxEeF7msQ==}
+  libphonenumber-js@1.13.10:
+    resolution: {integrity: sha512-xJxrdqvbl2rtn2MaUJrUejz8J7/uZNC0V77oks2LxYrO/+ZtVpRmz+fEQMuu6VusnEB1fmpByiLS1WXecOnAnw==}
 
   locate-path@6.0.0:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
@@ -1380,8 +1380,8 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanostores@1.4.1:
-    resolution: {integrity: sha512-PGd3uPojJB9Z07d5NX3Db/SOSBbyy3wLMUGq0GpnEEJfVzY9mq7daPMAZ3jObV5D3Jn+YKND636eI5ULg7F80Q==}
+  nanostores@1.4.2:
+    resolution: {integrity: sha512-Wxv8Roefr2nqtiRG0bnaFlpYqpIVtOEeJZHaH+4nGgOK1/7n6OHOuHCb/bhqrNQgZM8fyd0s1PqhdrJc9Ib44g==}
     engines: {node: ^20.0.0 || >=22.0.0}
 
   natural-compare@1.4.0:
@@ -1920,25 +1920,25 @@ snapshots:
 
   '@eslint/js@8.57.0': {}
 
-  '@firebase-oss/ui-core@7.0.3(firebase@12.17.1)':
+  '@firebase-oss/ui-core@7.0.3(firebase@12.17.0)':
     dependencies:
       '@firebase-oss/ui-translations': 7.0.3
-      '@nanostores/deepmap': 1.0.0(nanostores@1.4.1)
-      firebase: 12.17.1
-      libphonenumber-js: 1.13.9
-      nanostores: 1.4.1
+      '@nanostores/deepmap': 1.0.0(nanostores@1.4.2)
+      firebase: 12.17.0
+      libphonenumber-js: 1.13.10
+      nanostores: 1.4.2
       qrcode-generator: 2.0.4
       zod: 4.4.3
 
-  '@firebase-oss/ui-react@7.0.3(@types/react@19.2.17)(firebase@12.17.1)(nanostores@1.4.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.8.3)':
+  '@firebase-oss/ui-react@7.0.3(@types/react@19.2.17)(firebase@12.17.0)(nanostores@1.4.2)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.8.3)':
     dependencies:
-      '@firebase-oss/ui-core': 7.0.3(firebase@12.17.1)
+      '@firebase-oss/ui-core': 7.0.3(firebase@12.17.0)
       '@firebase-oss/ui-styles': 7.0.3(typescript@5.8.3)
-      '@nanostores/react': 1.1.0(nanostores@1.4.1)(react@19.2.8)
+      '@nanostores/react': 1.1.0(nanostores@1.4.2)(react@19.2.8)
       '@radix-ui/react-slot': 1.3.3(@types/react@19.2.17)(react@19.2.8)
       '@tanstack/react-form': 1.33.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       clsx: 2.1.1
-      firebase: 12.17.1
+      firebase: 12.17.0
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
       tailwind-merge: 3.6.0
@@ -2064,7 +2064,7 @@ snapshots:
       '@firebase/util': 1.15.2
       tslib: 2.8.1
 
-  '@firebase/data-connect@0.7.3(@firebase/app@0.16.0)':
+  '@firebase/data-connect@0.7.2(@firebase/app@0.16.0)':
     dependencies:
       '@firebase/app': 0.16.0
       '@firebase/auth-interop-types': 0.2.5
@@ -2073,7 +2073,7 @@ snapshots:
       '@firebase/util': 1.15.2
       tslib: 2.8.1
 
-  '@firebase/database-compat@2.1.6(@firebase/app-compat@0.5.16)(@firebase/app@0.16.0)':
+  '@firebase/database-compat@2.1.5(@firebase/app-compat@0.5.16)(@firebase/app@0.16.0)':
     dependencies:
       '@firebase/component': 0.7.4
       '@firebase/database': 1.1.4
@@ -2315,13 +2315,13 @@ snapshots:
 
   '@humanwhocodes/object-schema@2.0.3': {}
 
-  '@nanostores/deepmap@1.0.0(nanostores@1.4.1)':
+  '@nanostores/deepmap@1.0.0(nanostores@1.4.2)':
     dependencies:
-      nanostores: 1.4.1
+      nanostores: 1.4.2
 
-  '@nanostores/react@1.1.0(nanostores@1.4.1)(react@19.2.8)':
+  '@nanostores/react@1.1.0(nanostores@1.4.2)(react@19.2.8)':
     dependencies:
-      nanostores: 1.4.1
+      nanostores: 1.4.2
       react: 19.2.8
 
   '@nodelib/fs.scandir@2.1.5':
@@ -2933,7 +2933,7 @@ snapshots:
       locate-path: 6.0.0
       path-exists: 4.0.0
 
-  firebase@12.17.1:
+  firebase@12.17.0:
     dependencies:
       '@firebase/ai': 2.14.0(@firebase/app-types@0.9.5)(@firebase/app@0.16.0)
       '@firebase/analytics': 0.10.23(@firebase/app@0.16.0)
@@ -2945,9 +2945,9 @@ snapshots:
       '@firebase/app-types': 0.9.5
       '@firebase/auth': 1.13.4(@firebase/app@0.16.0)
       '@firebase/auth-compat': 0.6.9(@firebase/app-compat@0.5.16)(@firebase/app-types@0.9.5)(@firebase/app@0.16.0)
-      '@firebase/data-connect': 0.7.3(@firebase/app@0.16.0)
+      '@firebase/data-connect': 0.7.2(@firebase/app@0.16.0)
       '@firebase/database': 1.1.4
-      '@firebase/database-compat': 2.1.6(@firebase/app-compat@0.5.16)(@firebase/app@0.16.0)
+      '@firebase/database-compat': 2.1.5(@firebase/app-compat@0.5.16)(@firebase/app@0.16.0)
       '@firebase/firestore': 4.17.0(@firebase/app@0.16.0)
       '@firebase/firestore-compat': 0.4.12(@firebase/app-compat@0.5.16)(@firebase/app-types@0.9.5)(@firebase/app@0.16.0)
       '@firebase/functions': 0.13.6(@firebase/app@0.16.0)
@@ -3076,7 +3076,7 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
-  libphonenumber-js@1.13.9: {}
+  libphonenumber-js@1.13.10: {}
 
   locate-path@6.0.0:
     dependencies:
@@ -3111,7 +3111,7 @@ snapshots:
 
   nanoid@3.3.11: {}
 
-  nanostores@1.4.1: {}
+  nanostores@1.4.2: {}
 
   natural-compare@1.4.0: {}
 
