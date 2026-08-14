@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@firebase-oss/ui-core": "7.0.3",
     "@firebase-oss/ui-react": "7.0.3",
     "@firebase-oss/ui-styles": "7.0.3",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
