@@ -2,7 +2,7 @@
   "apiBaseUrl": "https://sfkit-website-452868788274.us-central1.run.app",
   "firebase": {
     "apiKey": "AIzaSyDX25bIl4JGCzEETfHA0EUTElvfo-h6-0o",
-    "authDomain": "sfkit-project-a9c2.firebaseapp.com",
+    "authDomain": "yale.sfkit.org",
     "projectId": "sfkit-project-a9c2",
     "databaseId": "sfkit"
   }
