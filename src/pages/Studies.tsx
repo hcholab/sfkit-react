@@ -19,7 +19,7 @@ const Studies: React.FC = () => {
   const [user, setUser] = useState<DocumentData | null>(null);
 
   const getHeaders = useGenerateAuthHeaders();
-  const { userId } = useAuth();
+  const { userId, isLoading } = useAuth();
 
   useEffect(() => {
     if (userId) {
@@ -52,6 +52,8 @@ const Studies: React.FC = () => {
   }, [apiBaseUrl, userId, getHeaders]);
 
   useEffect(() => {
+    if (isLoading) return;
+
     const fetchPublicStudies = async () => {
       try {
         const headers = await getHeaders();
@@ -70,7 +72,7 @@ const Studies: React.FC = () => {
     };
 
     fetchPublicStudies();
-  }, [apiBaseUrl, onTerra, getHeaders]);
+  }, [apiBaseUrl, isLoading, onTerra, getHeaders]);
 
   useEffect(() => {
     if (myStudies && myStudies.length > 0) {
