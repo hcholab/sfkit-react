@@ -41,7 +41,7 @@ const Study: React.FC = () => {
   const { study_id = "", auth_key = "" } = useParams();
   const getHeaders = useGenerateAuthHeaders();
 
-  const { userId } = useAuth();
+  const { userId, isLoading } = useAuth();
 
   const [study, setStudy] = useState<StudyType | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -218,7 +218,7 @@ const Study: React.FC = () => {
               )}
             </div>
 
-            {!userId && (
+            {!userId && !isLoading && (
               <Alert variant="warning" className="mt-3">
                 Note: you created this study anonymously. Please save the link if you would like to return.
               </Alert>

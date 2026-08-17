@@ -18,7 +18,7 @@ const Profile = () => {
   });
   const [errorMessage, setErrorMessage] = useState("");
 
-  const { userId } = useAuth();
+  const { userId, isLoading } = useAuth();
 
   useEffect(() => {
     if (!userId) {
@@ -93,7 +93,7 @@ const Profile = () => {
   const isOwnProfile = userId === decodedUserIdFromParams;
 
   if (!userId) {
-    return (
+    return isLoading ? null : (
       <div
         className="d-flex flex-column align-items-center justify-content-center"
         style={{ transform: "translateY(+200%)" }}

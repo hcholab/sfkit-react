@@ -6,7 +6,7 @@ import LogoutButton from "./LogoutButton";
 import NotificationList from "./NotificationList";
 
 const Navbar: React.FC = () => {
-  const { userId } = useAuth();
+  const { userId, isLoading } = useAuth();
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light py-4">
@@ -54,7 +54,7 @@ const Navbar: React.FC = () => {
           </ul>
           <div className="ms-auto d-flex align-items-center">
             {userId && <NotificationList userId={userId} />}
-            {userId ? <LogoutButton /> : <LoginButton />}
+            {!isLoading && (userId ? <LogoutButton /> : <LoginButton />)}
           </div>
         </div>
       </div>
