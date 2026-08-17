@@ -69,10 +69,11 @@ const Profile = () => {
     e.preventDefault();
     try {
       const headers = await getHeaders();
+      const { email, ...profile } = profileData;
       const response = await fetch(`${apiBaseUrl}/api/profile/${decodedUserIdFromParams}`, {
         method: "POST",
         headers,
-        body: JSON.stringify(profileData),
+        body: JSON.stringify(profile),
       });
 
       if (response.ok) {
