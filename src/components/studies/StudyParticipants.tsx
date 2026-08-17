@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { SubmitEvent, useContext } from "react";
 import { Button, Form, ListGroup, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../appContext";
@@ -21,7 +21,7 @@ const StudyParticipants: React.FC<StudyProps> = ({ study, userId }) => {
   const handleShowInviteModal = () => setShowInviteModal(true);
   const handleCloseInviteModal = () => setShowInviteModal(false);
 
-  const handleInviteSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleInviteSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessage("");
 

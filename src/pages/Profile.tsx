@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { SubmitEvent, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../appContext";
 import { useAuth } from "../auth";
@@ -65,7 +65,7 @@ const Profile = () => {
     }));
   };
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     try {
       const headers = await getHeaders();

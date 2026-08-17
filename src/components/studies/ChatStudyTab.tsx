@@ -1,5 +1,5 @@
 import { doc, onSnapshot } from "firebase/firestore";
-import React, { useContext, useEffect, useState } from "react";
+import React, { SubmitEvent, useContext, useEffect, useState } from "react";
 import { AppContext } from "../../appContext";
 import { getDb } from "../../hooks/firebase";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
@@ -43,7 +43,7 @@ const ChatStudyTab: React.FC<Props> = ({ study, userId }) => {
     };
   }, [study.study_id]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);

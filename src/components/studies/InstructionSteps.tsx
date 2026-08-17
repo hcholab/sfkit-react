@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { SubmitEvent, useEffect, useState } from "react";
 import { Accordion, Alert, Button, Card, Dropdown, Form, ProgressBar } from "react-bootstrap";
-import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { useConfig } from "../../hooks/useConfig";
+import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { DryRunFunc } from "../../pages/studies/Study";
 import info_square from "../../static/images/info-square.svg";
 import { ParameterGroup } from "../../types/study";
@@ -90,7 +90,7 @@ const InstructionSteps: React.FC<InstructionStepsProps> = ({ demo, studyId, stud
     listWorkspaces();
   }, [onTerra, localDev, rawlsApiUrl, getHeaders]);
 
-  const handleSubmitParameters = async (eventForm: React.FormEvent<HTMLFormElement> | FormData) => {
+  const handleSubmitParameters = async (eventForm: SubmitEvent<HTMLFormElement> | FormData) => {
     const headers = await getHeaders();
     submitStudyParameters(eventForm, apiBaseUrl, studyId, headers, setSubmitFeedback, undefined, setParams);
   };

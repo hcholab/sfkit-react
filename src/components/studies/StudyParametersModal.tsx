@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { SubmitEvent, useContext, useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../../appContext";
@@ -31,7 +31,7 @@ const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId })
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleSaveChanges = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSaveChanges = async (e: SubmitEvent<HTMLFormElement>) => {
     const headers = await getHeaders();
     submitStudyParameters(e, apiBaseUrl, study.study_id, headers, undefined, setErrorMessage);
   };

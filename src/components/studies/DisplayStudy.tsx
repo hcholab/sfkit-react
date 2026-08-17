@@ -1,5 +1,5 @@
 import { DocumentData } from "firebase/firestore";
-import React, { useContext, useState } from "react";
+import React, { SubmitEvent, useContext, useState } from "react";
 import { Button, Card, Form, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../appContext";
@@ -28,7 +28,7 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, user }) => {
     (study.study_type === "MPC-GWAS" && study.participants.length === 3) ||
     (study.study_type === "Secure-DTI" && study.participants.length === 4);
 
-  const handleJoinRequest = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleJoinRequest = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -74,7 +74,7 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, user }) => {
     );
   };
 
-  const handleAcceptInvitation = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleAcceptInvitation = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { SubmitEvent, useContext, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { AppContext } from "../../appContext";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
@@ -20,7 +20,7 @@ const StudyInfoModal: React.FC<StudyInfoProps> = ({ study, userId }) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleSaveChanges = async (e: React.FormEvent) => {
+  const handleSaveChanges = async (e: SubmitEvent) => {
     e.preventDefault();
 
     try {

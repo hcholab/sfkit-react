@@ -1,3 +1,4 @@
+import { SubmitEvent } from "react";
 import { Parameter, ParameterType } from "../types/study";
 
 // The API tells us which control to render via the parameter's "type", defaulting to "number".
@@ -10,7 +11,7 @@ export const parameterType = (parameter?: Parameter): ParameterType => {
 };
 
 export const submitStudyParameters = async (
-  eventForm: React.FormEvent<HTMLFormElement> | FormData,
+  eventForm: SubmitEvent<HTMLFormElement> | FormData,
   apiBaseUrl: string,
   studyId: string,
   headers: HeadersInit,
@@ -22,7 +23,7 @@ export const submitStudyParameters = async (
     eventForm.preventDefault();
   }
   const formData = eventForm instanceof FormData
-    ? eventForm : new FormData(eventForm.currentTarget);
+    ? eventForm : new FormData(eventForm.target);
   const parameters: Record<string, string | number> = {};
   formData.forEach((value, key) => {
     if (key === "BASE_P") {
