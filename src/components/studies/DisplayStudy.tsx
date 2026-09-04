@@ -25,7 +25,8 @@ const DisplayStudy: React.FC<StudyProps> = ({ study, userId, idToken, user }) =>
   const isUserRequested = () => study.requested_participants && userId in study.requested_participants;
   const isStudyFull = () =>
     (study.study_type === "MPC-GWAS" && study.participants.length === 3) ||
-    (study.study_type === "Secure-DTI" && study.participants.length === 4);
+    (study.study_type === "Secure-DTI" && study.participants.length === 4) ||
+    (study.study_type === "SF-SKAT" && study.participants.length === 3);
 
   const handleJoinRequest = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

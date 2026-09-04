@@ -16,6 +16,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, setActiveTab, 
     { id: "data-sfpca", label: "SF-PCA workflow" },
     { id: "data-sfrelate", label: "SF-Relate workflow" },
     { id: "data-securedti", label: "Secure-DTI workflow" },
+    { id: "data-sfskat", label: "SF-SKAT workflow" },
   ];
 
   if (dev) {

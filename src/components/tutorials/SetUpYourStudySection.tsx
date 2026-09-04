@@ -106,6 +106,21 @@ const SetUpYourStudySection: React.FC<SectionProps> = ({ activeTab, setActiveTab
                 </div>
               </div>
             </div>
+
+            <div
+              className={`tab-pane fade ${activeTab === "data-sfskat" ? "show active" : ""}`}
+              id="parameters-sfskat"
+            >
+              <div className="row justify-content-center mt-2">
+                <div className="col-md-6">
+                  <img
+                    className="img-fluid border border-secondary"
+                    // src={sfskat} TODO: Add image
+                    alt=""
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
