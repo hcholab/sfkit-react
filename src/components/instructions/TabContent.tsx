@@ -154,6 +154,43 @@ const TabContent: React.FC<TabContentProps> = ({ activeTab, tabType }) => {
               </div>
             </div>
           </div>
+          <div
+            className={`container tab-pane fade ${activeTab === "data-sfskat" ? "show active" : ""}`}
+            id="data-sfskat"
+          >
+            <div className="row mt-3">
+              <div>
+                SF-SKAT does not run data preparation itself. Before registering your data with sfkit, you must have
+                already run <code>secure-rvas prepare</code> (from{" "}
+                <a
+                  className="text-decoration-none"
+                  href="https://github.com/swanhong/secure-skat"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  secure-skat
+                </a>
+                ) locally to produce a <code>prepared/</code> directory. The absolute path you register with sfkit
+                should be the directory that <i>contains</i> <code>prepared/</code> (i.e. the tool's{" "}
+                <code>run_dir</code>), and it must contain, for every configured ancestry and chromosome:
+                <ul>
+                  <li>
+                    <code>prepared/&lt;ancestry&gt;/chr&lt;chromosome&gt;/genes.txt</code> and{" "}
+                    <code>block_sizes.txt</code> - the gene panel and per-gene variant counts for that chromosome.
+                  </li>
+                  <li>
+                    <code>prepared/&lt;ancestry&gt;/chr&lt;chromosome&gt;/A/{"{"}cov.txt,pheno.txt{"}"}</code> for
+                    whichever participant is registered as Cohort A.
+                  </li>
+                  <li>
+                    <code>prepared/&lt;ancestry&gt;/chr&lt;chromosome&gt;/B/{"{"}cov.txt,pheno.txt{"}"}</code> for
+                    whichever participant is registered as Cohort B.
+                  </li>
+                </ul>
+                The auxiliary participant (CP0) does not register any data.
+              </div>
+            </div>
+          </div>
         </>
       ) : (
         <>
