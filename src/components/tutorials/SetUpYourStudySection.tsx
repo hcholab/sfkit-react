@@ -9,6 +9,7 @@ import sfgwas1 from "../../static/images/sample_parameters/sfgwas1.png";
 import sfgwas2 from "../../static/images/sample_parameters/sfgwas2.png";
 import sfpca from "../../static/images/sample_parameters/sfpca.png";
 import sfrelate from "../../static/images/sample_parameters/sfrelate.png";
+// import sfskat from "../../static/images/sample_parameters/sfksat.png"; // TODO
 // import securedti from "../../static/images/sample_parameters/securedti.png";
 import approveRequest from "../../static/images/tutorial/approve_request.png";
 import pcaPrepareProject from "../../static/images/tutorial/pca_prepare_project.png";
