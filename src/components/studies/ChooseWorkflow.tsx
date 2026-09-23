@@ -27,6 +27,7 @@ const ChooseWorkflow: React.FC = () => {
     { id: "sfgwas", value: "SF-GWAS", label: "SF-GWAS" },
     { id: "pca", value: "PCA", label: "SF-PCA" },
     { id: "sfrelate", value: "SF-RELATE", label: "SF-RELATE" },
+    { id: "sfskat", value: "SF-SKAT", label: "SF-SKAT" },
     { id: "securedti", value: "Secure-DTI", label: "Secure-DTI" },
   ];
 

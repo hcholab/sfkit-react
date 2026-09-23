@@ -129,6 +129,19 @@ const SampleDataSection: React.FC<SectionProps> = ({ activeTab, setActiveTab }) 
               </a>
             </div>
           </div>
+          <div
+            className={`container tab-pane fade ${activeTab === "data-sfskat" ? "show active" : ""}`}
+            id="data-sfskat"
+          >
+            <div className="d-flex justify-content-around align-items-center">
+              <a className="btn btn-secondary" href={`${BASE_URL}/sfskat_cohorta.zip`}>
+                Cohort A SF-SKAT Sample Data
+              </a>
+              <a className="btn btn-secondary" href={`${BASE_URL}/sfskat_cohortb.zip`}>
+                Cohort B SF-SKAT Sample Data
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
