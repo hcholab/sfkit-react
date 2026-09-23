@@ -97,6 +97,20 @@ const ResultsSection: React.FC<SectionProps> = ({ activeTab, setActiveTab }) => 
                 />
               </div>
             </div>
+
+            <div
+              className={`container tab-pane fade ${activeTab === "data-sfskat" ? "show active" : ""}`}
+              id="results-sfskat"
+            >
+              <div className="text-center">
+                <img
+                  className="img-fluid border border-secondary"
+                  style={{ maxWidth: "75%" }}
+                  // src={resultsSfskat} TODO: Add image
+                  alt=""
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>

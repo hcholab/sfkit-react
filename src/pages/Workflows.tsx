@@ -159,6 +159,25 @@ const Workflows: React.FC = () => {
         </div>
 
         <div>
+          <h4 className="my-4 fw-normal">SF-SKAT</h4>
+          <p>
+            SF-SKAT is a secure, federated implementation of rare-variant Burden and SKAT association tests, based on{" "}
+            <a
+              className="text-decoration-none"
+              href="https://github.com/swanhong/secure-skat"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              secure-skat
+            </a>
+            . It lets two cohorts jointly test the association between rare genetic variants and a phenotype, with the
+            help of a third, auxiliary compute party, without either cohort ever revealing its individual-level
+            genotype, phenotype, or covariate data. All statistics are computed under secure multiparty computation
+            (MPC) and homomorphic encryption (HE).
+          </p>
+        </div>
+
+        <div>
           <h4 className="my-4 fw-normal">Secure-DTI</h4>
           <p>
             This workflow implements a collaborative Secure DTI protocol based on secure multiparty computation (MPC) as
@@ -184,6 +203,7 @@ const Workflows: React.FC = () => {
             This workflow currently supports joint analyses between pairs of collaborators.
           </p>
         </div>
+
       </div>
     </section>
   );
