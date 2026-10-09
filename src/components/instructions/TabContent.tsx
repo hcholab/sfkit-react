@@ -170,21 +170,26 @@ const TabContent: React.FC<TabContentProps> = ({ activeTab, tabType }) => {
                 >
                   secure-skat
                 </a>
-                ) locally to produce a <code>prepared/</code> directory. The absolute path you register with sfkit
+                ) locally to produce a <code>prepared/</code> directory: Cohort A runs{" "}
+                <code>secure-rvas prepare --party 1</code> and shares the resulting{" "}
+                <code>public_variants.tsv</code> lists with Cohort B, who then runs{" "}
+                <code>secure-rvas prepare --party 2</code> with them. The absolute path you register with sfkit
                 should be the directory that <i>contains</i> <code>prepared/</code> (i.e. the tool's{" "}
-                <code>run_dir</code>), and it must contain, for every configured ancestry and chromosome:
+                <code>run_dir</code>). It must be writable, as the results are stored next to{" "}
+                <code>prepared/</code>, and it must contain, for every configured ancestry and chromosome:
                 <ul>
                   <li>
                     <code>prepared/&lt;ancestry&gt;/chr&lt;chromosome&gt;/genes.txt</code> and{" "}
                     <code>block_sizes.txt</code> - the gene panel and per-gene variant counts for that chromosome.
                   </li>
                   <li>
-                    <code>prepared/&lt;ancestry&gt;/chr&lt;chromosome&gt;/A/{"{"}cov.txt,pheno.txt{"}"}</code> for
-                    whichever participant is registered as Cohort A.
+                    <code>prepared/&lt;ancestry&gt;/chr&lt;chromosome&gt;/A/{"{"}cov.txt,pheno.txt{"}"}</code> and{" "}
+                    <code>A/geno/</code> for whichever participant is registered as Cohort A.
                   </li>
                   <li>
-                    <code>prepared/&lt;ancestry&gt;/chr&lt;chromosome&gt;/B/{"{"}cov.txt,pheno.txt{"}"}</code> for
-                    whichever participant is registered as Cohort B.
+                    <code>prepared/&lt;ancestry&gt;/chr&lt;chromosome&gt;/B/{"{"}cov.txt,pheno.txt{"}"}</code>,{" "}
+                    <code>B/geno/</code> and <code>B/private/</code> for whichever participant is registered as Cohort
+                    B.
                   </li>
                 </ul>
                 The auxiliary participant (CP0) does not register any data.

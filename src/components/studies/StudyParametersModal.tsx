@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../../appContext";
 import useGenerateAuthHeaders from "../../hooks/useGenerateAuthHeaders";
 import { Study } from "../../types/study";
-import { submitStudyParameters } from "../../utils/formUtils";
+import { submitStudyParameters, textParameterNames } from "../../utils/formUtils";
 import SharedStudyParameters from "./SharedStudyParameters";
 
 interface StudyParametersProps {
@@ -33,7 +33,16 @@ const StudyParametersModal: React.FC<StudyParametersProps> = ({ study, userId })
 
   const handleSaveChanges = async (e: SubmitEvent<HTMLFormElement>) => {
     const headers = await getHeaders();
-    submitStudyParameters(e, apiBaseUrl, study.study_id, headers, undefined, setErrorMessage);
+    submitStudyParameters(
+      e,
+      apiBaseUrl,
+      study.study_id,
+      headers,
+      undefined,
+      setErrorMessage,
+      undefined,
+      textParameterNames(study.parameters, study.advanced_parameters),
+    );
   };
 
   return (
