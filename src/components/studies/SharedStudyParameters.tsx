@@ -54,7 +54,7 @@ const SharedStudyParameters: React.FC<SharedStudyParametersProps> = ({ study, is
             </Form.Label>
             <Col sm="3">
               <Form.Control
-                type="text"
+                type="number"
                 id={`NUM_INDS${participant}`}
                 name={`NUM_INDS${participant}`}
                 defaultValue={study.personal_parameters[participant]?.NUM_INDS?.value}

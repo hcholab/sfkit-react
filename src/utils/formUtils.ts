@@ -21,13 +21,17 @@ export const submitStudyParameters = async (
   if (!(eventForm instanceof FormData)) {
     eventForm.preventDefault();
   }
+  const form = eventForm instanceof FormData
+    ? undefined : eventForm.target;
   const formData = eventForm instanceof FormData
     ? eventForm : new FormData(eventForm.currentTarget);
   const parameters: Record<string, string | number> = {};
   formData.forEach((value, key) => {
-    if (key === "BASE_P") {
-      parameters[key] = value.toString();
-    } else if (typeof value === "string") {
+    if (typeof value !== "string") return;
+    const input = form?.elements.namedItem(key);
+    if (input instanceof HTMLInputElement && input.type === "text") {
+      parameters[key] = value;
+    } else {
       const numberValue = Number(value);
       parameters[key] = !isNaN(numberValue) && value !== "" && numberValue <= Number.MAX_SAFE_INTEGER ? numberValue : value;
     }
