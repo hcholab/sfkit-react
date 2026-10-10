@@ -18,6 +18,7 @@ steps:
     script: >-
       docker buildx create --use --driver docker-container &&
       docker buildx build --push -t $_IMAGE:$SHORT_SHA
+      --annotation "org.opencontainers.image.revision=$SHORT_SHA"
       --cache-from type=registry,ref=$_IMAGE:cache
       --cache-to type=registry,ref=$_IMAGE:cache,mode=max
       --build-arg APP_VERSION=$SHORT_SHA
