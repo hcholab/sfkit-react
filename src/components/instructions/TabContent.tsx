@@ -189,8 +189,8 @@ const TabContent: React.FC<TabContentProps> = ({ activeTab, tabType }) => {
                   </li>
                   <li>
                     <code>A/{"{"}cov.txt,pheno.txt{"}"}</code> (or <code>B/...</code>), with one row per individual,
-                    under the first configured chromosome only. The number of rows must equal your Number of
-                    Individuals for that ancestry in the Study Parameters.
+                    under the first configured chromosome only. Both files must have the same number of rows, and
+                    as many columns as the Covariate Columns and Phenotype Columns in the Study Parameters.
                   </li>
                 </ul>
                 If the links that <code>secure-rvas prepare</code> writes from <code>prepared/</code> into{" "}
