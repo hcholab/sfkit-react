@@ -176,7 +176,9 @@ const TabContent: React.FC<TabContentProps> = ({ activeTab, tabType }) => {
                 <code>secure-rvas prepare --party 2</code> with it. The absolute path you register with sfkit
                 should be the directory that <i>contains</i> <code>prepared/</code> (i.e. the tool's{" "}
                 <code>run_dir</code>). It must be writable, as the results are stored next to{" "}
-                <code>prepared/</code>, and it must contain, for every configured ancestry and chromosome:
+                <code>prepared/</code> (in <code>secure/&lt;ancestry&gt;/maf&lt;threshold&gt;/</code>, once for each
+                of the Global Max Minor Allele Frequencies), and it must contain, for every configured ancestry and
+                chromosome:
                 <ul>
                   <li>
                     <code>prepared/&lt;ancestry&gt;/chr&lt;chromosome&gt;/genes.txt</code> and{" "}
@@ -191,6 +193,13 @@ const TabContent: React.FC<TabContentProps> = ({ activeTab, tabType }) => {
                     <code>A/{"{"}cov.txt,pheno.txt{"}"}</code> (or <code>B/...</code>), with one row per individual,
                     under the first configured chromosome only. Both files must have the same number of rows, and
                     as many columns as the Covariate Columns and Phenotype Columns in the Study Parameters.
+                  </li>
+                  <li>
+                    <code>A/allele_counts.txt</code> (or <code>B/allele_counts.txt</code> and{" "}
+                    <code>B/private_allele_counts.txt</code>), your cohort's allele counts per gene, and{" "}
+                    <code>A/cohort_size.txt</code> (or <code>B/...</code>) under the first configured chromosome,
+                    from which the Global Max Minor Allele Frequencies are applied. Data prepared by a secure-rvas
+                    version without <code>global_max_maf</code> lacks them and must be prepared again.
                   </li>
                 </ul>
                 If the links that <code>secure-rvas prepare</code> writes from <code>prepared/</code> into{" "}
